@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCG_Creator"
         mc:Ignorable="d"
+        WindowState="Maximized"
         Title="TCG Creator" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <Grid/>
 </Window>
