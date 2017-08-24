@@ -8,7 +8,8 @@ namespace TCG_Creator
 {
     public class Card
     {
-        //public List<Region> regions;
-
+        public List<Card_Region> regions;
+        public int id;
+        public string name;
     }
 }
