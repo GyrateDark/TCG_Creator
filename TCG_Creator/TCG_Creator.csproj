@@ -87,7 +87,7 @@
     </ApplicationDefinition>
     <Compile Include="Base_Model.cs" />
     <Compile Include="Card.cs" />
-    <Compile Include="Region.cs" />
+    <Compile Include="Card_Region.cs" />
     <Compile Include="Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
