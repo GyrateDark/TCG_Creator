@@ -1,11 +1,65 @@
-﻿<Window x:Class="TCG_Creator.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCG_Creator"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="TCG_Creator.MainWindow"
         mc:Ignorable="d"
         WindowState="Maximized"
         Title="TCG Creator" Height="350" Width="525">
-    <Grid/>
+    <Window.Resources>
+        <Storyboard x:Key="Page_Trans_Out">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Main_Frame">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="Page_Trans_In">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Main_Frame">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0"
+                    Grid.Column="0" ScrollViewer.CanContentScroll="True">
+            <Button Content="Deck Edit"
+                    MinWidth="90" Click="Button_Click"/>
+            <Button Content="Close"
+                    MinWidth="90" Click="Button_Click_1" />
+        </StackPanel>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="0" Width="5"/>
+        <Frame x:Name="Main_Frame"
+               Grid.Row="0"
+               Grid.Column="1" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Navigated">
+                    <ei:ControlStoryboardAction Storyboard="{StaticResource Page_Trans_In}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Navigating">
+                    <ei:ControlStoryboardAction Storyboard="{StaticResource Page_Trans_Out}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Frame>
+    </Grid>
 </Window>

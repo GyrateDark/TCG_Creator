@@ -16,31 +16,18 @@ using System.Windows.Shapes;
 namespace TCG_Creator
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Deck_Edit.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Deck_Edit : Page
     {
-        Deck_Edit page_Deck_Edit;
-        Landing page_Landing;
-
-        public MainWindow()
+        public Deck_Edit()
         {
-            page_Deck_Edit = new Deck_Edit();
-            page_Landing = new Landing();
-
             InitializeComponent();
-
-            Main_Frame.Navigate(page_Landing);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Main_Frame.Navigate(page_Deck_Edit);
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            Main_Frame.Navigate(page_Landing);
+            
         }
     }
 }
