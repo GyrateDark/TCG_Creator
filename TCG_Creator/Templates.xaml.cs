@@ -16,16 +16,13 @@ using System.Windows.Shapes;
 namespace TCG_Creator
 {
     /// <summary>
-    /// Interaction logic for Deck_Edit.xaml
+    /// Interaction logic for Templates.xaml
     /// </summary>
-    public partial class Deck_Edit : Page
+    public partial class Templates : Page
     {
-        public Deck_Edit()
+        public Templates()
         {
             InitializeComponent();
-
-            lbl_Deck_Name.Content = "DECK NAME";
-            lbl_Game_Name.Content = "GAME NAME";
         }
     }
 }

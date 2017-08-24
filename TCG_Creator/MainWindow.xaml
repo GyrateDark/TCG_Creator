@@ -43,15 +43,14 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
                     Grid.Column="0" ScrollViewer.CanContentScroll="True">
-            <Button Content="Deck Edit"
-                    MinWidth="90" Click="Button_Click"/>
-            <Button Content="Close"
-                    MinWidth="90" Click="Button_Click_1" />
+            <Button Content="Deck Edit" Click="Button_Click"/>
+            <Button x:Name="but_Templates" Content="Templates" Click="but_Templates_Click"/>
+            <Button Content="Home" Click="Button_Click_1" />
         </StackPanel>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="0" Width="5"/>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Width="5"/>
         <Frame x:Name="Main_Frame"
                Grid.Row="0"
-               Grid.Column="1" >
+               Grid.Column="1" NavigationUIVisibility="Hidden" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Navigated">
                     <ei:ControlStoryboardAction Storyboard="{StaticResource Page_Trans_In}"/>
