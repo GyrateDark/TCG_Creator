@@ -45,7 +45,7 @@
                     Grid.Column="0" ScrollViewer.CanContentScroll="True">
             <Button Content="Home" Click="Button_Click_1" Margin="10,10,9.5,10" />
             <Button Content="Deck Edit" Click="Button_Click"/>
-            <Button x:Name="but_Templates" Content="Templates" Click="but_Templates_Click"/>
+            <Button x:Name="but_Templates" Content="Templates" Click="But_Templates_Click"/>
         </StackPanel>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Width="5"/>
         <Frame x:Name="Main_Frame"

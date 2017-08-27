@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="10" />
-        <Setter Property="ContentTemplate">
+        <!--<Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
                     <Viewbox Stretch="Fill">
@@ -10,7 +10,7 @@
                     </Viewbox>
                 </DataTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
     </Style>
     
 </ResourceDictionary>

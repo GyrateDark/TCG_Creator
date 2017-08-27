@@ -20,8 +20,9 @@ namespace TCG_Creator
     /// </summary>
     public partial class Landing : Page
     {
-        public Landing()
+        public Landing(object context)
         {
+            DataContext = context;
             InitializeComponent();
         }
     }

@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
+using System.Globalization;
+using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
@@ -19,21 +21,25 @@ namespace TCG_Creator
 
     public class Card_Region
     {
+        public Card_Region()
+        { 
+        }
+
         // 0-1 location of region on  a card of width 1 and height 1
         public Rect ideal_location;
         public string description;
         public int id;
 
         public string text;
-        public Typeface text_typeface;
+        public Serializable_Typeface text_typeface;
         public bool decrease_text_size_to_fit = true;
 
-        public Brush text_brush;
+        public Serializable_Brush text_brush;
 
         public ImageSource std_background_image;
         public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
 
-        public DrawingGroup draw_region(Rect draw_location)
+        public DrawingGroup Draw_Region(Rect draw_location)
         {
             DrawingGroup reg_img = new DrawingGroup();
 
@@ -54,22 +60,14 @@ namespace TCG_Creator
 
             if (text != null)
             {
-                GlyphRun text_glyph_run = new GlyphRun();
+                FormattedText formatted_text = new FormattedText(text, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, text_typeface, 32, text_brush);
 
-                GlyphTypeface auto_typeface;
-                bool auto_convert_typeface = text_typeface.TryGetGlyphTypeface(out auto_typeface);
+                formatted_text.MaxTextWidth = draw_location.Width;
+                formatted_text.MaxTextHeight = draw_location.Height;
 
-                if (auto_convert_typeface)
-                {
-                    text_glyph_run.GlyphTypeface = auto_typeface;
-                }
-                else
-                {
-                    text_glyph_run.Characters = text.ToCharArray();
-                    text_glyph_run.DeviceFontName = text_typeface.FontFamily.Source;
-                }
+                Pen text_pen = new Pen(Brushes.Transparent, 0);
 
-                GlyphRunDrawing text_drawing = new GlyphRunDrawing(text_brush, text_glyph_run);
+                GeometryDrawing text_drawing = new GeometryDrawing(text_brush, text_pen, formatted_text.BuildGeometry(draw_location.Location));
 
                 reg_img.Children.Add(text_drawing);
             }

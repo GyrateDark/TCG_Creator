@@ -24,11 +24,12 @@ namespace TCG_Creator
         Landing page_Landing;
         Templates page_Templates;
 
-        public MainWindow()
+        public MainWindow(object context)
         {
-            page_Deck_Edit = new Deck_Edit();
-            page_Landing = new Landing();
-            page_Templates = new Templates();
+            DataContext = context;
+            page_Deck_Edit = new Deck_Edit(context);
+            page_Landing = new Landing(context);
+            page_Templates = new Templates(context);
 
             InitializeComponent();
 
@@ -45,7 +46,7 @@ namespace TCG_Creator
             Main_Frame.Navigate(page_Landing);
         }
 
-        private void but_Templates_Click(object sender, RoutedEventArgs e)
+        private void But_Templates_Click(object sender, RoutedEventArgs e)
         {
             Main_Frame.Navigate(page_Templates);
         }
