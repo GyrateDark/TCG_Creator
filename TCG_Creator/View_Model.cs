@@ -137,7 +137,11 @@ namespace TCG_Creator
 
             newCard.IsTemplateCard = true;
             if (_treeViewCards != null)
-                newCard.ParentCard = find_selected(_treeViewCards);
+            {
+                Card parentCard = CurrentCardCollection.Find_Card_In_Collection(find_selected(_treeViewCards));
+                newCard = parentCard;
+                newCard.ParentCard = parentCard.Id;
+            }
 
             CurrentCardCollection.Add_Card_To_Collection(newCard);
             NotifyCollectionChanged();
