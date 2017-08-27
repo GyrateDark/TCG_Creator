@@ -18,13 +18,12 @@ namespace TCG_Creator
     {
         #region Fields
 
-        private int _collectionId;
         private Card_Collection _cardCollection = new Card_Collection();
         private ICommand _getCardCommand;
         private ICommand _saveCardCommand;
         private ICommand _treeViewSelectedNode;
 
-        private string _selectedTreeViewNode;
+        private IList<Tree_View_Card> _treeViewCards;
 
         #endregion
 
@@ -94,24 +93,13 @@ namespace TCG_Creator
         public IList<Tree_View_Card> Get_Tree_View_Cards
         {
             get
-            {
-                var result = new List<string>();
-
-                var tree_view_cards = _cardCollection.Get_Tree_View_Template_Cards();
-
-                return tree_view_cards;
-            }
-        }
-
-        public string SelectedTreeViewNode
-        {
-            get { return _selectedTreeViewNode; }
+            { return _treeViewCards; }
             set
             {
-                if (_selectedTreeViewNode != value)
+                if (_treeViewCards != value)
                 {
-                    _selectedTreeViewNode = value;
-                    OnPropertyChanged("SelectedTreeViewNode");
+                    _treeViewCards = value;
+                    OnPropertyChanged("Get_Tree_View_Cards");
                 }
             }
         }
@@ -138,6 +126,7 @@ namespace TCG_Creator
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Card_Collection));
 
             _cardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
+            NotifyCollectionChanged();
         }
 
         #region Private Helpers
@@ -147,8 +136,8 @@ namespace TCG_Creator
             Card newCard = new Card();
 
             newCard.IsTemplateCard = true;
-
-            //newCard.ParentCard = SelectedTreeViewNode.Length;
+            if (_treeViewCards != null)
+                newCard.ParentCard = find_selected(_treeViewCards);
 
             CurrentCardCollection.Add_Card_To_Collection(newCard);
             NotifyCollectionChanged();
@@ -159,15 +148,34 @@ namespace TCG_Creator
             // You would implement your Product save here
         }
 
-        private void Seleclted()
-        {
-            // You would implement your Product save here
-        }
-
         private void NotifyCollectionChanged()
         {
+            Get_Tree_View_Cards = _cardCollection.Get_Tree_View_Template_Cards(ref _cardCollection);
+
             OnPropertyChanged("CurrentCardCollection");
-            OnPropertyChanged("Get_Tree_View_Cards");
+        }
+
+        private int find_selected(IList<Tree_View_Card> cards)
+        {
+            int result = -1;
+            foreach (Tree_View_Card i in cards)
+            {
+                if (i.IsSelected == true)
+                {
+                    return i.Id;
+                }
+                else if (i.Children.Count >= 1)
+                {
+                    result = find_selected(i.Children);
+
+                    if (result != -1)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return result;
         }
 
         #endregion

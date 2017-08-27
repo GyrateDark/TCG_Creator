@@ -11,24 +11,29 @@ namespace TCG_Creator
 {
     public class Tree_View_Card : ObservableObject
     {
-        public Tree_View_Card()
+        public Tree_View_Card(ref Card_Collection coll)
         {
             _children = new List<Tree_View_Card>();
             _parentId = -1;
+
+            _cardCollection = coll;
         }
 
-        public Tree_View_Card(int id, string name, int parentId)
+        public Tree_View_Card(int id, string name, int parentId, ref Card_Collection coll)
         {
             _children = new List<Tree_View_Card>();
             _id = id;
-            _name = name;
             _parentId = parentId;
+
+            _cardCollection = coll;
         }
 
         private List<Tree_View_Card> _children;
         private int _id;
-        private string _name;
         private int _parentId;
+        private bool _isSelected;
+
+        private Card_Collection _cardCollection;
 
         #region Properties
 
@@ -73,13 +78,26 @@ namespace TCG_Creator
 
         public string Name
         {
-            get { return _name; }
+            get { return _cardCollection.Find_Card_In_Collection(Id).Name; }
             set
             {
-                if (value != _name)
+                if (value != Name)
                 {
-                    _name = value;
+                    _cardCollection.Find_Card_In_Collection(Id).Name = value;
                     OnPropertyChanged("Name");
+                }
+            }
+        }
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged("IsSelected");
                 }
             }
         }

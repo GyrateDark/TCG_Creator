@@ -22,17 +22,34 @@
             <StackPanel Grid.Column="0">
                 <TreeView x:Name="Tree_View" 
                           ItemsSource="{Binding Get_Tree_View_Cards}"
-                          SelectedValuePath="{Binding SelectedTreeViewNode}">
+                          SelectedValuePath="{Binding SelectedTreeViewNode}" >
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type self:Tree_View_Card}" >
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                             <TextBlock Text="{Binding Name}" />
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
-                </TreeView> 
+                </TreeView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"
+                           TextBlock.TextAlignment="Right"
+                           Content="Template Name:"/>
+                    <GridSplitter />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding ElementName=Tree_View, Path=SelectedItem.Name, Mode=TwoWay}" />
+                </Grid>
                 <Button Content="Add Card" Command="{Binding Path=AddCardCommand}"/>
                 <Button x:Name="but_temp_save" Content="Save" Margin="0" Click="but_temp_save_Click"/>
                 <Button x:Name="but_temp_load" Content="Load" Margin="0" Click="but_temp_load_Click"/>
-
+                
             </StackPanel>
         </ScrollViewer>
         <Rectangle Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="26,93,0,0" Stroke="Black" VerticalAlignment="Top" Width="100">

@@ -87,7 +87,7 @@ namespace TCG_Creator
                 if (value != _parentCardId)
                 {
                     _parentCardId = value;
-                    OnPropertyChanged("ParentCardId");
+                    OnPropertyChanged("ParentCard");
                 }
             }
         }

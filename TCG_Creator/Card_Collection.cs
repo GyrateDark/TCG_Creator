@@ -103,7 +103,7 @@ namespace TCG_Creator
             return prev_id + 1;
         }
 
-        public List<Tree_View_Card> Get_Tree_View_Template_Cards()
+        public List<Tree_View_Card> Get_Tree_View_Template_Cards(ref Card_Collection coll)
         {
             var onlyTemplateCards = new List<Card>();
 
@@ -120,10 +120,10 @@ namespace TCG_Creator
                 return new List<Tree_View_Card>();
             }
 
-            return Get_Tree_View_Template_Cards_For_Parent(-1);
+            return Get_Tree_View_Template_Cards_For_Parent(-1, ref coll);
         }
 
-        private List<Tree_View_Card> Get_Tree_View_Template_Cards_For_Parent(int searchParentId)
+        private List<Tree_View_Card> Get_Tree_View_Template_Cards_For_Parent(int searchParentId, ref Card_Collection coll)
         {
             List<Tree_View_Card> result = new List<Tree_View_Card>();
 
@@ -132,8 +132,8 @@ namespace TCG_Creator
             {
                 if (i.ParentCard == searchParentId)
                 {
-                    Tree_View_Card tmp = new Tree_View_Card(i.Id, i.Name, i.ParentCard);
-                    tmp.Children = Get_Tree_View_Template_Cards_For_Parent(i.Id);
+                    Tree_View_Card tmp = new Tree_View_Card(i.Id, i.Name, i.ParentCard, ref coll);
+                    tmp.Children = Get_Tree_View_Template_Cards_For_Parent(i.Id, ref coll);
 
                     result.Add(tmp);
                 }
