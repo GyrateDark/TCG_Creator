@@ -1,0 +1,64 @@
+﻿<Page x:Class="TCG_Creator.Templates"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TCG_Creator"
+      xmlns:self="clr-namespace:TCG_Creator"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Templates">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <StackPanel Grid.Column="0">
+                <TreeView x:Name="Tree_View" 
+                          ItemsSource="{Binding Get_Tree_View_Cards}"
+                          SelectedValuePath="{Binding SelectedTreeViewNode}" >
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding Name}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"
+                           TextBlock.TextAlignment="Right"
+                           Content="Template Name:"/>
+                    <GridSplitter />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding ElementName=Tree_View, Path=SelectedItem.Name, Mode=TwoWay}" />
+                </Grid>
+                <Button Content="Add Card" Command="{Binding Path=AddCardCommand}"/>
+                <Button x:Name="but_temp_save" Content="Save" Margin="0" Click="but_temp_save_Click"/>
+                <Button x:Name="but_temp_load" Content="Load" Margin="0" Click="but_temp_load_Click"/>
+                
+            </StackPanel>
+        </ScrollViewer>
+        <Rectangle Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="26,93,0,0" Stroke="Black" VerticalAlignment="Top" Width="100">
+            <Rectangle.Fill>
+                <DrawingBrush Drawing="{Binding Drawing_Card}" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <StackPanel Grid.Column="2">
+            
+        </StackPanel>
+    </Grid>
+</Page>

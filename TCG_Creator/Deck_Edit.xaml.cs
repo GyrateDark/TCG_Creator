@@ -20,14 +20,13 @@ namespace TCG_Creator
     /// </summary>
     public partial class Deck_Edit : Page
     {
-        public Deck_Edit()
+        public Deck_Edit(object context)
         {
+            DataContext = context;
             InitializeComponent();
-        }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
+            lbl_Deck_Name.Content = "DECK NAME";
+            lbl_Game_Name.Content = "GAME NAME";
         }
     }
 }

@@ -19,10 +19,10 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
                     Grid.Column="0" ScrollViewer.CanContentScroll="True">
-            <Label x:Name="Deck_Name" Content="Label"/>
-            <Label x:Name="Game_Name" Content="Label"/>
-            <Button x:Name="New_Card" Content="New_Card"
-                    MinWidth="90" Click="Button_Click"/>
+            <Label x:Name="lbl_Deck_Name" Content="Label"/>
+            <Label x:Name="lbl_Game_Name" Content="Label"/>
+            <Button x:Name="but_New_Card" Content="New Card"/>
+            <Button x:Name="but_Statistics" Content="Statistics"/>
         </StackPanel>
     </Grid>
 </Page>

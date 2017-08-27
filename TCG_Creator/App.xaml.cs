@@ -13,5 +13,16 @@ namespace TCG_Creator
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            
+
+            View_Model context = new View_Model();
+            MainWindow app = new MainWindow(context);
+
+            app.Show();
+        }
     }
 }
