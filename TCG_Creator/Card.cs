@@ -124,9 +124,25 @@ namespace TCG_Creator
                 return card_drawing;
             }
 
+            // NOTE: inheritted regions are located in the list in draw order
             if (ParentCard != -1)
             {
-                Card parent_card = allCardsRef.Find_Card_In_Collection(ParentCard);
+                Card parent_card = new Card(allCardsRef.Find_Card_In_Collection(ParentCard));
+
+                foreach (Card_Region i in Regions)
+                {
+                    if (i.inheritted)
+                    {
+                        foreach (Card_Region j in parent_card.Regions)
+                        {
+                            if (i.id == j.id)
+                            {
+                                CopyAll<Card_Region>(j, i);
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 card_drawing.Children.Add(parent_card.Render_Card(location, ref allCardsRef));
             }
@@ -135,18 +151,36 @@ namespace TCG_Creator
 
             foreach (Card_Region i in Regions)
             {
-                Rect draw_location = new Rect
+                if (!i.inheritted)
                 {
-                    X = location.X + i.ideal_location.X * location.Width,
-                    Y = location.Y + i.ideal_location.Y * location.Height,
-                    Width = location.Width * i.ideal_location.Width,
-                    Height = location.Height * i.ideal_location.Height
-                };
+                    Rect draw_location = new Rect
+                    {
+                        X = location.X + i.ideal_location.X * location.Width,
+                        Y = location.Y + i.ideal_location.Y * location.Height,
+                        Width = location.Width * i.ideal_location.Width,
+                        Height = location.Height * i.ideal_location.Height
+                    };
 
-                card_drawing.Children.Add(i.Draw_Region(draw_location));
+                    card_drawing.Children.Add(i.Draw_Region(draw_location));
+                }
             }
 
             return card_drawing;
+        }
+
+        public void CopyAll<T>(T source, T target)
+        {
+            var type = typeof(T);
+            foreach (var sourceProperty in type.GetProperties())
+            {
+                var targetProperty = type.GetProperty(sourceProperty.Name);
+                targetProperty.SetValue(target, sourceProperty.GetValue(source, null), null);
+            }
+            foreach (var sourceField in type.GetFields())
+            {
+                var targetField = type.GetField(sourceField.Name);
+                targetField.SetValue(target, sourceField.GetValue(source));
+            }
         }
     }
 }
