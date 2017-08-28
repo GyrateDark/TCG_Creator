@@ -26,6 +26,13 @@ namespace TCG_Creator
             _name = "<BLANK>";
         }
 
+        public Card(Card card)
+        {
+            _regions = new List<Card_Region>(card.Regions);
+            _deckIds = new List<int>(card.DeckIds);
+            _name = card.Name;
+        }
+
         #region Properties
 
         public List<Card_Region> Regions
@@ -111,6 +118,11 @@ namespace TCG_Creator
         public DrawingGroup Render_Card(Rect location, ref Card_Collection allCardsRef)
         {
             DrawingGroup card_drawing = new DrawingGroup();
+
+            if (location.Height == 0 || location.Width == 0)
+            {
+                return card_drawing;
+            }
 
             if (ParentCard != -1)
             {

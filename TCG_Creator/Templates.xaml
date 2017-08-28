@@ -49,14 +49,25 @@
                 <Button Content="Add Card" Command="{Binding Path=AddCardCommand}"/>
                 <Button x:Name="but_temp_save" Content="Save" Margin="0" Click="but_temp_save_Click"/>
                 <Button x:Name="but_temp_load" Content="Load" Margin="0" Click="but_temp_load_Click"/>
-                
+
             </StackPanel>
         </ScrollViewer>
-        <Rectangle Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="26,93,0,0" Stroke="Black" VerticalAlignment="Top" Width="100">
+        <Rectangle Grid.Column="1"
+                   StrokeThickness="0">
             <Rectangle.Fill>
-                <DrawingBrush Drawing="{Binding Drawing_Card}" />
+                <DrawingBrush Drawing="{Binding Drawing_Card}"/>
             </Rectangle.Fill>
         </Rectangle>
+        <ItemsControl Grid.Column="1"
+                      ItemsSource="{Binding Drawing_Card_Rectangles}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Grid.Column="1"
+                            IsItemsHost="True"
+                            Name="Card_Canvas"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
         <StackPanel Grid.Column="2">
             
         </StackPanel>
