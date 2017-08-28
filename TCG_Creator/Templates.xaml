@@ -52,6 +52,8 @@
 
             </StackPanel>
         </ScrollViewer>
+        <GridSplitter Grid.Column="0"
+                      Width="5"/>
         <Rectangle Grid.Column="1"
                    StrokeThickness="0">
             <Rectangle.Fill>
@@ -69,7 +71,7 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
         <StackPanel Grid.Column="2">
-            
+
         </StackPanel>
     </Grid>
 </Page>
