@@ -31,6 +31,8 @@ namespace TCG_Creator
         private double _imageWidth = 825;
         private Size _imageSize;
 
+        private Size RENDER_SIZE = new Size(825, 1125);
+
         public PercentageConverter percentConvertor = new PercentageConverter();
 
         #endregion
@@ -105,16 +107,19 @@ namespace TCG_Creator
                 {
                     Rectangle rectangle = new Rectangle();
 
-                    rectangle.Height = i.ideal_location.Height * Image_Height;
-                    rectangle.Width = i.ideal_location.Width * Image_Width;
+                    rectangle.Height = i.ideal_location.Height * RENDER_SIZE.Height;
+                    rectangle.Width = i.ideal_location.Width * RENDER_SIZE.Width;
 
-                    rectangle.Fill = Brushes.Transparent;
+                    Thickness margin = new Thickness();
 
-                    BindingOperations.SetBinding(rectangle, Canvas.TopProperty, Bind_Card_Canvas_Property_With_Percent_Convertor("ActualHeight", i.ideal_location.Y));
-                    BindingOperations.SetBinding(rectangle, Canvas.LeftProperty, Bind_Card_Canvas_Property_With_Percent_Convertor("ActualWidth", i.ideal_location.X));
+                    margin.Left = i.ideal_location.X * RENDER_SIZE.Width;
+                    margin.Top = i.ideal_location.Y * RENDER_SIZE.Height;
 
-                    BindingOperations.SetBinding(rectangle, Rectangle.HeightProperty, Bind_Card_Canvas_Property_With_Percent_Convertor("ActualHeight", i.ideal_location.Height));
-                    BindingOperations.SetBinding(rectangle, Rectangle.WidthProperty, Bind_Card_Canvas_Property_With_Percent_Convertor("ActualWidth", i.ideal_location.Width));
+                    rectangle.Margin = margin;
+
+                    DrawingBrush rectFill = new DrawingBrush(i.Draw_Region(new Rect(rectangle.Margin.Left, rectangle.Margin.Top, rectangle.Width, rectangle.Height)));
+                    rectFill.Stretch = Stretch.None;
+                    rectangle.Fill = rectFill;
 
                     result.Add(rectangle);
                 }
@@ -125,7 +130,7 @@ namespace TCG_Creator
 
         public DrawingGroup Drawing_Card
         {
-            get { return Find_Selected_Card().Render_Card(new Rect(0, 0, Image_Width, Image_Height), ref _cardCollection); }
+            get { return Find_Selected_Card().Render_Card(new Rect(0, 0, CardRenderWidth, CardRenderHeight), ref _cardCollection); }
         }
 
         public IList<Tree_View_Card> Get_Tree_View_Cards
@@ -142,54 +147,19 @@ namespace TCG_Creator
             }
         }
 
-        public double Image_Height
+        public double CardRenderHeight
         {
             get
             {
-                return _imageHeight;
-            }
-            set
-            {
-                if (_imageHeight != value)
-                {
-                    _imageHeight = value;
-                    OnPropertyChanged("Image_Height");
-                    Notify_Drawing_Card_Changed();
-                }
+                return RENDER_SIZE.Height;
             }
         }
 
-        public double Image_Width
+        public double CardRenderWidth
         {
             get
             {
-                return _imageWidth;
-            }
-            set
-            {
-                if (_imageWidth != value)
-                {
-                    _imageWidth = value;
-                    OnPropertyChanged("Image_Width");
-                    Notify_Drawing_Card_Changed();
-                }
-            }
-        }
-
-        public Size Image_Size
-        {
-            get
-            { 
-                return _imageSize;
-            }
-            set
-            {
-                if (_imageSize != value)
-                {
-                    _imageSize = value;
-                    OnPropertyChanged("Image_Size");
-                    Notify_Drawing_Card_Changed();
-                }
+                return RENDER_SIZE.Width;
             }
         }
 
@@ -290,20 +260,6 @@ namespace TCG_Creator
             }
 
             return result;
-        }
-
-        private Binding Bind_Card_Canvas_Property_With_Percent_Convertor(string canvasProperty, double convertorParameter)
-        {
-            Binding bindingBase = new Binding("{Binding Converter ={ StaticResource PercentageConverter}, ElementName = canvas, Path = ActualWidth, ConverterParameter = 0.1}");
-
-            bindingBase.Converter = percentConvertor;
-            bindingBase.ElementName = "Card_Canvas";
-            bindingBase.Path = (PropertyPath)(new PropertyPathConverter().ConvertFromString(canvasProperty));
-            bindingBase.ConverterParameter = convertorParameter;
-
-            return bindingBase;
-
-            
         }
 
         #endregion
