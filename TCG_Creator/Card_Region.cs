@@ -38,6 +38,8 @@ namespace TCG_Creator
         public ImageSource std_background_image;
         public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
 
+        public bool inheritted = false;
+
         public DrawingGroup Draw_Region(Rect draw_location)
         {
             DrawingGroup reg_img = new DrawingGroup();

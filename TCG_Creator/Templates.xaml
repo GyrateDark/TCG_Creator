@@ -37,8 +37,8 @@
                     </TreeView>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="300"/>
-                            <ColumnDefinition MinWidth="300"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0"
                                TextBlock.TextAlignment="Right"

@@ -27,11 +27,7 @@ namespace TCG_Creator
 
         private IList<Tree_View_Card> _treeViewCards;
 
-        private double _imageHeight = 1125;
-        private double _imageWidth = 825;
-        private Size _imageSize;
-
-        private Size RENDER_SIZE = new Size(825, 1125);
+        private Size _renderSize = new Size(825, 1125);
 
         public PercentageConverter percentConvertor = new PercentageConverter();
 
@@ -102,24 +98,37 @@ namespace TCG_Creator
                 IList<Rectangle> result = new List<Rectangle>();
 
                 Card selectedCard = Find_Selected_Card();
+                DrawingGroup cardDrawing = Drawing_Card;
+
+                Rectangle rectangle = new Rectangle();
+
+                rectangle.Height = CardRenderHeight;
+                rectangle.Width = CardRenderWidth;
+
+                DrawingBrush rectFill = new DrawingBrush(cardDrawing);
+                rectFill.Stretch = Stretch.None;
+                rectangle.Fill = rectFill;
+
+                result.Add(rectangle);
 
                 foreach (Card_Region i in selectedCard.Regions)
                 {
-                    Rectangle rectangle = new Rectangle();
+                    rectangle = new Rectangle();
 
-                    rectangle.Height = i.ideal_location.Height * RENDER_SIZE.Height;
-                    rectangle.Width = i.ideal_location.Width * RENDER_SIZE.Width;
+                    rectangle.Height = i.ideal_location.Height * CardRenderHeight;
+                    rectangle.Width = i.ideal_location.Width * CardRenderWidth;
 
                     Thickness margin = new Thickness();
 
-                    margin.Left = i.ideal_location.X * RENDER_SIZE.Width;
-                    margin.Top = i.ideal_location.Y * RENDER_SIZE.Height;
+                    margin.Left = i.ideal_location.X * CardRenderWidth;
+                    margin.Top = i.ideal_location.Y * CardRenderHeight;
 
                     rectangle.Margin = margin;
 
-                    DrawingBrush rectFill = new DrawingBrush(i.Draw_Region(new Rect(rectangle.Margin.Left, rectangle.Margin.Top, rectangle.Width, rectangle.Height)));
-                    rectFill.Stretch = Stretch.None;
-                    rectangle.Fill = rectFill;
+                    //DrawingBrush rectFill = new DrawingBrush(i.Draw_Region(new Rect(rectangle.Margin.Left, rectangle.Margin.Top, rectangle.Width, rectangle.Height)));
+                    //rectFill.Stretch = Stretch.None;
+                    //rectangle.Fill = rectFill;
+                    rectangle.Fill = Brushes.Transparent;
 
                     result.Add(rectangle);
                 }
@@ -151,7 +160,7 @@ namespace TCG_Creator
         {
             get
             {
-                return RENDER_SIZE.Height;
+                return _renderSize.Height;
             }
         }
 
@@ -159,7 +168,7 @@ namespace TCG_Creator
         {
             get
             {
-                return RENDER_SIZE.Width;
+                return _renderSize.Width;
             }
         }
 
@@ -204,6 +213,7 @@ namespace TCG_Creator
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
+                newCard.Regions.Clear();
                 newCard.ParentCard = parentCard.Id;
             }
 
