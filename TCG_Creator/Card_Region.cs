@@ -29,12 +29,11 @@ namespace TCG_Creator
         public Rect ideal_location;
         public string description;
         public int id;
-
-        public string text;
-        public Serializable_Typeface text_typeface;
+        
+        public FormattedText text;
         public bool decrease_text_size_to_fit = true;
 
-        public Serializable_Brush text_brush;
+        public Brush text_brush;
 
         public ImageSource std_background_image;
         public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
@@ -60,15 +59,13 @@ namespace TCG_Creator
 
             if (text != null)
             {
-                FormattedText formatted_text = new FormattedText(text, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, text_typeface, 32, text_brush);
+                text.MaxTextWidth = draw_location.Width;
+                text.MaxTextHeight = draw_location.Height;
 
-                formatted_text.MaxTextWidth = draw_location.Width;
-                formatted_text.MaxTextHeight = draw_location.Height;
+                Pen text_pen = new Pen(Brushes.White, 0);
 
-                Pen text_pen = new Pen(Brushes.Transparent, 0);
-
-                GeometryDrawing text_drawing = new GeometryDrawing(text_brush, text_pen, formatted_text.BuildGeometry(draw_location.Location));
-
+                GeometryDrawing text_drawing = new GeometryDrawing(text_brush, text_pen, text.BuildGeometry(draw_location.Location));
+                
                 reg_img.Children.Add(text_drawing);
             }
 
