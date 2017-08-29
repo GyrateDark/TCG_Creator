@@ -115,6 +115,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="PercentageConvertor.cs" />
+    <Compile Include="String_Container.cs" />
     <Compile Include="Tree_View_Card.cs" />
     <Compile Include="Card_Collection.cs" />
     <Compile Include="Card_Region.cs" />

@@ -115,9 +115,9 @@ namespace TCG_Creator
                     {
                         frameworkElement = new RichTextBox();
                         
-                        if (i.text != null)
+                        if (i.strings != null)
                         {
-                            _richTextDocument = i.ConvertFromFormattedTextToFlowDocument();
+                            _richTextDocument = i.ConvertFromStringContainerToFlowDocument();
                             ((RichTextBox)frameworkElement).Document = _richTextDocument;
                         }
                     }
@@ -160,7 +160,7 @@ namespace TCG_Creator
         {
             if (SelectedRegion != -1)
             {
-                Find_SelectedCard_Region().ConvertFromFlowDocumentToFormattedText(_richTextDocument);
+                Find_SelectedCard_Region().ConvertFromFlowDocumentToStringContainer(_richTextDocument);
                 SelectedRegion = -1;
             }
             else

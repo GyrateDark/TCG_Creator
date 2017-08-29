@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Globalization;
 using System.Xml.Serialization;
 using System.Windows.Documents;
+using System.Windows.Media.TextFormatting;
 
 namespace TCG_Creator
 {
@@ -46,10 +47,8 @@ namespace TCG_Creator
         public string description;
         public int id;
         
-        public FormattedText text;
+        public String_Container strings = null;
         public bool decrease_text_size_to_fit = true;
-
-        public Brush text_brush;
 
         public ImageSource std_background_image;
         public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
@@ -75,16 +74,17 @@ namespace TCG_Creator
                 reg_img.Children.Add(image_rec_drawing);
             }
 
-            if (text != null)
+            if (strings != null)
             {
-                text.MaxTextWidth = draw_location.Width;
-                text.MaxTextHeight = draw_location.Height;
+                FormattedText formatText = strings.ConvertToFormattedText();
 
-                Pen text_pen = new Pen(Brushes.White, 0);
-
-                GeometryDrawing text_drawing = new GeometryDrawing(text_brush, text_pen, text.BuildGeometry(draw_location.Location));
+                formatText.MaxTextWidth = draw_location.Width;
+                formatText.MaxTextHeight = draw_location.Height;
                 
-                reg_img.Children.Add(text_drawing);
+                DrawingContext text_drawing = reg_img.Open();
+
+                text_drawing.DrawText(formatText, draw_location.Location);
+                text_drawing.Close();
             }
 
             return reg_img;
@@ -94,10 +94,13 @@ namespace TCG_Creator
         {
             bool result = false;
 
-            if (text != null)
+            if (strings != null)
             {
-                result |= text.Text != "";
-                text = null;
+                if (strings.strings.Count >= 0)
+                {
+                    result |= strings.strings[0].Text.Length >= 1;
+                    strings = null;
+                }
             }
 
             result |= std_background_image == null;
@@ -106,19 +109,49 @@ namespace TCG_Creator
             return result;
         }
 
-        public FlowDocument ConvertFromFormattedTextToFlowDocument()
+        public FlowDocument ConvertFromStringContainerToFlowDocument()
         {
+            Paragraph oneLine = new Paragraph();
             FlowDocument result = new FlowDocument();
+            
+            foreach (String_Drawing i in strings.strings)
+            {
+                oneLine = new Paragraph(new Run(i.Text));
 
-            Paragraph graph = new Paragraph();
+                oneLine.FontFamily = new FontFamily(i.FontFamily);
+                oneLine.FontSize = i.FontSize;
+                oneLine.FontStyle = i.StrFontStyle;
+                oneLine.FontWeight = i.StrFontWeight;
 
-            string tmp = text.ToString();
+                oneLine.Foreground = i.TextBrush;
+
+                result.Blocks.Add(oneLine);
+            }
 
             return result;
         }
 
-        public void ConvertFromFlowDocumentToFormattedText(FlowDocument doc)
+        public void ConvertFromFlowDocumentToStringContainer(FlowDocument doc)
         {
+            strings.strings.Clear();
+            foreach (Block i in doc.Blocks)
+            {
+                String_Drawing reconstructedString = new String_Drawing();
+
+                reconstructedString.FontFamily = i.FontFamily.ToString();
+                reconstructedString.FontSize = i.FontSize;
+                reconstructedString.StrFontStyle = i.FontStyle;
+                reconstructedString.StrFontWeight = i.FontWeight;
+
+                reconstructedString.TextBrush = i.Foreground;
+
+                reconstructedString.Text = new TextRange(i.ContentStart, i.ContentEnd).Text;
+
+                strings.strings.Add(reconstructedString);
+            }
+
+            strings.TxtAlign = doc.TextAlignment;
+
             return;
         }
     }
