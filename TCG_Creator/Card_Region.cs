@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.Globalization;
 using System.Xml.Serialization;
+using System.Windows.Documents;
 
 namespace TCG_Creator
 {
@@ -22,7 +23,22 @@ namespace TCG_Creator
     public class Card_Region
     {
         public Card_Region()
-        { 
+        {
+            id = -1;
+        }
+        public Card_Region(ref int currentCardRegionId)
+        {
+            id = currentCardRegionId;
+            ++currentCardRegionId;
+        }
+
+        public Card_Region(Card_Region reg)
+        {
+            ideal_location = reg.ideal_location;
+            id = reg.id;
+            std_background_image = reg.std_background_image;
+            background_image_filltype = reg.background_image_filltype;
+            inheritted = reg.inheritted;
         }
 
         // 0-1 location of region on  a card of width 1 and height 1
@@ -72,6 +88,38 @@ namespace TCG_Creator
             }
 
             return reg_img;
+        }
+
+        public bool Should_Inherit_Region()
+        {
+            bool result = false;
+
+            if (text != null)
+            {
+                result |= text.Text != "";
+                text = null;
+            }
+
+            result |= std_background_image == null;
+            std_background_image = null;
+
+            return result;
+        }
+
+        public FlowDocument ConvertFromFormattedTextToFlowDocument()
+        {
+            FlowDocument result = new FlowDocument();
+
+            Paragraph graph = new Paragraph();
+
+            string tmp = text.ToString();
+
+            return result;
+        }
+
+        public void ConvertFromFlowDocumentToFormattedText(FlowDocument doc)
+        {
+            return;
         }
     }
 }

@@ -57,7 +57,7 @@
         <GridSplitter Grid.Column="0"
                       Width="5"/>
         <Viewbox Grid.Column="1">
-            <ItemsControl ItemsSource="{Binding Drawing_Card_Rectangles}" >
+            <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas IsItemsHost="True"

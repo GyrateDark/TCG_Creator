@@ -16,6 +16,8 @@ namespace TCG_Creator
         List<Card> _cards = new List<Card>();
         Card failCard;
 
+        int nextRegionId = 0;
+
         public Card_Collection()
         {
             failCard = new Card
@@ -29,7 +31,7 @@ namespace TCG_Creator
 
             tmp_card.Name = "Blank Hero Card";
 
-            tmp_card.Regions.Add(new Card_Region());
+            tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
 
             tmp_card.Regions[0].text = null;
@@ -38,28 +40,28 @@ namespace TCG_Creator
             tmp_card.Regions[0].background_image_filltype = IMAGE_OPTIONS.Letterbox;
             tmp_card.Regions[0].ideal_location = new System.Windows.Rect(0, 0, 1, 1);
 
-            tmp_card.Regions.Add(new Card_Region());
+            tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
             tmp_card.Regions[1].text = new FormattedText("Blank", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Times New Roman"), 32, Brushes.White);
             tmp_card.Regions[1].text.TextAlignment = TextAlignment.Left;
             tmp_card.Regions[1].text_brush = Brushes.White;
             tmp_card.Regions[1].ideal_location = new System.Windows.Rect(0.0957575757575758, 0.0702222222222222, 0.8096969696969697, 0.0595555555555556);
 
-            tmp_card.Regions.Add(new Card_Region());
+            tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
             tmp_card.Regions[2].text = new FormattedText("", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Times New Roman"), 32, Brushes.White);
             tmp_card.Regions[2].text.TextAlignment = TextAlignment.Left;
             tmp_card.Regions[2].text_brush = Brushes.White;
             tmp_card.Regions[2].ideal_location = new System.Windows.Rect(80/825.0, 156/1125.0, 666/825.0, 495/1125.0);
 
-            tmp_card.Regions.Add(new Card_Region());
+            tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
             tmp_card.Regions[3].text = new FormattedText("", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Times New Roman"), 32, Brushes.White);
             tmp_card.Regions[3].text.TextAlignment = TextAlignment.Left;
             tmp_card.Regions[3].text_brush = Brushes.White;
             tmp_card.Regions[3].ideal_location = new System.Windows.Rect(80/825.0, 663/1125.0, 666/825.0, 267/1125.0);
 
-            tmp_card.Regions.Add(new Card_Region());
+            tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
             tmp_card.Regions[4].text = new FormattedText("", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Times New Roman"), 32, Brushes.White);
             tmp_card.Regions[4].text.TextAlignment = TextAlignment.Left;

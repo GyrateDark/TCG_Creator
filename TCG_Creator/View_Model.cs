@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Data;
+using System.Windows.Documents;
 
 namespace TCG_Creator
 {
@@ -23,13 +24,19 @@ namespace TCG_Creator
         private Card_Collection _cardCollection = new Card_Collection();
         private ICommand _getCardCommand;
         private ICommand _saveCardCommand;
-        private ICommand _treeViewSelectedNode;
 
         private IList<Tree_View_Card> _treeViewCards;
 
         private Size _renderSize = new Size(825, 1125);
 
         public PercentageConverter percentConvertor = new PercentageConverter();
+
+        private int _selectedRegion = -1;
+
+        private string _selectedRegionText = "";
+
+        private Canvas _cardCanvas = new Canvas();
+        private FlowDocument _richTextDocument;
 
         #endregion
 
@@ -77,69 +84,90 @@ namespace TCG_Creator
             }
         }
 
-        public ICommand TreeViewSelectedNodeChanged
-        {
-            get
-            {
-                if (_treeViewSelectedNode == null)
-                {
-                    _treeViewSelectedNode = new RelayCommand(
-                        param => SaveCardCollection()
-                    );
-                }
-                return _treeViewSelectedNode;
-            }
-        }
 
-        public IList<Rectangle> Drawing_Card_Rectangles
+        public IList<FrameworkElement> Drawing_Card_Elements
         {
             get
             {
-                IList<Rectangle> result = new List<Rectangle>();
+                IList<FrameworkElement> result = new List<FrameworkElement>();
 
                 Card selectedCard = Find_Selected_Card();
-                DrawingGroup cardDrawing = Drawing_Card;
+                DrawingGroup cardDrawing = selectedCard.Render_Card(new Rect(0, 0, CardRenderWidth, CardRenderHeight), ref _cardCollection);
 
-                Rectangle rectangle = new Rectangle();
+                FrameworkElement frameworkElement = new Rectangle();
 
-                rectangle.Height = CardRenderHeight;
-                rectangle.Width = CardRenderWidth;
+                frameworkElement.Height = CardRenderHeight;
+                frameworkElement.Width = CardRenderWidth;
 
                 DrawingBrush rectFill = new DrawingBrush(cardDrawing);
                 rectFill.Stretch = Stretch.None;
-                rectangle.Fill = rectFill;
+                ((Rectangle)frameworkElement).Fill = rectFill;
 
-                result.Add(rectangle);
+                Style BaseStyle = new Style();
+
+                ((Rectangle)frameworkElement).Style = BaseStyle;
+
+                result.Add(frameworkElement);
 
                 foreach (Card_Region i in selectedCard.Regions)
                 {
-                    rectangle = new Rectangle();
+                    if (SelectedRegion == i.id)
+                    {
+                        frameworkElement = new RichTextBox();
+                        
+                        if (i.text != null)
+                        {
+                            _richTextDocument = i.ConvertFromFormattedTextToFlowDocument();
+                            ((RichTextBox)frameworkElement).Document = _richTextDocument;
+                        }
+                    }
+                    else
+                    {
+                        frameworkElement = new Rectangle();
 
-                    rectangle.Height = i.ideal_location.Height * CardRenderHeight;
-                    rectangle.Width = i.ideal_location.Width * CardRenderWidth;
+                        ((Rectangle)frameworkElement).Fill = Brushes.Transparent;
+                    }
+
+                    if (i.inheritted)
+                    {
+
+                    }
+
+                    frameworkElement.Height = i.ideal_location.Height * CardRenderHeight;
+                    frameworkElement.Width = i.ideal_location.Width * CardRenderWidth;
 
                     Thickness margin = new Thickness();
 
                     margin.Left = i.ideal_location.X * CardRenderWidth;
                     margin.Top = i.ideal_location.Y * CardRenderHeight;
 
-                    rectangle.Margin = margin;
+                    frameworkElement.Margin = margin;
 
                     //DrawingBrush rectFill = new DrawingBrush(i.Draw_Region(new Rect(rectangle.Margin.Left, rectangle.Margin.Top, rectangle.Width, rectangle.Height)));
                     //rectFill.Stretch = Stretch.None;
                     //rectangle.Fill = rectFill;
-                    rectangle.Fill = Brushes.Transparent;
 
-                    result.Add(rectangle);
+                    frameworkElement.MouseUp += FrameworkElement_MouseUp; ;
+                    frameworkElement.DataContext = i.id;
+
+                    result.Add(frameworkElement);
                 }
-
                 return result;
             }
         }
 
-        public DrawingGroup Drawing_Card
+        private void FrameworkElement_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            get { return Find_Selected_Card().Render_Card(new Rect(0, 0, CardRenderWidth, CardRenderHeight), ref _cardCollection); }
+            if (SelectedRegion != -1)
+            {
+                Find_SelectedCard_Region().ConvertFromFlowDocumentToFormattedText(_richTextDocument);
+                SelectedRegion = -1;
+            }
+            else
+            {
+                SelectedRegion = (int)((FrameworkElement)sender).DataContext;
+            }
+            Notify_Drawing_Card_Changed();
         }
 
         public IList<Tree_View_Card> Get_Tree_View_Cards
@@ -152,6 +180,22 @@ namespace TCG_Creator
                 {
                     _treeViewCards = value;
                     OnPropertyChanged("Get_Tree_View_Cards");
+                }
+            }
+        }
+
+        public int SelectedRegion
+        {
+            get
+            {
+                return _selectedRegion;
+            }
+            set
+            {
+                if (_selectedRegion != value)
+                {
+                    _selectedRegion = value;
+                    OnPropertyChanged("SelectedRegion");
                 }
             }
         }
@@ -169,6 +213,19 @@ namespace TCG_Creator
             get
             {
                 return _renderSize.Width;
+            }
+        }
+
+        public string SelectedRegionText
+        {
+            get { return _selectedRegionText; }
+            set
+            {
+                if (_selectedRegionText != value)
+                {
+                    _selectedRegionText = value;
+                    OnPropertyChanged("SelectedRegionText");
+                }
             }
         }
 
@@ -213,7 +270,18 @@ namespace TCG_Creator
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
-                newCard.Regions.Clear();
+                for (int i = 0; i < newCard.Regions.Count; ++i)
+                {
+                    if (newCard.Regions[i].Should_Inherit_Region())
+                    {
+                        newCard.Regions[i].inheritted = true;
+                    }
+                    else
+                    {
+                        newCard.Regions.RemoveAt(i);
+                        --i;
+                    }
+                }
                 newCard.ParentCard = parentCard.Id;
             }
 
@@ -226,6 +294,21 @@ namespace TCG_Creator
             // You would implement your Product save here
         }
         
+        private Card_Region Find_SelectedCard_Region()
+        {
+            Card selectedCard = Find_Selected_Card();
+
+            foreach (Card_Region i in selectedCard.Regions)
+            {
+                if (i.id == SelectedRegion)
+                {
+                    return i;
+                }
+            }
+
+            return new Card_Region();
+        }
+
         private Card Find_Selected_Card()
         {
             if (_treeViewCards == null)
@@ -245,8 +328,7 @@ namespace TCG_Creator
 
         private void Notify_Drawing_Card_Changed()
         {
-            OnPropertyChanged("Drawing_Card");
-            OnPropertyChanged("Drawing_Card_Rectangles");
+            OnPropertyChanged("Drawing_Card_Elements");
         }
 
         private int find_selected(IList<Tree_View_Card> cards)
