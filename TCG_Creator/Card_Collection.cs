@@ -15,6 +15,7 @@ namespace TCG_Creator
     {
         List<Card> _cards = new List<Card>();
         Card failCard;
+        Card newCard;
 
         int nextRegionId = 0;
 
@@ -23,6 +24,11 @@ namespace TCG_Creator
             failCard = new Card
             {
                 Id = -1
+            };
+            newCard = new Card
+            {
+                Id = -2,
+                Name = "<New>"
             };
 
             var conv = new ImageSourceConverter();
@@ -33,7 +39,8 @@ namespace TCG_Creator
 
             tmp_card.Regions.Add(new Card_Region(ref nextRegionId));
 
-            tmp_card.Regions[0].std_background_image = new BitmapImage(new Uri("C:\\Users\\Kyle\\OneDrive\\Documents\\Visual Studio 2017\\Projects\\TCG_Creator\\TCG_Creator\\Resources\\SotM_Blank_Hero_Card.jpg"));
+            tmp_card.Regions[0].background_location_type = IMAGE_LOCATION_TYPE.Online;
+            tmp_card.Regions[0].background_location = "https://cdn.discordapp.com/attachments/125738853616058369/351546993421844492/Hero_card.jpg";
             tmp_card.Regions[0].background_image_filltype = IMAGE_OPTIONS.Letterbox;
             tmp_card.Regions[0].ideal_location = new System.Windows.Rect(0, 0, 1, 1);
 
@@ -54,7 +61,7 @@ namespace TCG_Creator
 
             tmp_card.IsTemplateCard = true;
 
-            Add_Card_To_Collection(tmp_card);
+            //Add_Card_To_Collection(tmp_card);
         }
 
         public List<Card> CardCollection
@@ -139,12 +146,15 @@ namespace TCG_Creator
                 }
             }
 
-            if (onlyTemplateCards.Count == 0)
-            {
-                return new List<Tree_View_Card>();
-            }
+            List<Tree_View_Card> result = new List<Tree_View_Card>();
 
-            return Get_Tree_View_Template_Cards_For_Parent(-1, ref coll);
+            if (onlyTemplateCards.Count >= 1)
+            {
+                result = Get_Tree_View_Template_Cards_For_Parent(-1, ref coll);
+            }
+            result.Add(new Tree_View_Card(-2, "<New>", -1, ref coll));
+
+            return result;
         }
 
         private List<Tree_View_Card> Get_Tree_View_Template_Cards_For_Parent(int searchParentId, ref Card_Collection coll)

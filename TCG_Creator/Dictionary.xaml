@@ -13,7 +13,11 @@
             </Setter.Value>
         </Setter>-->
     </Style>
-    <Style TargetType="{x:Type Rectangle}">
+    <Style TargetType="Button"
+           x:Key="Normal">
+    </Style>
+    <Style TargetType="Rectangle" 
+           x:Key="Card_Rectangle">
         <Setter Property="StrokeThickness" 
                 Value="1" />
         <Style.Triggers>
@@ -24,5 +28,13 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <local:PercentageConverter x:Key="PercentageConverter"/>
+    <Style TargetType="Border"
+           x:Key="Content_Border">
+        <Setter Property="BorderThickness"
+                Value="3" />
+        <Setter Property="BorderBrush"
+                Value="LightGray" />
+        <Setter Property="Margin"
+                Value="3,3,3,3" />
+    </Style>
 </ResourceDictionary>

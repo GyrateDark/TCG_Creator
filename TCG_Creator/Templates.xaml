@@ -7,20 +7,22 @@
       xmlns:self="clr-namespace:TCG_Creator"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="Templates">
+      Title="Templates"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*"/>
             <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ScrollViewer>
-            <Viewbox VerticalAlignment="Top">
-                <StackPanel Grid.Column="0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Viewbox VerticalAlignment="Top"
+                     Grid.Column="0">
+                <StackPanel>
                     <TreeView x:Name="Tree_View" 
                               ItemsSource="{Binding Get_Tree_View_Cards}"
                               SelectedValuePath="{Binding SelectedTreeViewNode}" >
@@ -57,19 +59,116 @@
         <GridSplitter Grid.Column="0"
                       Width="5"/>
         <Viewbox Grid.Column="1">
-            <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas IsItemsHost="True"
-                                Name="Card_Canvas"
-                                Height="{Binding CardRenderHeight}"
-                                Width="{Binding CardRenderWidth}"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <Canvas Height="{Binding CardRenderHeight}"
+                    Width="{Binding CardRenderWidth}" >
+                <Grid x:Name="theGrid"
+                      MouseDown="Grid_MouseDown"
+                      MouseUp="Grid_MouseUp"
+                      MouseMove="Grid_MouseMove"
+                      Background="Transparent">
+                    <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Canvas>
+                        <!-- This canvas is overlaid over the previous canvas and is used to 
+                place the rectangle that implements the drag selection box. -->
+                        <Rectangle  x:Name="selectionBox"
+                                    Visibility="Collapsed"
+                                    Stroke="Black"
+                                    StrokeThickness="1"/>
+                    </Canvas>
+                </Grid>
+            </Canvas>
         </Viewbox>
-        <StackPanel Grid.Column="2">
-
-        </StackPanel>
+        <GridSplitter Grid.Column="1"
+                      Width="5"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Grid.Column="2">
+            <Viewbox VerticalAlignment="Top">
+                <StackPanel>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.4*"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Grid.Row="0"
+                                       Text="Add Region:" />
+                            <Button Name="But_Add_Region"
+                                    Grid.Column="1"
+                                    Grid.Row="0" 
+                                    Click="But_Add_Region_Click" />
+                            <TextBlock Grid.Column="0"
+                                       Grid.Row="1"
+                                       Text="Delete Region:" />
+                            <CheckBox Name="But_Delete_Region"
+                                        Grid.Column="1"
+                                        Grid.Row="1" 
+                                      IsChecked="{Binding DeleteNextSelectedRegion}"/>
+                    </Grid>
+                </StackPanel>
+                    <StackPanel Visibility="{Binding VisOfRichTextEditing}">
+                        <Border Style="{StaticResource Content_Border}">
+                            <StackPanel>
+                    <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MaxWidth="200"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Text="Ignore Font Style:" />
+                            <CheckBox Grid.Column="1"
+                                  Grid.Row="1"/>
+                        </Grid>
+                        <Border Style="{StaticResource Content_Border}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition MaxWidth="200"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Text="Gradient Brush:"/>
+                                    <CheckBox Name="GradientCheckBox"
+                                          Grid.Column="1"
+                                          Grid.Row="0"
+                                          IsChecked="{Binding GradientBrushRequested}"/>
+                                </Grid>
+                                <TextBlock Text="First Color" 
+                                       Visibility="{Binding VisOfGradientBrushes}"/>
+                                <xctk:ColorPicker Name="ClrPcker_1" 
+                                              Margin="5,5,5,5"/>
+                                <TextBlock Text="Last Color" 
+                                       Visibility="{Binding VisOfGradientBrushes}"/>
+                                <xctk:ColorPicker Name="ClrPcker_2" 
+                                              Margin="5,5,5,5"
+                                              Visibility="{Binding VisOfGradientBrushes}"/>
+                            </StackPanel>
+                        </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Viewbox>
+        </ScrollViewer>
     </Grid>
 </Page>

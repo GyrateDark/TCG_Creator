@@ -14,11 +14,24 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
+using System.Net;
+using Xceed.Wpf.Toolkit;
 
 namespace TCG_Creator
 {
     public class View_Model : ObservableObject
     {
+        public View_Model()
+        {
+            _richTextBox.Background = new SolidColorBrush(Color.FromArgb(180, 100, 100, 100));
+            
+            RichTextBoxFormatBar formatBar = new RichTextBoxFormatBar();
+            RichTextBoxFormatBarManager.SetFormatBar(_richTextBox, formatBar);
+
+            NotifyCollectionChanged();
+        }
+
         #region Fields
 
         private Card_Collection _cardCollection = new Card_Collection();
@@ -32,11 +45,13 @@ namespace TCG_Creator
         public PercentageConverter percentConvertor = new PercentageConverter();
 
         private int _selectedRegion = -1;
+        private int _nextRegionId = 0;
 
-        private string _selectedRegionText = "";
+        private Xceed.Wpf.Toolkit.RichTextBox _richTextBox = new Xceed.Wpf.Toolkit.RichTextBox();
 
-        private Canvas _cardCanvas = new Canvas();
-        private FlowDocument _richTextDocument;
+        private bool _gradientBrushRequested = false;
+        private bool _richTextBoxEditingTools = false;
+        private bool _deleteNextSelectedRegion = false;
 
         #endregion
 
@@ -113,19 +128,19 @@ namespace TCG_Creator
                 {
                     if (SelectedRegion == i.id)
                     {
-                        frameworkElement = new RichTextBox();
-                        
                         if (i.strings != null)
                         {
-                            _richTextDocument = i.ConvertFromStringContainerToFlowDocument();
-                            ((RichTextBox)frameworkElement).Document = _richTextDocument;
+                            _richTextBox.Document = i.ConvertFromStringContainerToFlowDocument();
                         }
+
+                        frameworkElement = _richTextBox;
                     }
                     else
                     {
                         frameworkElement = new Rectangle();
 
                         ((Rectangle)frameworkElement).Fill = Brushes.Transparent;
+                        ((Rectangle)frameworkElement).Style = (Style)Application.Current.Resources["Card_Rectangle"];
                     }
 
                     if (i.inheritted)
@@ -135,6 +150,11 @@ namespace TCG_Creator
 
                     frameworkElement.Height = i.ideal_location.Height * CardRenderHeight;
                     frameworkElement.Width = i.ideal_location.Width * CardRenderWidth;
+
+                    frameworkElement.AllowDrop = true;
+                    
+                    frameworkElement.DragEnter += FrameworkElement_DragEnter;
+                    frameworkElement.Drop += FrameworkElement_Drop;
 
                     Thickness margin = new Thickness();
 
@@ -156,17 +176,79 @@ namespace TCG_Creator
             }
         }
 
+        private void FrameworkElement_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.StringFormat))
+            {
+                string data = (string)e.Data.GetData(DataFormats.StringFormat);
+                Card_Region selectedRegion = Find_SelectedCard_Region((int)((FrameworkElement)sender).DataContext);
+
+                selectedRegion.background_location_type = IMAGE_LOCATION_TYPE.Online;
+                selectedRegion.background_image_filltype = IMAGE_OPTIONS.Unified_Fill;
+                selectedRegion.background_location = data;
+
+                Notify_Drawing_Card_Changed();
+            }
+            else if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                string data = (string)e.Data.GetData(DataFormats.Bitmap);
+            }
+        }
+        private void FrameworkElement_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Copy;
+        }
+
         private void FrameworkElement_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (DeleteNextSelectedRegion)
+            {
+                int regionId = (int)((FrameworkElement)sender).DataContext;
+
+                if (SelectedRegion == regionId)
+                {
+                    DisplayRichTextBoxEditingTools = false;
+                    SelectedRegion = -1;
+                }
+
+                Card selectedCard = Find_Selected_Card();
+
+                for (int i = 0; i < selectedCard.Regions.Count; ++i)
+                {
+                     if (selectedCard.Regions[i].id == regionId)
+                    {
+                        selectedCard.Regions.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                DeleteNextSelectedRegion = false;
+                Notify_Drawing_Card_Changed();
+                return;
+            }
+
             if (SelectedRegion != -1)
             {
-                Find_SelectedCard_Region().ConvertFromFlowDocumentToStringContainer(_richTextDocument);
+                DisplayRichTextBoxEditingTools = false;
+                Find_SelectedCard_Region(SelectedRegion).ConvertFromFlowDocumentToStringContainer(_richTextBox.Document);
                 SelectedRegion = -1;
             }
             else
             {
+                DisplayRichTextBoxEditingTools = true;
                 SelectedRegion = (int)((FrameworkElement)sender).DataContext;
             }
+            Notify_Drawing_Card_Changed();
+        }
+
+        public void AddNewCardRegion(Rect location)
+        {
+            Card selectedCard = Find_Selected_Card();
+
+            selectedCard.Regions.Add(new Card_Region(ref _nextRegionId));
+
+            selectedCard.Regions.Last().ideal_location = location;
+
             Notify_Drawing_Card_Changed();
         }
 
@@ -216,19 +298,6 @@ namespace TCG_Creator
             }
         }
 
-        public string SelectedRegionText
-        {
-            get { return _selectedRegionText; }
-            set
-            {
-                if (_selectedRegionText != value)
-                {
-                    _selectedRegionText = value;
-                    OnPropertyChanged("SelectedRegionText");
-                }
-            }
-        }
-
         #endregion
 
         public void Xml_Save(string file, bool only_templates)
@@ -250,14 +319,101 @@ namespace TCG_Creator
             XmlReader xmlReader = XmlReader.Create(file);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Card_Collection));
 
+            _cardCollection = null;
+            _treeViewCards = null;
+            _selectedRegion = -1;
+
+
             _cardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
             NotifyCollectionChanged();
+
+            foreach (Card i in _cardCollection.CardCollection)
+            {
+                foreach (Card_Region j in i.Regions)
+                {
+                    if (j.id >= _nextRegionId)
+                    {
+                        _nextRegionId = j.id + 1;
+                    }
+                }
+            }
         }
 
         public void Tree_View_Selected_Item_Changed()
         {
             Notify_Drawing_Card_Changed();
         }
+
+        #region Visibility Controls and Checkbox States
+        public Visibility VisOfGradientBrushes
+        {
+            get
+            {
+                if (GradientBrushRequested && DisplayRichTextBoxEditingTools)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
+        public Visibility VisOfRichTextEditing
+        {
+            get
+            {
+                if (DisplayRichTextBoxEditingTools)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
+
+        public bool GradientBrushRequested
+        {
+            get { return _gradientBrushRequested; }
+            set
+            {
+                if (_gradientBrushRequested != value)
+                {
+                    _gradientBrushRequested = value;
+                    OnPropertyChanged("GradientBrushRequested");
+                    OnPropertyChanged("VisOfGradientBrushes");
+                }
+            }
+        }
+        public bool DisplayRichTextBoxEditingTools
+        {
+            get { return _richTextBoxEditingTools; }
+            set
+            {
+                if (_richTextBoxEditingTools != value)
+                {
+                    _richTextBoxEditingTools = value;
+                    OnPropertyChanged("DisplayRichTextBoxEditingTools");
+                    OnPropertyChanged("VisOfGradientBrushes");
+                    OnPropertyChanged("VisOfRichTextEditing");
+                }
+            }
+        }
+        public bool DeleteNextSelectedRegion
+        {
+            get { return _deleteNextSelectedRegion; }
+            set
+            {
+                if (_deleteNextSelectedRegion != value)
+                {
+                    _deleteNextSelectedRegion = value;
+                    OnPropertyChanged("DeleteNextSelectedRegion");
+                }
+            }
+        }
+        #endregion
 
         #region Private Helpers
 
@@ -266,7 +422,7 @@ namespace TCG_Creator
             Card newCard = new Card();
 
             newCard.IsTemplateCard = true;
-            if (_treeViewCards != null)
+            if (_treeViewCards != null && find_selected(_treeViewCards) >= 0)
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
@@ -284,6 +440,11 @@ namespace TCG_Creator
                 }
                 newCard.ParentCard = parentCard.Id;
             }
+            else
+            {
+                newCard.Regions.Add(new Card_Region(ref _nextRegionId));
+                newCard.Regions[0].ideal_location = new Rect(0, 0, 1, 1);
+            }
 
             CurrentCardCollection.Add_Card_To_Collection(newCard);
             NotifyCollectionChanged();
@@ -294,13 +455,13 @@ namespace TCG_Creator
             // You would implement your Product save here
         }
         
-        private Card_Region Find_SelectedCard_Region()
+        private Card_Region Find_SelectedCard_Region(int regionId)
         {
             Card selectedCard = Find_Selected_Card();
 
             foreach (Card_Region i in selectedCard.Regions)
             {
-                if (i.id == SelectedRegion)
+                if (i.id == regionId)
                 {
                     return i;
                 }

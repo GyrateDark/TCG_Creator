@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
@@ -33,7 +38,7 @@ namespace TCG_Creator
 
             foreach (String_Drawing i in strings)
             {
-                int stopPosition = i.Text.Length + startPosition-1;
+                int stopPosition = i.Text.Length + startPosition;
 
                 result.SetFontFamily(i.FontFamily, startPosition, stopPosition);
                 result.SetFontSize(i.FontSize, startPosition, stopPosition);
@@ -83,7 +88,7 @@ namespace TCG_Creator
             StrFontWeight = FontWeights.Normal;
 
             TextBrush = Brushes.White;
-
+            string tmp = Serialize(TextBrush);
             Text = "";
         }
 
@@ -92,10 +97,67 @@ namespace TCG_Creator
         public FontStyle StrFontStyle { get; set; }
         public FontWeight StrFontWeight { get; set; }
 
-        
+        public string Text { get; set; }
 
+        [XmlIgnore]
         public Brush TextBrush { get; set; }
 
-        public string Text { get; set; }
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [XmlElement("TextBrush")]
+        public string TextBrushSerialized
+        {
+            get
+            { // serialize
+                if (TextBrush == null) return null;
+                return Serialize(TextBrush);
+            }
+            set
+            { // deserialize
+                if (value == null)
+                {
+                    TextBrush = null;
+                }
+                else
+                {
+                    TextBrush = (Brush)Deserialize(value);
+                }
+            }
+        }
+
+        private string Serialize(object toSerialize)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            // You might want to wrap these in #if DEBUG's 
+            settings.Indent = true;
+            settings.NewLineOnAttributes = true;
+            // this gets rid of the XML version 
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+            // buffer to a stringbuilder
+            StringBuilder sb = new StringBuilder();
+            XmlWriter writer = XmlWriter.Create(sb, settings);
+            // Need moar documentation on the manager, plox MSDN
+            XamlDesignerSerializationManager manager = new XamlDesignerSerializationManager(writer);
+            manager.XamlWriterMode = XamlWriterMode.Expression;
+            // its extremely rare for this to throw an exception
+            XamlWriter.Save(toSerialize, manager);
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Deserializes an object from xaml.
+        /// </summary>
+        /// <param name="xamlText">The xaml text.</param>
+        /// <returns>The deserialized object</returns>
+        /// <exception cref="XmlException">Thrown if the serialized text is not well formed XML</exception>
+        /// <exception cref="XamlParseException">Thrown if unable to deserialize from xaml</exception>
+        private object Deserialize(string xamlText)
+        {
+            XmlDocument doc = new XmlDocument();
+            // may throw XmlException
+            doc.LoadXml(xamlText);
+            // may throw XamlParseException
+            return XamlReader.Load(new XmlNodeReader(doc));
+        }
     }
 }

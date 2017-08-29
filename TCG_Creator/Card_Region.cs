@@ -10,6 +10,8 @@ using System.Globalization;
 using System.Xml.Serialization;
 using System.Windows.Documents;
 using System.Windows.Media.TextFormatting;
+using System.Net;
+using System.IO;
 
 namespace TCG_Creator
 {
@@ -18,6 +20,14 @@ namespace TCG_Creator
         Fill,
         Letterbox,
         Unified_Fill,
+        None
+    }
+
+    public enum IMAGE_LOCATION_TYPE
+    {
+        Absolute,
+        Online,
+        Relative,
         None
     }
 
@@ -37,7 +47,8 @@ namespace TCG_Creator
         {
             ideal_location = reg.ideal_location;
             id = reg.id;
-            std_background_image = reg.std_background_image;
+            background_location = reg.background_location;
+            background_location_type = reg.background_location_type;
             background_image_filltype = reg.background_image_filltype;
             inheritted = reg.inheritted;
         }
@@ -50,7 +61,8 @@ namespace TCG_Creator
         public String_Container strings = null;
         public bool decrease_text_size_to_fit = true;
 
-        public ImageSource std_background_image;
+        public string background_location;
+        public IMAGE_LOCATION_TYPE background_location_type = IMAGE_LOCATION_TYPE.None;
         public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
 
         public bool inheritted = false;
@@ -59,9 +71,20 @@ namespace TCG_Creator
         {
             DrawingGroup reg_img = new DrawingGroup();
 
-            if (background_image_filltype != IMAGE_OPTIONS.None)
+            if (background_image_filltype != IMAGE_OPTIONS.None && background_location_type != IMAGE_LOCATION_TYPE.None)
             {
-                ImageBrush image_brush = new ImageBrush(std_background_image);
+                BitmapImage background;
+
+                if (background_location_type == IMAGE_LOCATION_TYPE.Absolute || background_location_type == IMAGE_LOCATION_TYPE.Relative)
+                {
+                    background = new BitmapImage(new Uri(background_location));
+                }
+                else
+                {
+                    background = URLToBitmap(background_location);
+                }
+
+                ImageBrush image_brush = new ImageBrush(background);
                 if (background_image_filltype == IMAGE_OPTIONS.Fill)
                     image_brush.Stretch = Stretch.Fill;
                 else if (background_image_filltype == IMAGE_OPTIONS.Letterbox)
@@ -103,8 +126,10 @@ namespace TCG_Creator
                 }
             }
 
-            result |= std_background_image == null;
-            std_background_image = null;
+            result |= background_location_type == IMAGE_LOCATION_TYPE.None;
+            background_location = "";
+            background_location_type = IMAGE_LOCATION_TYPE.None;
+            background_image_filltype = IMAGE_OPTIONS.None;
 
             return result;
         }
@@ -133,26 +158,62 @@ namespace TCG_Creator
 
         public void ConvertFromFlowDocumentToStringContainer(FlowDocument doc)
         {
-            strings.strings.Clear();
-            foreach (Block i in doc.Blocks)
+            if (strings == null)
             {
-                String_Drawing reconstructedString = new String_Drawing();
+                strings = new String_Container();
+            }
+            strings.strings.Clear();
+            if (doc != null)
+            {
+                foreach (Block i in doc.Blocks)
+                {
+                    String_Drawing reconstructedString = new String_Drawing();
 
-                reconstructedString.FontFamily = i.FontFamily.ToString();
-                reconstructedString.FontSize = i.FontSize;
-                reconstructedString.StrFontStyle = i.FontStyle;
-                reconstructedString.StrFontWeight = i.FontWeight;
+                    reconstructedString.FontFamily = i.FontFamily.ToString();
+                    reconstructedString.FontSize = i.FontSize;
+                    reconstructedString.StrFontStyle = i.FontStyle;
+                    reconstructedString.StrFontWeight = i.FontWeight;
 
-                reconstructedString.TextBrush = i.Foreground;
+                    reconstructedString.TextBrush = i.Foreground;
 
-                reconstructedString.Text = new TextRange(i.ContentStart, i.ContentEnd).Text;
+                    reconstructedString.Text = new TextRange(i.ContentStart, i.ContentEnd).Text;
 
-                strings.strings.Add(reconstructedString);
+                    strings.strings.Add(reconstructedString);
+                }
+
+                strings.TxtAlign = doc.TextAlignment;
+
+            }
+        }
+
+        private BitmapImage URLToBitmap(string URL)
+        {
+            var image = new BitmapImage();
+            int BytesToRead = 100;
+
+            WebRequest request = WebRequest.Create(new Uri(URL, UriKind.Absolute));
+            request.Timeout = -1;
+            WebResponse response = request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            BinaryReader reader = new BinaryReader(responseStream);
+            MemoryStream memoryStream = new MemoryStream();
+
+            byte[] bytebuffer = new byte[BytesToRead];
+            int bytesRead = reader.Read(bytebuffer, 0, BytesToRead);
+
+            while (bytesRead > 0)
+            {
+                memoryStream.Write(bytebuffer, 0, bytesRead);
+                bytesRead = reader.Read(bytebuffer, 0, BytesToRead);
             }
 
-            strings.TxtAlign = doc.TextAlignment;
+            image.BeginInit();
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
-            return;
+            image.StreamSource = memoryStream;
+            image.EndInit();
+
+            return image;
         }
     }
 }
