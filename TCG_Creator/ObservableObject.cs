@@ -12,6 +12,10 @@ namespace TCG_Creator
     {
         #region INotifyPropertyChanged Members
 
+        int currentNumberOfUnsavedChanges = 0;
+        const int MAX_NUMBER_OF_UNSAVED_CHANGES = 1;
+        protected bool SkipSave = false;
+
         /// <summary>
         /// Raised when a property on this object has a new value.
         /// </summary>
@@ -32,11 +36,25 @@ namespace TCG_Creator
             }
         }
 
+        protected virtual void Save(string file)
+        {
+            return;
+        }
+
         protected void OnPropertyChanged(string propertyName, List<string> calledProperties = null)
         {
             if (calledProperties == null)
             {
                 calledProperties = new List<string>();
+            }
+
+            ++currentNumberOfUnsavedChanges;
+
+            if (currentNumberOfUnsavedChanges >= MAX_NUMBER_OF_UNSAVED_CHANGES && !SkipSave)
+            {
+                currentNumberOfUnsavedChanges = 0;
+
+                Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TCG_Creator\\");
             }
 
             calledProperties.Add(propertyName);

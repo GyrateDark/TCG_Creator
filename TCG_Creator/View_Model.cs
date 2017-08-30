@@ -345,6 +345,7 @@ namespace TCG_Creator
             }
         }
 
+        [DependsUpon("CurrentCardCollection")]
         public Card CurrentlySelectedCard
         {
             get
@@ -360,6 +361,13 @@ namespace TCG_Creator
             {
                 return _renderSize.Height;
             }
+            set
+            {
+                if (_renderSize.Height != value)
+                {
+                    _renderSize.Height = value;
+                }
+            }
         }
         public double CardRenderWidth
         {
@@ -371,18 +379,26 @@ namespace TCG_Creator
 
         #endregion
 
-        public void Xml_Save(string file, bool only_templates)
+        protected override void Save(string file)
+        {
+            Xml_Save(file);
+        }
+
+        public void Xml_Save(string file, bool only_templates = false)
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
 
             xmlWriterSettings.ConformanceLevel = ConformanceLevel.Auto;
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.NewLineOnAttributes = true;
-
-            XmlWriter xmlWriter = XmlWriter.Create(file, xmlWriterSettings);
+            Directory.CreateDirectory(file);
+            XmlWriter xmlWriter = XmlWriter.Create(file+"autosave.xml", xmlWriterSettings);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Card_Collection));
             
             xmlSerializer.Serialize(xmlWriter, _cardCollection);
+
+            xmlWriter.Flush();
+            xmlWriter.Close();
         }
 
         public void Xml_Load(string file, bool only_templates)
@@ -390,24 +406,15 @@ namespace TCG_Creator
             XmlReader xmlReader = XmlReader.Create(file);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Card_Collection));
 
-            _cardCollection = null;
+            SkipSave = true;
+
+            CurrentCardCollection = null;
             _treeViewCards = null;
             SelectedRegionId = -1;
 
+            CurrentCardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
 
-            _cardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
-            NotifyCollectionChanged();
-
-            foreach (Card i in _cardCollection.CardCollection)
-            {
-                foreach (Card_Region j in i.Regions)
-                {
-                    if (j.id >= _nextRegionId)
-                    {
-                        _nextRegionId = j.id + 1;
-                    }
-                }
-            }
+            SkipSave = false;
         }
 
         public void Tree_View_Selected_Item_Changed()

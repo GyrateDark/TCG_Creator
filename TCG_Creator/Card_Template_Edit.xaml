@@ -9,6 +9,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Border Style="{StaticResource Content_Border}">
         <StackPanel>
+            <Label Content="Region Editting" />
             <Label Content="{Binding CurrentlySelectedRegionTitle}" />
             <Label Content="Region Description" />
             <TextBox Text="{Binding CurrentlySelectedRegionDescription}" />
