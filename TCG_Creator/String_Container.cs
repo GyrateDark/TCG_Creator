@@ -14,10 +14,20 @@ using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
+
+    public enum TextBrushMode
+    {
+        Gradient,
+        SolidColor
+    }
+
     public class String_Container
     {
+        public bool InheritText { get; set; } = true;
+
         public List<String_Drawing> strings = new List<String_Drawing>();
         public TextAlignment TxtAlign { get; set; } = TextAlignment.Left;
+        public String_Properties stringProperties = new String_Properties();
 
         public string GetAllStrings()
         {
@@ -40,15 +50,58 @@ namespace TCG_Creator
             {
                 int stopPosition = i.Text.Length + startPosition;
 
-                result.SetFontFamily(i.FontFamily, startPosition, stopPosition);
-                result.SetFontSize(i.FontSize, startPosition, stopPosition);
-                result.SetFontWeight(i.StrFontWeight, startPosition, stopPosition);
-                result.SetFontStyle(i.StrFontStyle, startPosition, stopPosition);
+                if (!stringProperties.IsValid())
+                {
+                    throw new ArgumentException("String Properties are not valid");
+                }
 
-                result.SetForegroundBrush(i.TextBrush, startPosition, stopPosition);
+                result.SetFontFamily(stringProperties.FontFamily, startPosition, stopPosition);
+                result.SetFontSize(stringProperties.FontSize, startPosition, stopPosition);
+                result.SetFontWeight(stringProperties.SFontWeight, startPosition, stopPosition);
+                result.SetFontStyle(stringProperties.SFontStyle, startPosition, stopPosition);
+
+                result.SetForegroundBrush(stringProperties.TextBrush, startPosition, stopPosition);
             }
 
             result.TextAlignment = TxtAlign;
+
+            return result;
+        }
+
+        public void SetAllInheritValues(bool val)
+        {
+            InheritText = val;
+
+            foreach(String_Drawing i in strings)
+            {
+                i.properties.SetAllInheritValues(val);
+            }
+        }
+
+        public String_Container GetInherittedPropertiesMerging(String_Container inherittedSource)
+        {
+            String_Container result = Clone();
+
+            result.stringProperties = result.stringProperties.GetInherittedPropertiesMerging(inherittedSource.stringProperties);
+            
+            if (result.InheritText)
+            {
+                result.strings = inherittedSource.strings;
+                result.InheritText = inherittedSource.InheritText;
+            }
+
+            return result;
+        }
+
+        public String_Container Clone()
+        {
+            String_Container result = (String_Container)MemberwiseClone();
+
+            result.strings = new List<String_Drawing>(strings.Count);
+            for (int i = 0; i < strings.Count; ++i)
+            {
+                result.strings.Add(strings[i].Clone());
+            }
 
             return result;
         }
@@ -58,68 +111,99 @@ namespace TCG_Creator
     {
         public String_Drawing()
         {
-            init();
+
         }
         public String_Drawing(string text)
         {
-            init();
-
-            Text = text;
-        }
-        public String_Drawing(string text, int fontSize, string fontFamily, FontStyle fontStyle, FontWeight fontWeight, Brush brush)
-        {
-            init();
-
-            FontFamily = fontFamily;
-            FontSize = fontSize;
-            StrFontStyle = fontStyle;
-            StrFontWeight = fontWeight;
-
-            TextBrush = brush;
-
             Text = text;
         }
 
-        private void init()
-        {
-            FontFamily = "";
-            FontSize = 32;
-            StrFontStyle = FontStyles.Normal;
-            StrFontWeight = FontWeights.Normal;
-
-            TextBrush = Brushes.White;
-            string tmp = Serialize(TextBrush);
-            Text = "";
-        }
-
-        public string FontFamily { get; set; }
-        public double FontSize { get; set; }
-        public FontStyle StrFontStyle { get; set; }
-        public FontWeight StrFontWeight { get; set; }
+        public String_Properties properties = new String_Properties();
 
         public string Text { get; set; }
 
+        public String_Drawing Clone()
+        {
+            String_Drawing result = (String_Drawing)MemberwiseClone();
+
+            result.Text = (string)Text.Clone();
+            result.properties = properties.Clone();
+
+            return result;
+        }
+    }
+
+    public class String_Properties
+    {
+        public string FontFamily { get; set; } = "Times New Roman";
+        public double FontSize { get; set; } = 32;
+        public FontStyle SFontStyle { get; set; } = FontStyles.Normal;
+        public FontWeight SFontWeight { get; set; } = FontWeights.Normal;
+
+        public TextBrushMode TextBrushColorMode = TextBrushMode.SolidColor;
+
         [XmlIgnore]
-        public Brush TextBrush { get; set; }
+        public GradientBrush GradientTextBrush { get; set; } = new LinearGradientBrush(Colors.Orange, Colors.White, 90.0);
+
+        [XmlIgnore]
+        public SolidColorBrush SolidColorTextBrush { get; set; } = Brushes.White;
+
+        [XmlIgnore]
+        public Brush TextBrush
+        {
+            get
+            {
+                if (TextBrushColorMode == TextBrushMode.Gradient)
+                {
+                    return GradientTextBrush;
+                }
+                else
+                {
+                    return SolidColorTextBrush;
+                }
+            }
+        }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        [XmlElement("TextBrush")]
-        public string TextBrushSerialized
+        [XmlElement("GradientTextBrush")]
+        public string GradientTextBrushSerialized
         {
             get
             { // serialize
-                if (TextBrush == null) return null;
-                return Serialize(TextBrush);
+                if (GradientTextBrush == null) return null;
+                return Serialize(GradientTextBrush);
             }
             set
             { // deserialize
                 if (value == null)
                 {
-                    TextBrush = null;
+                    GradientTextBrush = null;
                 }
                 else
                 {
-                    TextBrush = (Brush)Deserialize(value);
+                    GradientTextBrush = (GradientBrush)Deserialize(value);
+                }
+            }
+        }
+
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [XmlElement("SolidColorTextBrush")]
+        public string SolidColorTextBrushSerialized
+        {
+            get
+            { // serialize
+                if (SolidColorTextBrush == null) return null;
+                return Serialize(SolidColorTextBrush);
+            }
+            set
+            { // deserialize
+                if (value == null)
+                {
+                    SolidColorTextBrush = null;
+                }
+                else
+                {
+                    SolidColorTextBrush = (SolidColorBrush)Deserialize(value);
                 }
             }
         }
@@ -159,5 +243,73 @@ namespace TCG_Creator
             // may throw XamlParseException
             return XamlReader.Load(new XmlNodeReader(doc));
         }
+
+
+        public bool InheritFontFamily { get; set; } = true;
+        public bool InheritFontSize { get; set; } = true;
+        public bool InheritFontStyle { get; set; } = true;
+        public bool InheritFontWeight { get; set; } = true;
+
+        public bool InheritFontBrush { get; set; } = true;
+
+        public String_Properties GetInherittedPropertiesMerging(String_Properties inherittedSource)
+        {
+            String_Properties result = Clone();
+
+            if (result.InheritFontSize)
+            {
+                result.FontSize = inherittedSource.FontSize;
+                result.InheritFontSize = inherittedSource.InheritFontSize;
+            }
+            if (result.InheritFontFamily)
+            {
+                result.FontFamily = inherittedSource.FontFamily;
+                result.InheritFontFamily = inherittedSource.InheritFontFamily;
+            }
+            if (result.InheritFontStyle)
+            {
+                result.SFontStyle = inherittedSource.SFontStyle;
+                result.InheritFontStyle = inherittedSource.InheritFontStyle;
+            }
+            if (result.InheritFontWeight)
+            {
+                result.SFontWeight = inherittedSource.SFontWeight;
+                result.InheritFontWeight = inherittedSource.InheritFontWeight;
+            }
+            if (result.InheritFontBrush)
+            {
+                result.GradientTextBrush = inherittedSource.GradientTextBrush.Clone();
+                result.SolidColorTextBrush = inherittedSource.SolidColorTextBrush.Clone();
+                result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
+                result.InheritFontBrush = inherittedSource.InheritFontBrush;
+            }
+
+            return result;
+        }
+
+        public bool IsValid()
+        {
+            return !(FontFamily == "" || FontSize == 0 || TextBrush == null);
+        }
+
+        public void SetAllInheritValues(bool val)
+        {
+            InheritFontFamily = val;
+            InheritFontSize = val;
+            InheritFontStyle = val;
+            InheritFontWeight = val;
+        }
+
+        public String_Properties Clone()
+        {
+            String_Properties result = (String_Properties)MemberwiseClone();
+
+            result.FontFamily = (string)FontFamily.Clone();
+            result.GradientTextBrush = GradientTextBrush.Clone();
+            result.SolidColorTextBrush = SolidColorTextBrush.Clone();
+
+            return result;
+        }
     }
+
 }

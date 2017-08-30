@@ -7,8 +7,7 @@
       xmlns:self="clr-namespace:TCG_Creator"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="Templates"
-      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+      Title="Templates">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -91,82 +90,21 @@
             <Viewbox VerticalAlignment="Top">
                 <StackPanel>
                     <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.4*"/>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Grid.Row="0"
-                                       Text="Add Region:" />
-                            <Button Name="But_Add_Region"
-                                    Grid.Column="1"
-                                    Grid.Row="0" 
-                                    Click="But_Add_Region_Click" />
-                            <TextBlock Grid.Column="0"
-                                       Grid.Row="1"
-                                       Text="Delete Region:" />
-                            <CheckBox Name="But_Delete_Region"
-                                        Grid.Column="1"
-                                        Grid.Row="1" 
-                                      IsChecked="{Binding DeleteNextSelectedRegion}"/>
-                    </Grid>
-                </StackPanel>
-                    <StackPanel Visibility="{Binding VisOfRichTextEditing}">
-                        <Border Style="{StaticResource Content_Border}">
-                            <StackPanel>
-                    <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition MaxWidth="200"/>
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0"
-                                   Grid.Row="1"
-                                   Text="Ignore Font Style:" />
-                            <CheckBox Grid.Column="1"
-                                  Grid.Row="1"/>
-                        </Grid>
-                        <Border Style="{StaticResource Content_Border}">
-                            <StackPanel>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition MaxWidth="200"/>
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Column="0"
-                                   Grid.Row="0"
-                                   Text="Gradient Brush:"/>
-                                    <CheckBox Name="GradientCheckBox"
-                                          Grid.Column="1"
-                                          Grid.Row="0"
-                                          IsChecked="{Binding GradientBrushRequested}"/>
-                                </Grid>
-                                <TextBlock Text="First Color" 
-                                       Visibility="{Binding VisOfGradientBrushes}"/>
-                                <xctk:ColorPicker Name="ClrPcker_1" 
-                                              Margin="5,5,5,5"/>
-                                <TextBlock Text="Last Color" 
-                                       Visibility="{Binding VisOfGradientBrushes}"/>
-                                <xctk:ColorPicker Name="ClrPcker_2" 
-                                              Margin="5,5,5,5"
-                                              Visibility="{Binding VisOfGradientBrushes}"/>
-                            </StackPanel>
-                        </Border>
-                            </StackPanel>
-                        </Border>
+                        <Button Name="But_Add_Region"
+                                    Click="But_Add_Region_Click" 
+                                    Content="Add Region"
+                                IsEnabled="{Binding ButAddRegionEnabled}"/>
+                        <Button Name="But_Delete_Region"
+                                    Click="But_Delete_Region_Click" 
+                                    Content="Delete Region"/>
+                        <CheckBox Content="Show All Regions"
+                                  IsChecked="{Binding ShowAllRegions}" />
+                        <CheckBox Content="Hide Text Edit"
+                      IsChecked="{Binding HideTextEditBox}" />
                     </StackPanel>
+                    <local:Card_Template_Edit>
+
+                    </local:Card_Template_Edit>
                 </StackPanel>
             </Viewbox>
         </ScrollViewer>

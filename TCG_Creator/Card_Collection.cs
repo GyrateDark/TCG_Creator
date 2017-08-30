@@ -17,8 +17,6 @@ namespace TCG_Creator
         Card failCard;
         Card newCard;
 
-        int nextRegionId = 0;
-
         public Card_Collection()
         {
             failCard = new Card
@@ -32,7 +30,7 @@ namespace TCG_Creator
             };
 
             var conv = new ImageSourceConverter();
-
+            /*
             Card tmp_card = new Card();
 
             tmp_card.Name = "Blank Hero Card";
@@ -60,6 +58,7 @@ namespace TCG_Creator
             tmp_card.Regions[4].ideal_location = new System.Windows.Rect(115/825.0, 640/1125.0, 447/825.0, 50/1125.0);
 
             tmp_card.IsTemplateCard = true;
+            */
 
             //Add_Card_To_Collection(tmp_card);
         }

@@ -15,21 +15,7 @@ using System.IO;
 
 namespace TCG_Creator
 {
-    public enum IMAGE_OPTIONS
-    {
-        Fill,
-        Letterbox,
-        Unified_Fill,
-        None
-    }
-
-    public enum IMAGE_LOCATION_TYPE
-    {
-        Absolute,
-        Online,
-        Relative,
-        None
-    }
+    
 
     public class Card_Region
     {
@@ -47,49 +33,44 @@ namespace TCG_Creator
         {
             ideal_location = reg.ideal_location;
             id = reg.id;
-            background_location = reg.background_location;
-            background_location_type = reg.background_location_type;
-            background_image_filltype = reg.background_image_filltype;
-            inheritted = reg.inheritted;
+            _desiredProperties = reg._desiredProperties.Clone();
         }
 
         // 0-1 location of region on  a card of width 1 and height 1
         public Rect ideal_location;
-        public string description;
+        public string description = "";
         public int id;
         
-        public String_Container strings = null;
         public bool decrease_text_size_to_fit = true;
+        public bool InheritRegionBeforeCard { get; set; } = true;
 
-        public string background_location;
-        public IMAGE_LOCATION_TYPE background_location_type = IMAGE_LOCATION_TYPE.None;
-        public IMAGE_OPTIONS background_image_filltype = IMAGE_OPTIONS.None;
+        private Inherittable_Properties _desiredProperties = new Inherittable_Properties();
+        private Inherittable_Properties _renderProperties = new Inherittable_Properties();
 
-        public bool inheritted = false;
-
+        // Call SetRenderInherittableProperties() First
         public DrawingGroup Draw_Region(Rect draw_location)
         {
             DrawingGroup reg_img = new DrawingGroup();
 
-            if (background_image_filltype != IMAGE_OPTIONS.None && background_location_type != IMAGE_LOCATION_TYPE.None)
+            if (_renderProperties.ImageProperties.BackgroundImageFillType != IMAGE_OPTIONS.None && _renderProperties.ImageProperties.BackgroundImageLocationType != IMAGE_LOCATION_TYPE.None)
             {
                 BitmapImage background;
 
-                if (background_location_type == IMAGE_LOCATION_TYPE.Absolute || background_location_type == IMAGE_LOCATION_TYPE.Relative)
+                if (_renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Absolute || _renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Relative)
                 {
-                    background = new BitmapImage(new Uri(background_location));
+                    background = new BitmapImage(new Uri(_renderProperties.ImageProperties.BackgroundImageLocation));
                 }
                 else
                 {
-                    background = URLToBitmap(background_location);
+                    background = URLToBitmap(_renderProperties.ImageProperties.BackgroundImageLocation);
                 }
 
                 ImageBrush image_brush = new ImageBrush(background);
-                if (background_image_filltype == IMAGE_OPTIONS.Fill)
+                if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Fill)
                     image_brush.Stretch = Stretch.Fill;
-                else if (background_image_filltype == IMAGE_OPTIONS.Letterbox)
+                else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Letterbox)
                     image_brush.Stretch = Stretch.Uniform;
-                else if (background_image_filltype == IMAGE_OPTIONS.Unified_Fill)
+                else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Unified_Fill)
                     image_brush.Stretch = Stretch.UniformToFill;
 
                 GeometryDrawing image_rec_drawing = new GeometryDrawing(image_brush, new Pen(Brushes.Transparent, 0), new RectangleGeometry(draw_location));
@@ -97,9 +78,9 @@ namespace TCG_Creator
                 reg_img.Children.Add(image_rec_drawing);
             }
 
-            if (strings != null)
+            if (_renderProperties.StringContainer.strings.Count >= 1)
             {
-                FormattedText formatText = strings.ConvertToFormattedText();
+                FormattedText formatText = _renderProperties.StringContainer.ConvertToFormattedText();
 
                 formatText.MaxTextWidth = draw_location.Width;
                 formatText.MaxTextHeight = draw_location.Height;
@@ -113,42 +94,56 @@ namespace TCG_Creator
             return reg_img;
         }
 
-        public bool Should_Inherit_Region()
+        public Inherittable_Properties RenderInherittableProperties
         {
-            bool result = false;
-
-            if (strings != null)
+            get
             {
-                if (strings.strings.Count >= 0)
+                return _renderProperties.Clone();
+            }
+        }
+        public Inherittable_Properties DesiredInherittedProperties
+        {
+            get { return _desiredProperties; }
+            set
+            {
+                if (_desiredProperties != value)
                 {
-                    result |= strings.strings[0].Text.Length >= 1;
-                    strings = null;
+                    _desiredProperties = value;
                 }
             }
-
-            result |= background_location_type == IMAGE_LOCATION_TYPE.None;
-            background_location = "";
-            background_location_type = IMAGE_LOCATION_TYPE.None;
-            background_image_filltype = IMAGE_OPTIONS.None;
-
-            return result;
         }
 
-        public FlowDocument ConvertFromStringContainerToFlowDocument()
+        public void SetRenderInherittableProperties(List<Inherittable_Properties> Properties)
+        {
+            _renderProperties = _desiredProperties.Clone();
+
+            if (Properties != null)
+            {
+                foreach (Inherittable_Properties i in Properties)
+                {
+                    _renderProperties = _renderProperties.GetInherittedPropertiesMerging(i);
+                }
+            }
+        }
+        /*
+        public FlowDocument ConvertFromStringContainerToFlowDocument(String_Properties cardRenderProperties)
         {
             Paragraph oneLine = new Paragraph();
             FlowDocument result = new FlowDocument();
-            
+            String_Properties properties = new String_Properties();
+
             foreach (String_Drawing i in strings.strings)
             {
                 oneLine = new Paragraph(new Run(i.Text));
 
-                oneLine.FontFamily = new FontFamily(i.FontFamily);
-                oneLine.FontSize = i.FontSize;
-                oneLine.FontStyle = i.StrFontStyle;
-                oneLine.FontWeight = i.StrFontWeight;
+                properties = strings.CombinedStringProperties(i, cardRenderProperties);
 
-                oneLine.Foreground = i.TextBrush;
+                oneLine.FontFamily = new FontFamily(properties.FontFamily);
+                oneLine.FontSize = properties.FontSize;
+                oneLine.FontStyle = properties.SFontStyle;
+                oneLine.FontWeight = properties.SFontWeight;
+
+                oneLine.Foreground = i.properties.TextBrush;
 
                 result.Blocks.Add(oneLine);
             }
@@ -168,13 +163,14 @@ namespace TCG_Creator
                 foreach (Block i in doc.Blocks)
                 {
                     String_Drawing reconstructedString = new String_Drawing();
+                    String_Properties properties = new String_Properties();
 
-                    reconstructedString.FontFamily = i.FontFamily.ToString();
-                    reconstructedString.FontSize = i.FontSize;
-                    reconstructedString.StrFontStyle = i.FontStyle;
-                    reconstructedString.StrFontWeight = i.FontWeight;
+                    properties.FontFamily = i.FontFamily.ToString();
+                    properties.FontSize = i.FontSize;
+                    properties.SFontStyle = i.FontStyle;
+                    properties.SFontWeight = i.FontWeight;
 
-                    reconstructedString.TextBrush = i.Foreground;
+                    reconstructedString.properties.TextBrush = i.Foreground;
 
                     reconstructedString.Text = new TextRange(i.ContentStart, i.ContentEnd).Text;
 
@@ -185,6 +181,7 @@ namespace TCG_Creator
 
             }
         }
+        */
 
         private BitmapImage URLToBitmap(string URL)
         {

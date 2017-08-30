@@ -163,12 +163,14 @@ namespace TCG_Creator
         {
             captureNextMouseEvent = true;
 
-            if (But_Delete_Region.IsChecked == true)
-            {
-                But_Delete_Region.IsChecked = false;
-            }
-
             But_Delete_Region.IsEnabled = false;
+        }
+
+        private void But_Delete_Region_Click(object sender, RoutedEventArgs e)
+        {
+            View_Model model = (View_Model)DataContext;
+
+            model.DeleteNextSelectedRegion = true;
         }
     }
 }

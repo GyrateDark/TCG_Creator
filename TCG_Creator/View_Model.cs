@@ -44,15 +44,16 @@ namespace TCG_Creator
 
         public PercentageConverter percentConvertor = new PercentageConverter();
 
-        private int _selectedRegion = -1;
+        private int _selectedRegionId = -1;
         private int _nextRegionId = 0;
 
         private Xceed.Wpf.Toolkit.RichTextBox _richTextBox = new Xceed.Wpf.Toolkit.RichTextBox();
+        private TextBox _textBox = new TextBox();
 
-        private bool _gradientBrushRequested = false;
         private bool _richTextBoxEditingTools = false;
         private bool _deleteNextSelectedRegion = false;
-
+        private bool _hideTextEditBox = false;
+        private bool _showAllRegions = false;
         #endregion
 
         #region Public Properties/Commands
@@ -99,7 +100,12 @@ namespace TCG_Creator
             }
         }
 
-
+        [DependsUpon("CurrentlySelectedCard")]
+        [DependsUpon("CurrentlySelectedRegion")]
+        [DependsUpon("ShowAllRegions")]
+        [DependsUpon("HideTextEditBox")]
+        [DependsUpon("CardRenderHeight")]
+        [DependsUpon("CardRenderWidth")]
         public IList<FrameworkElement> Drawing_Card_Elements
         {
             get
@@ -126,14 +132,20 @@ namespace TCG_Creator
 
                 foreach (Card_Region i in selectedCard.Regions)
                 {
-                    if (SelectedRegion == i.id)
+                    if (SelectedRegionId == i.id)
                     {
-                        if (i.strings != null)
+                        if (HideTextEditBox)
                         {
-                            _richTextBox.Document = i.ConvertFromStringContainerToFlowDocument();
-                        }
+                            frameworkElement = new Rectangle();
 
-                        frameworkElement = _richTextBox;
+                            ((Rectangle)frameworkElement).Fill = Brushes.Transparent;
+                            ((Rectangle)frameworkElement).Style = (Style)Application.Current.Resources["Selected_Card_Rectangle"];
+                        }
+                        else
+                        {
+                            frameworkElement = _textBox;
+                            ((TextBox)frameworkElement).Text = i.DesiredInherittedProperties.StringContainer.GetAllStrings();
+                        }
                     }
                     else
                     {
@@ -141,11 +153,10 @@ namespace TCG_Creator
 
                         ((Rectangle)frameworkElement).Fill = Brushes.Transparent;
                         ((Rectangle)frameworkElement).Style = (Style)Application.Current.Resources["Card_Rectangle"];
-                    }
-
-                    if (i.inheritted)
-                    {
-
+                        if (ShowAllRegions)
+                        {
+                            ((Rectangle)frameworkElement).Style = (Style)Application.Current.Resources["Show_All_Card_Rectangle"];
+                        }
                     }
 
                     frameworkElement.Height = i.ideal_location.Height * CardRenderHeight;
@@ -155,6 +166,8 @@ namespace TCG_Creator
                     
                     frameworkElement.DragEnter += FrameworkElement_DragEnter;
                     frameworkElement.Drop += FrameworkElement_Drop;
+
+                    frameworkElement.ToolTip = RegionTitle(i.id);
 
                     Thickness margin = new Thickness();
 
@@ -183,11 +196,11 @@ namespace TCG_Creator
                 string data = (string)e.Data.GetData(DataFormats.StringFormat);
                 Card_Region selectedRegion = Find_SelectedCard_Region((int)((FrameworkElement)sender).DataContext);
 
-                selectedRegion.background_location_type = IMAGE_LOCATION_TYPE.Online;
-                selectedRegion.background_image_filltype = IMAGE_OPTIONS.Unified_Fill;
-                selectedRegion.background_location = data;
+                selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocationType = IMAGE_LOCATION_TYPE.Online;
+                selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageFillType = IMAGE_OPTIONS.Unified_Fill;
+                selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocation = data;
 
-                Notify_Drawing_Card_Changed();
+                OnPropertyChanged("Drawing_Card_Elements");
             }
             else if (e.Data.GetDataPresent(DataFormats.Bitmap))
             {
@@ -205,10 +218,10 @@ namespace TCG_Creator
             {
                 int regionId = (int)((FrameworkElement)sender).DataContext;
 
-                if (SelectedRegion == regionId)
+                if (SelectedRegionId == regionId)
                 {
                     DisplayRichTextBoxEditingTools = false;
-                    SelectedRegion = -1;
+                    SelectedRegionId = -1;
                 }
 
                 Card selectedCard = Find_Selected_Card();
@@ -223,22 +236,28 @@ namespace TCG_Creator
                 }
 
                 DeleteNextSelectedRegion = false;
-                Notify_Drawing_Card_Changed();
+                OnPropertyChanged("Drawing_Card_Elements");
                 return;
             }
 
-            if (SelectedRegion != -1)
+            if (SelectedRegionId != -1)
             {
                 DisplayRichTextBoxEditingTools = false;
-                Find_SelectedCard_Region(SelectedRegion).ConvertFromFlowDocumentToStringContainer(_richTextBox.Document);
-                SelectedRegion = -1;
+                // Find_SelectedCard_Region(SelectedRegion).ConvertFromFlowDocumentToStringContainer(_richTextBox.Document);
+                if (!HideTextEditBox)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.strings = new List<String_Drawing>();
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.strings.Add(new String_Drawing(_textBox.Text));
+                }
+
+                SelectedRegionId = -1;
             }
             else
             {
                 DisplayRichTextBoxEditingTools = true;
-                SelectedRegion = (int)((FrameworkElement)sender).DataContext;
+                SelectedRegionId = (int)((FrameworkElement)sender).DataContext;
             }
-            Notify_Drawing_Card_Changed();
+            OnPropertyChanged("Drawing_Card_Elements");
         }
 
         public void AddNewCardRegion(Rect location)
@@ -249,9 +268,10 @@ namespace TCG_Creator
 
             selectedCard.Regions.Last().ideal_location = location;
 
-            Notify_Drawing_Card_Changed();
+            OnPropertyChanged("Drawing_Card_Elements");
         }
 
+        
         public IList<Tree_View_Card> Get_Tree_View_Cards
         {
             get
@@ -266,21 +286,73 @@ namespace TCG_Creator
             }
         }
 
-        public int SelectedRegion
+        [DependsUpon("CurrentlySelectedCard")]
+        public int SelectedRegionId
         {
             get
             {
-                return _selectedRegion;
+                return _selectedRegionId;
             }
             set
             {
-                if (_selectedRegion != value)
+                if (_selectedRegionId != value)
                 {
-                    _selectedRegion = value;
-                    OnPropertyChanged("SelectedRegion");
+                    _selectedRegionId = value;
+                    OnPropertyChanged("SelectedRegionId");
                 }
             }
         }
+        [DependsUpon("SelectedRegionId")]
+        [DependsUpon("CurrentlySelectedCard")]
+        public Card_Region CurrentlySelectedRegion
+        {
+            get
+            {
+                return Find_SelectedCard_Region(SelectedRegionId);
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public string CurrentlySelectedRegionDescription
+        {
+            get { return CurrentlySelectedRegion.description; }
+            set
+            {
+                if (CurrentlySelectedRegion.description != value)
+                {
+                    CurrentlySelectedRegion.description = value;
+                    OnPropertyChanged("CurrentlySelectedRegionDescription");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        [DependsUpon("CurrentlySelectedRegionDescription")]
+        public string CurrentlySelectedRegionTitle
+        {
+            get
+            {
+                string result = "";
+
+                if (SelectedRegionId == -1)
+                {
+                    result = "No Region Selected";
+                }
+                else
+                {
+                    result = RegionTitle(SelectedRegionId);
+                }
+
+                return result;
+            }
+        }
+
+        public Card CurrentlySelectedCard
+        {
+            get
+            {
+                return Find_Selected_Card();
+            }
+        }
+
 
         public double CardRenderHeight
         {
@@ -289,7 +361,6 @@ namespace TCG_Creator
                 return _renderSize.Height;
             }
         }
-
         public double CardRenderWidth
         {
             get
@@ -321,7 +392,7 @@ namespace TCG_Creator
 
             _cardCollection = null;
             _treeViewCards = null;
-            _selectedRegion = -1;
+            SelectedRegionId = -1;
 
 
             _cardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
@@ -341,10 +412,12 @@ namespace TCG_Creator
 
         public void Tree_View_Selected_Item_Changed()
         {
-            Notify_Drawing_Card_Changed();
+            OnPropertyChanged("CurrentlySelectedCard");
         }
 
         #region Visibility Controls and Checkbox States
+        [DependsUpon("GradientBrushRequested")]
+        [DependsUpon("DisplayRichTextBoxEditingTools")]
         public Visibility VisOfGradientBrushes
         {
             get
@@ -359,34 +432,44 @@ namespace TCG_Creator
                 }
             }
         }
-        public Visibility VisOfRichTextEditing
+        [DependsUpon("DisplayRichTextBoxEditingTools")]
+        public bool VisOfRichTextEditing
         {
             get
             {
                 if (DisplayRichTextBoxEditingTools)
                 {
-                    return Visibility.Visible;
+                    return true;
                 }
                 else
                 {
-                    return Visibility.Collapsed;
+                    return false;
                 }
             }
         }
 
+        [DependsUpon("CurrentlySelectedRegion")]
         public bool GradientBrushRequested
         {
-            get { return _gradientBrushRequested; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.TextBrushColorMode != TextBrushMode.SolidColor; }
             set
             {
-                if (_gradientBrushRequested != value)
+                if ((CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.TextBrushColorMode != TextBrushMode.SolidColor) != value)
                 {
-                    _gradientBrushRequested = value;
+                    if (value)
+                    {
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.TextBrushColorMode = TextBrushMode.Gradient;
+                    }
+                    else
+                    {
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.TextBrushColorMode = TextBrushMode.SolidColor;
+                    }
+
                     OnPropertyChanged("GradientBrushRequested");
-                    OnPropertyChanged("VisOfGradientBrushes");
                 }
             }
         }
+        
         public bool DisplayRichTextBoxEditingTools
         {
             get { return _richTextBoxEditingTools; }
@@ -396,10 +479,14 @@ namespace TCG_Creator
                 {
                     _richTextBoxEditingTools = value;
                     OnPropertyChanged("DisplayRichTextBoxEditingTools");
-                    OnPropertyChanged("VisOfGradientBrushes");
-                    OnPropertyChanged("VisOfRichTextEditing");
                 }
             }
+        }
+        
+        [DependsUpon("DeleteNextSelectedRegion")]
+        public bool ButAddRegionEnabled
+        {
+            get { return !DeleteNextSelectedRegion; }
         }
         public bool DeleteNextSelectedRegion
         {
@@ -409,8 +496,320 @@ namespace TCG_Creator
                 if (_deleteNextSelectedRegion != value)
                 {
                     _deleteNextSelectedRegion = value;
-                    OnPropertyChanged("DeleteNextSelectedRegion");
+                    OnPropertyChanged("ButAddRegionEnabled");
                 }
+            }
+        }
+        public bool HideTextEditBox
+        {
+            get { return _hideTextEditBox; }
+            set
+            {
+                if (_hideTextEditBox != value)
+                {
+                    _hideTextEditBox = value;
+                    OnPropertyChanged("HideTextEditBox");
+                }
+            }
+        }
+        public bool ShowAllRegions
+        {
+            get { return _showAllRegions; }
+            set
+            {
+                if (_showAllRegions != value)
+                {
+                    _showAllRegions = value;
+                    OnPropertyChanged("ShowAllRegions");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritFontFamily
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontFamily; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontFamily != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontFamily = value;
+                    OnPropertyChanged("InheritFontFamily");
+                }
+            }
+        }
+        [DependsUpon("InheritFontFamily")]
+        public bool NotInheritFontFamily
+        {
+            get
+            {
+                return !InheritFontFamily;
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public FontFamily SelectedFontFamily
+        {
+            get { return new FontFamily(CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontFamily); }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontFamily != value.Source)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontFamily = value.Source;
+
+                    OnPropertyChanged("SelectedFontFamily");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritFontSize
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontSize; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontSize != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontSize = value;
+
+                    OnPropertyChanged("InheritFontSize");
+                }
+            }
+        }
+        public bool NotInheritFontSize
+        {
+            get { return !InheritFontSize; }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public double FontSize
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontSize; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontSize != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.FontSize = value;
+
+                    OnPropertyChanged("FontSize");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritFontStyle
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontStyle; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontStyle != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontStyle = value;
+
+                    OnPropertyChanged("InheritFontStyle");
+                }
+            }
+        }
+        public bool NotInheritFontStyle
+        {
+            get { return !InheritFontStyle; }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public FontStyle SelectedFontStyle
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontStyle; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontStyle != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontStyle = value;
+
+                    OnPropertyChanged("SelectedFontStyle");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritFontWeight
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontWeight; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontWeight != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontWeight = value;
+
+                    OnPropertyChanged("InheritFontWeight");
+                }
+            }
+        }
+        public bool NotInheritFontWeight
+        {
+            get { return !InheritFontWeight; }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public FontWeight SelectedFontWeight
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontWeight; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontWeight != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SFontWeight = value;
+
+                    OnPropertyChanged("SelectedFontWeight");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritTextBrush
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontBrush; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontBrush != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontBrush = value;
+
+                    OnPropertyChanged("InheritTextBrush");
+                }
+            }
+        }
+        [DependsUpon("InheritTextBrush")]
+        public bool NotInheritTextBrush
+        {
+            get { return !InheritTextBrush; }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        [DependsUpon("GradientBrushRequested")]
+        public Color SelectedFontBrush1
+        {
+            get
+            {
+                if (GradientBrushRequested)
+                {
+                    return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.First().Color;
+                }
+                else
+                {
+                    return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SolidColorTextBrush.Color;
+                }
+            }
+            set
+            {
+                if (GradientBrushRequested)
+                {
+                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.First().Color != value)
+                    {
+                        GradientStop tmp = new GradientStop(value, 0);
+
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.RemoveAt(0);
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.Insert(0, tmp);
+
+                        OnPropertyChanged("SelectedFontBrush1");
+                    }
+                }
+                else
+                {
+                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SolidColorTextBrush.Color != value)
+                    {
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SolidColorTextBrush = new SolidColorBrush(value);
+
+                        OnPropertyChanged("SelectedFontBrush1");
+                    }
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        [DependsUpon("GradientBrushRequested")]
+        public Color SelectedFontBrush2
+        {
+            get
+            {
+                if (GradientBrushRequested)
+                {
+                    return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.Last().Color;
+                }
+                else
+                {
+                    return Colors.Orange;
+                }
+            }
+            set
+            {
+                if (GradientBrushRequested)
+                {
+                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.Last().Color != value)
+                    {
+                        GradientStop tmp = new GradientStop(value, 1);
+
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.RemoveAt(1);
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrush.GradientStops.Add(tmp);
+
+                        OnPropertyChanged("SelectedFontBrush2");
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritText
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText = value;
+                    OnPropertyChanged("InheritText");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritRegionBeforeCard
+        {
+            get { return CurrentlySelectedRegion.InheritRegionBeforeCard; }
+            set
+            {
+                if (CurrentlySelectedRegion.InheritRegionBeforeCard != value)
+                {
+                    CurrentlySelectedRegion.InheritRegionBeforeCard = value;
+                    OnPropertyChanged("InheritRegionBeforeCard");
+                }
+            }
+        }
+
+        [DependsUpon("SelectedFontFamily")]
+        public IList<FontStyle> AllFontStyles
+        {
+            get
+            {
+                IList<FontStyle> result = new List<FontStyle>();
+
+                foreach(FamilyTypeface i in SelectedFontFamily.FamilyTypefaces)
+                {
+                    result.Add(i.Style);
+                }
+
+                return result;
+            }
+        }
+        [DependsUpon("SelectedFontFamily")]
+        public IList<FontWeight> AllFontWeights
+        {
+            get
+            {
+                IList<FontWeight> result = new List<FontWeight>();
+
+                foreach (FamilyTypeface i in SelectedFontFamily.FamilyTypefaces)
+                {
+                    result.Add(i.Weight);
+                }
+
+                return result;
             }
         }
         #endregion
@@ -426,18 +825,7 @@ namespace TCG_Creator
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
-                for (int i = 0; i < newCard.Regions.Count; ++i)
-                {
-                    if (newCard.Regions[i].Should_Inherit_Region())
-                    {
-                        newCard.Regions[i].inheritted = true;
-                    }
-                    else
-                    {
-                        newCard.Regions.RemoveAt(i);
-                        --i;
-                    }
-                }
+                
                 newCard.ParentCard = parentCard.Id;
             }
             else
@@ -455,6 +843,27 @@ namespace TCG_Creator
             // You would implement your Product save here
         }
         
+        
+        private string RegionTitle(int regionId)
+        {
+            string result = "";
+
+            if (regionId == 0)
+            {
+                result = "Base Card";
+            }
+            else
+            {
+                result = "Region " + regionId.ToString();
+                if (Find_SelectedCard_Region(regionId).description != "")
+                {
+                    result += " - " + Find_SelectedCard_Region(regionId).description;
+                }
+            }
+            return result;
+        }
+
+
         private Card_Region Find_SelectedCard_Region(int regionId)
         {
             Card selectedCard = Find_Selected_Card();
@@ -469,7 +878,6 @@ namespace TCG_Creator
 
             return new Card_Region();
         }
-
         private Card Find_Selected_Card()
         {
             if (_treeViewCards == null)
@@ -485,11 +893,6 @@ namespace TCG_Creator
             Get_Tree_View_Cards = _cardCollection.Get_Tree_View_Template_Cards(ref _cardCollection);
 
             OnPropertyChanged("CurrentCardCollection");
-        }
-
-        private void Notify_Drawing_Card_Changed()
-        {
-            OnPropertyChanged("Drawing_Card_Elements");
         }
 
         private int find_selected(IList<Tree_View_Card> cards)

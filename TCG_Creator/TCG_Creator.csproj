@@ -26,7 +26,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -114,6 +114,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Card_Template_Edit.xaml.cs">
+      <DependentUpon>Card_Template_Edit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Image_Properties.cs" />
+    <Compile Include="Inherittable_Properties.cs" />
     <Compile Include="PercentageConvertor.cs" />
     <Compile Include="String_Container.cs" />
     <Compile Include="Tree_View_Card.cs" />
@@ -127,6 +132,10 @@
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
     <Compile Include="View_Model.cs" />
+    <Page Include="Card_Template_Edit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Deck_Edit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
