@@ -24,6 +24,7 @@ namespace TCG_Creator
             _children = new List<Tree_View_Card>();
             _id = id;
             _parentId = parentId;
+            
 
             _cardCollection = coll;
         }
@@ -78,7 +79,17 @@ namespace TCG_Creator
 
         public string Name
         {
-            get { return _cardCollection.Find_Card_In_Collection(Id).Name; }
+            get
+            {
+                if (Id != -2)
+                {
+                    return _cardCollection.Find_Card_In_Collection(Id).Name;
+                }
+                else
+                {
+                    return "<New>";
+                }
+            }
             set
             {
                 if (value != Name)

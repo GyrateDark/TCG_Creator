@@ -1,6 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:local="clr-namespace:TCG_Creator">
+                    xmlns:local="clr-namespace:TCG_Creator"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <Color x:Key="ShowAllRectanglesColor">LightGray</Color>
+    <Color x:Key="SelectedRectangleColor">Blue</Color>
+    <Color x:Key="MouseOverRectangleColor">Red</Color>
+
+    <SolidColorBrush x:Key="ShowAllRectanglesBrush"
+                     Color="{DynamicResource ShowAllRectanglesColor}" />
+    <SolidColorBrush x:Key="SelectedRectangleBrush"
+                     Color="{DynamicResource SelectedRectangleColor}" />
+    <SolidColorBrush x:Key="MouseOverRectangleBrush"
+                     Color="{DynamicResource MouseOverRectangleColor}" />
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="10" />
         <!--<Setter Property="ContentTemplate">
@@ -13,16 +25,50 @@
             </Setter.Value>
         </Setter>-->
     </Style>
-    <Style TargetType="{x:Type Rectangle}">
-        <Setter Property="StrokeThickness" 
-                Value="1" />
+    <Style TargetType="Button"
+           x:Key="Normal">
+    </Style>
+    <sys:Double x:Key="Selected_Stroke_Thickness">4</sys:Double>
+    <Style TargetType="Rectangle" 
+           x:Key="Show_All_Card_Rectangle">
+        <Setter Property="StrokeThickness"
+                Value="{DynamicResource Selected_Stroke_Thickness}" />
+        <Setter Property="Stroke"
+                Value="{DynamicResource ShowAllRectanglesBrush}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Stroke"
-                        Value="Red">
-                </Setter>
+                        Value="{DynamicResource MouseOverRectangleBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    <local:PercentageConverter x:Key="PercentageConverter"/>
+    <Style TargetType="Rectangle" 
+           x:Key="Card_Rectangle">
+        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Stroke"
+                        Value="{DynamicResource MouseOverRectangleBrush}" />
+                <Setter Property="StrokeThickness"
+                        Value="{DynamicResource Selected_Stroke_Thickness}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Rectangle" 
+           x:Key="Selected_Card_Rectangle">
+        <Setter Property="StrokeThickness"
+                Value="{DynamicResource Selected_Stroke_Thickness}" />
+        <Setter Property="Stroke"
+                Value="{DynamicResource SelectedRectangleBrush}">
+        </Setter>
+    </Style>
+    <Style TargetType="Border"
+           x:Key="Content_Border">
+        <Setter Property="BorderThickness"
+                Value="3" />
+        <Setter Property="BorderBrush"
+                Value="LightGray" />
+        <Setter Property="Margin"
+                Value="3,3,3,3" />
+    </Style>
 </ResourceDictionary>

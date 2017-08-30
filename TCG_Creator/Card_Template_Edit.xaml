@@ -1,0 +1,61 @@
+﻿<StackPanel x:Class="TCG_Creator.Card_Template_Edit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCG_Creator"
+        mc:Ignorable="d"
+        IsEnabled="{Binding VisOfRichTextEditing}"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Border Style="{StaticResource Content_Border}">
+        <StackPanel>
+            <Label Content="Region Editting" />
+            <Label Content="{Binding CurrentlySelectedRegionTitle}" />
+            <Label Content="Region Description" />
+            <TextBox Text="{Binding CurrentlySelectedRegionDescription}" />
+            <CheckBox Content="Inherit Region Before Card" 
+                      IsChecked="{Binding InheritRegionBeforeCard}"/> 
+            <CheckBox Content="Inherit Text" 
+                      IsChecked="{Binding InheritText}"/>
+            <CheckBox Content="Inherit Font Family" 
+                      IsChecked="{Binding InheritFontFamily}"/>
+            <ComboBox ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
+                      SelectedItem="{Binding SelectedFontFamily}"
+                      IsEnabled="{Binding NotInheritFontFamily}"/>
+            <CheckBox Content="Inherit Font Size" 
+                      IsChecked="{Binding InheritFontFamily}"/>
+            <xctk:DoubleUpDown IsEnabled="{Binding NotInheritFontSize}"
+                               Minimum="0.1"/>
+            <CheckBox Content="Inherit Font Style" 
+                      IsChecked="{Binding InheritFontStyle}"/>
+            <ComboBox ItemsSource="{Binding AllFontWeights}" 
+                      SelectedItem="{Binding SelectedFontWeight}"
+                      IsEnabled="{Binding NotInheritFontStyle}"/>
+            <CheckBox Content="Inherit Font Weight" 
+                      IsChecked="{Binding InheritFontWeight}"/>
+            <ComboBox ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
+                      SelectedItem="{Binding SelectedFontFamily}"
+                      IsEnabled="{Binding NotInheritFontWeight}"/>
+            <CheckBox Name="InheritTextBrush"
+                      Content="Inherit Text Brush"
+                      IsChecked="{Binding InheritTextBrush}"/>
+            <Border Style="{StaticResource Content_Border}">
+                <StackPanel IsEnabled="{Binding NotInheritTextBrush}">
+                    <CheckBox Name="GradientCheckBox"
+                              Content="Gradient Text Brush"
+                              IsChecked="{Binding GradientBrushRequested}"/>
+                    <TextBlock Text="First Color" 
+                                       Visibility="{Binding VisOfGradientBrushes}"/>
+                    <xctk:ColorPicker Margin="5,5,5,5"
+                                      SelectedColor="{Binding SelectedFontBrush1}"/>
+                    <TextBlock Text="Last Color" 
+                                       Visibility="{Binding VisOfGradientBrushes}"/>
+                    <xctk:ColorPicker Name="ClrPcker_2" 
+                                      Margin="5,5,5,5"
+                                      Visibility="{Binding VisOfGradientBrushes}"
+                                      SelectedColor="{Binding SelectedFontBrush2}"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Border>
+</StackPanel>
