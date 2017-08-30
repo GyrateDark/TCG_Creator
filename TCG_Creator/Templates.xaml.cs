@@ -28,51 +28,9 @@ namespace TCG_Creator
         {
             DataContext = context;
             InitializeComponent();
-
-            Tree_View.SelectedItemChanged += new RoutedPropertyChangedEventHandler<Object>(Tree_View_Selection_Changed);
-
-            dia_save.Title = "Save Card Templates";
-            dia_save.DefaultExt = "xml";
-            dia_save.AddExtension = true;
-            dia_save.Filter = "XML File | *.xml";
-
-            dia_open.Title = "Load Card Templates";
-            dia_open.DefaultExt = "xml";
-            dia_open.Filter = "XML File | *.xml";
         }
 
-        void Tree_View_Selection_Changed(Object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            View_Model model = (View_Model)DataContext;
-
-            model.Tree_View_Selected_Item_Changed();
-        }
-
-        private void but_temp_save_Click(object sender, RoutedEventArgs e)
-        {
-            dia_save.ShowDialog();
-
-            View_Model model = (View_Model)DataContext;
-
-            model.Xml_Save(dia_save.FileName, true);
-        }
-
-        private void but_temp_load_Click(object sender, RoutedEventArgs e)
-        {
-            dia_open.ShowDialog();
-
-            View_Model model = (View_Model)DataContext;
-
-            try
-            {
-                model.Xml_Load(dia_open.FileName, true);
-            }
-            catch
-            {
-                MessageBox.Show("Error Loading File");
-            }
-        }
-
+        /*
         private bool captureNextMouseEvent = false;
         bool mouseDown = false; // Set to 'true' when mouse is held down.
         Point mouseDownPos; // The point where the mouse button was clicked down.
@@ -172,5 +130,6 @@ namespace TCG_Creator
 
             model.DeleteNextSelectedRegion = true;
         }
+        */
     }
 }

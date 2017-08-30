@@ -19,6 +19,65 @@ namespace TCG_Creator
 
         private bool _templateCard;
 
+        private Size _physicalSize = new Size(2.5, 3.5);
+        private double _levelOfDetail = 330;
+
+        public double PhysicalSizeHeight
+        {
+            get { return _physicalSize.Height; }
+            set
+            {
+                if (_physicalSize.Height != value)
+                {
+                    _physicalSize.Height = value;
+                }
+            }
+        }
+        public double PhysicalSizeWidth
+        {
+            get { return _physicalSize.Width; }
+            set
+            {
+                if (_physicalSize.Width != value)
+                {
+                    _physicalSize.Width = value;
+                }
+            }
+        }
+        public double LevelOfDetail
+        {
+            get { return _levelOfDetail; }
+            set
+            {
+                if (_levelOfDetail != value)
+                {
+                    _levelOfDetail = value;
+                }
+            }
+        }
+
+        public IList<Color> GetUsedColors
+        {
+            get
+            {
+                IList<Color> result = new List<Color>();
+
+                foreach (Card_Region i in _regions)
+                {
+                    IList<Color> regColors = i.GetUsedColors();
+                    foreach(Color j in regColors)
+                    {
+                        if (!result.Contains(j))
+                        {
+                            result.Add(j);
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
         public Card()
         {
             _regions = new List<Card_Region>();
@@ -28,6 +87,7 @@ namespace TCG_Creator
 
         public Card(Card card)
         {
+            _physicalSize = card._physicalSize;
             _regions = new List<Card_Region>(card.Regions.Count);
 
             for(int i = 0; i < card.Regions.Count; ++i)

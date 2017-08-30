@@ -114,6 +114,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CardDisplay.xaml.cs">
+      <DependentUpon>CardDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Card_Template_Edit.xaml.cs">
       <DependentUpon>Card_Template_Edit.xaml</DependentUpon>
     </Compile>
@@ -121,6 +124,15 @@
     <Compile Include="Inherittable_Properties.cs" />
     <Compile Include="PercentageConvertor.cs" />
     <Compile Include="String_Container.cs" />
+    <Compile Include="CardEdit.xaml.cs">
+      <DependentUpon>CardEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateSettings.xaml.cs">
+      <DependentUpon>TemplateSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateEdit.xaml.cs">
+      <DependentUpon>TemplateEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tree_View_Card.cs" />
     <Compile Include="Card_Collection.cs" />
     <Compile Include="Card_Region.cs" />
@@ -132,6 +144,10 @@
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
     <Compile Include="View_Model.cs" />
+    <Page Include="CardDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Card_Template_Edit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,7 +182,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="CardEdit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TemplateSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

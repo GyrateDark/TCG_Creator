@@ -100,6 +100,10 @@ namespace TCG_Creator
             }
         }
 
+        public string DisplayName
+        { get { return Name; } }
+
+
         public bool IsSelected
         {
             get { return _isSelected; }

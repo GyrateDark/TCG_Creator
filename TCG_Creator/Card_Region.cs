@@ -212,5 +212,10 @@ namespace TCG_Creator
 
             return image;
         }
+
+        public IList<Color> GetUsedColors()
+        {
+            return _renderProperties.GetUsedColors();
+        }
     }
 }

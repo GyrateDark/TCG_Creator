@@ -135,6 +135,12 @@ namespace TCG_Creator
 
     public class String_Properties
     {
+        public String_Properties()
+        {
+            GradientTextBrushStops.Add(new GradientStop(Colors.Orange, 0));
+            GradientTextBrushStops.Add(new GradientStop(Colors.Red, 1));
+        }
+
         public string FontFamily { get; set; } = "Times New Roman";
         public double FontSize { get; set; } = 32;
         public FontStyle SFontStyle { get; set; } = FontStyles.Normal;
@@ -142,11 +148,11 @@ namespace TCG_Creator
 
         public TextBrushMode TextBrushColorMode = TextBrushMode.SolidColor;
 
-        [XmlIgnore]
-        public GradientBrush GradientTextBrush { get; set; } = new LinearGradientBrush(Colors.Orange, Colors.White, 90.0);
 
-        [XmlIgnore]
-        public SolidColorBrush SolidColorTextBrush { get; set; } = Brushes.White;
+        public GradientStopCollection GradientTextBrushStops { get; set; } = new GradientStopCollection();
+        public double GradientTextBrushAngle { get; set; } = 90;
+
+        public Color SolidColorTextBrushColor { get; set; } = Colors.White;
 
         [XmlIgnore]
         public Brush TextBrush
@@ -155,55 +161,11 @@ namespace TCG_Creator
             {
                 if (TextBrushColorMode == TextBrushMode.Gradient)
                 {
-                    return GradientTextBrush;
+                    return new LinearGradientBrush(GradientTextBrushStops, GradientTextBrushAngle);
                 }
                 else
                 {
-                    return SolidColorTextBrush;
-                }
-            }
-        }
-
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        [XmlElement("GradientTextBrush")]
-        public string GradientTextBrushSerialized
-        {
-            get
-            { // serialize
-                if (GradientTextBrush == null) return null;
-                return Serialize(GradientTextBrush);
-            }
-            set
-            { // deserialize
-                if (value == null)
-                {
-                    GradientTextBrush = null;
-                }
-                else
-                {
-                    GradientTextBrush = (GradientBrush)Deserialize(value);
-                }
-            }
-        }
-
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        [XmlElement("SolidColorTextBrush")]
-        public string SolidColorTextBrushSerialized
-        {
-            get
-            { // serialize
-                if (SolidColorTextBrush == null) return null;
-                return Serialize(SolidColorTextBrush);
-            }
-            set
-            { // deserialize
-                if (value == null)
-                {
-                    SolidColorTextBrush = null;
-                }
-                else
-                {
-                    SolidColorTextBrush = (SolidColorBrush)Deserialize(value);
+                    return new SolidColorBrush(SolidColorTextBrushColor);
                 }
             }
         }
@@ -278,8 +240,9 @@ namespace TCG_Creator
             }
             if (result.InheritFontBrush)
             {
-                result.GradientTextBrush = inherittedSource.GradientTextBrush.Clone();
-                result.SolidColorTextBrush = inherittedSource.SolidColorTextBrush.Clone();
+                result.GradientTextBrushStops = inherittedSource.GradientTextBrushStops.Clone();
+                result.GradientTextBrushAngle = inherittedSource.GradientTextBrushAngle;
+                result.SolidColorTextBrushColor = inherittedSource.SolidColorTextBrushColor;
                 result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
                 result.InheritFontBrush = inherittedSource.InheritFontBrush;
             }
@@ -305,8 +268,7 @@ namespace TCG_Creator
             String_Properties result = (String_Properties)MemberwiseClone();
 
             result.FontFamily = (string)FontFamily.Clone();
-            result.GradientTextBrush = GradientTextBrush.Clone();
-            result.SolidColorTextBrush = SolidColorTextBrush.Clone();
+            result.GradientTextBrushStops = GradientTextBrushStops.Clone();
 
             return result;
         }

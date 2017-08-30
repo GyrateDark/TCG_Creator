@@ -1,0 +1,64 @@
+﻿<StackPanel x:Class="TCG_Creator.TemplateSettings"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:TCG_Creator"
+            mc:Ignorable="d"
+            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Label Style="{StaticResource TitleLabel}" 
+           Content="Template Settings" />
+    <StackPanel Orientation="Horizontal">
+        <ComboBox ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
+                  SelectedItem="{Binding TemplateSelectedFontFamily}"
+                  IsEnabled="{Binding NotTemplateInheritFontFamily}"/>
+        <CheckBox Style="{StaticResource SlavedCheckBox}" 
+                  IsChecked="{Binding TemplateInheritFontFamily}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal">
+        <CheckBox Style="{StaticResource IconCheckBox}"
+                  IsChecked="{Binding Bold}"/>
+        <CheckBox Style="{StaticResource IconCheckBox}"
+                  IsChecked="{Binding Italic}"/>
+        <xctk:DoubleUpDown IsEnabled="{Binding NotTemplateInheritFontSize}"
+                           Value="{Binding TemplateFontSize}"
+                           Minimum="0.1"/>
+        <CheckBox Style="{StaticResource SlavedCheckBox}"
+                  IsChecked="{Binding TemplateInheritFontSize}"/>
+    </StackPanel>
+
+    <Border Style="{StaticResource StackPanelBorder}">
+        <StackPanel>
+            <Label Style="{StaticResource TitleLabel}"
+                   Content="Card Size" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" 
+                       Grid.Row="0" 
+                       Content="Height (in):" />
+                <xctk:DoubleUpDown Grid.Column="1" 
+                                   Grid.Row="0" 
+                                   Minimum="0.1" 
+                                   Value="{Binding CardPhysicalHeight}"/>
+                <Label Grid.Column="0" 
+                       Grid.Row="1" 
+                       Content="Width (in):" />
+                <xctk:DoubleUpDown Grid.Column="1"
+                                   Grid.Row="1"
+                                   Minimum="0.1" 
+                                   Value="{Binding CardPhysicalWidth}"/>
+            </Grid>
+            <Label Content="Level of Detail" />
+            <Slider Value="{Binding LevelOfDetail}" 
+                    Minimum="{Binding MinLevelOfDetail}"
+                    Maximum="{Binding MaxLevelOfDetail}" />
+        </StackPanel>
+    </Border>
+</StackPanel>

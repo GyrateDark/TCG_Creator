@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
@@ -37,6 +39,7 @@ namespace TCG_Creator
             }
         }
 
+        [XmlIgnore]
         public String_Properties StringProperties
         {
             get { return _stringContainer.stringProperties; }
@@ -64,6 +67,28 @@ namespace TCG_Creator
         {
             _imageProperties.SetAllInheritValues(val);
             _stringContainer.SetAllInheritValues(val);
+        }
+
+        public IList<Color> GetUsedColors()
+        {
+            IList<Color> result = new List<Color>();
+
+            if (!StringProperties.InheritFontBrush)
+            {
+                if (StringProperties.TextBrushColorMode == TextBrushMode.SolidColor)
+                {
+                    result.Add(StringProperties.SolidColorTextBrushColor);
+                }
+                else if (StringProperties.TextBrushColorMode == TextBrushMode.Gradient)
+                {
+                    foreach (GradientStop i in StringProperties.GradientTextBrushStops)
+                    {
+                        result.Add(i.Color);
+                    }
+                }
+            }
+
+            return result;
         }
 
         public  Inherittable_Properties Clone()

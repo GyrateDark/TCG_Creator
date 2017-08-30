@@ -1,0 +1,39 @@
+﻿<StackPanel x:Class="TCG_Creator.TemplateEdit"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:TCG_Creator"
+            mc:Ignorable="d"
+            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <StackPanel Orientation="Horizontal" >
+        <ComboBox ItemsSource="{Binding TreeViewCards}"
+                  SelectedValue = "{Binding CurrentlySelectedTreeViewCard}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:Tree_View_Card}">
+                    <TextBlock Text="{Binding Path=DisplayName}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Style="{StaticResource SquareIconButton}" 
+                Command="{Binding Path=AddCardCommand}"/>
+    </StackPanel>
+    <Button Style="{StaticResource TextButton}" 
+            Command="{Binding Path=AddCardCommand}"
+            Content="Template Settings"/>
+
+    <Border Style="{StaticResource StackPanelBorder}">
+        <StackPanel >
+            <Label Content="Current Template"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource TextButton}"
+                        Command="{Binding Path=SaveTemplateCard}"
+                        Content="Save" />
+                <Button Style="{StaticResource TextButton}"
+                        Command="{Binding Path=DeleteSelectedTemplateCard}"
+                        Content="Delete" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+
+</StackPanel>

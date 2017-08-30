@@ -11,102 +11,36 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.4*"/>
             <ColumnDefinition />
-            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <Viewbox VerticalAlignment="Top"
-                     Grid.Column="0">
-                <StackPanel>
-                    <TreeView x:Name="Tree_View" 
-                              ItemsSource="{Binding Get_Tree_View_Cards}"
-                              SelectedValuePath="{Binding SelectedTreeViewNode}" >
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                <TextBlock Text="{Binding Name}" />
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0"
-                               TextBlock.TextAlignment="Right"
-                               Content="Template Name:"/>
-                        <GridSplitter />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding ElementName=Tree_View, Path=SelectedItem.Name, Mode=TwoWay}" />
-                    </Grid>
-                    <Button Content="Add Card" Command="{Binding Path=AddCardCommand}"/>
-                    <Button x:Name="but_temp_save" Content="Save" Margin="0" Click="but_temp_save_Click"/>
-                    <Button x:Name="but_temp_load" Content="Load" Margin="0" Click="but_temp_load_Click"/>
+        <GridSplitter Style="{StaticResource StdGridSplitter}" 
+                      Grid.Column="0" 
+                      Grid.Row="0"/>
+        <GridSplitter Style="{StaticResource StdGridSplitter}" 
+                      Grid.Column="1" 
+                      Grid.Row="0"/>
+        <GridSplitter Style="{StaticResource StdGridSplitter}" 
+                      Grid.Column="2" 
+                      Grid.Row="0"/>
+        <GridSplitter Style="{StaticResource StdGridSplitter}" 
+                      Grid.Column="3" 
+                      Grid.Row="0"/>
 
-                </StackPanel>
-            </Viewbox>
-        </ScrollViewer>
-        <GridSplitter Grid.Column="0"
-                      Width="5"/>
-        <Viewbox Grid.Column="1">
-            <Canvas Height="{Binding CardRenderHeight}"
-                    Width="{Binding CardRenderWidth}" >
-                <Grid x:Name="theGrid"
-                      MouseDown="Grid_MouseDown"
-                      MouseUp="Grid_MouseUp"
-                      MouseMove="Grid_MouseMove"
-                      Background="Transparent">
-                    <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                    <Canvas>
-                        <!-- This canvas is overlaid over the previous canvas and is used to 
-                place the rectangle that implements the drag selection box. -->
-                        <Rectangle  x:Name="selectionBox"
-                                    Visibility="Collapsed"
-                                    Stroke="Black"
-                                    StrokeThickness="1"/>
-                    </Canvas>
-                </Grid>
-            </Canvas>
-        </Viewbox>
-        <GridSplitter Grid.Column="1"
-                      Width="5"/>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      Grid.Column="2">
-            <Viewbox VerticalAlignment="Top">
-                <StackPanel>
-                    <StackPanel>
-                        <Button Name="But_Add_Region"
-                                    Click="But_Add_Region_Click" 
-                                    Content="Add Region"
-                                IsEnabled="{Binding ButAddRegionEnabled}"/>
-                        <Button Name="But_Delete_Region"
-                                    Click="But_Delete_Region_Click" 
-                                    Content="Delete Region"/>
-                        <CheckBox Content="Show All Regions"
-                                  IsChecked="{Binding ShowAllRegions}" />
-                        <CheckBox Content="Hide Text Edit"
-                      IsChecked="{Binding HideTextEditBox}" />
-                    </StackPanel>
-                    <local:Card_Template_Edit>
+        <local:TemplateEdit Grid.Column="0"
+                            Grid.Row="0"/>
+        <local:TemplateSettings Grid.Column="1"
+                                Grid.Row="0"/>
+        <local:CardDisplay Grid.Column="2"
+                           Grid.Row="0" 
+                           VerticalAlignment="Center"/>
 
-                    </local:Card_Template_Edit>
-                </StackPanel>
-            </Viewbox>
-        </ScrollViewer>
+        <local:CardEdit Grid.Column="3"
+                        Grid.Row="0" />
     </Grid>
 </Page>
