@@ -13,24 +13,27 @@
                   SelectedItem="{Binding TemplateSelectedFontFamily}"
                   IsEnabled="{Binding NotTemplateInheritFontFamily}"/>
         <CheckBox Style="{StaticResource SlavedCheckBox}" 
-                  IsChecked="{Binding TemplateInheritFontFamily}"/>
+                  IsChecked="{Binding TemplateInheritFontFamily}"
+                  ToolTip="Inherit Font Family"/>
     </StackPanel>
     <StackPanel Orientation="Horizontal">
         <CheckBox Style="{StaticResource IconCheckBox}"
-                  IsChecked="{Binding Bold}"/>
+                  IsChecked="{Binding Bold}"
+                  ToolTip="Bold"/>
         <CheckBox Style="{StaticResource IconCheckBox}"
-                  IsChecked="{Binding Italic}"/>
+                  IsChecked="{Binding Italic}"
+                  ToolTip="Italic"/>
         <xctk:DoubleUpDown IsEnabled="{Binding NotTemplateInheritFontSize}"
                            Value="{Binding TemplateFontSize}"
                            Minimum="0.1"/>
         <CheckBox Style="{StaticResource SlavedCheckBox}"
-                  IsChecked="{Binding TemplateInheritFontSize}"/>
+                  IsChecked="{Binding TemplateInheritFontSize}"
+                  ToolTip="Inherit Font Size"/>
     </StackPanel>
 
-    <Border Style="{StaticResource StackPanelBorder}">
+    <GroupBox Style="{StaticResource StdGroupBox}"
+              Header="Card Size">
         <StackPanel>
-            <Label Style="{StaticResource TitleLabel}"
-                   Content="Card Size" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -60,5 +63,5 @@
                     Minimum="{Binding MinLevelOfDetail}"
                     Maximum="{Binding MaxLevelOfDetail}" />
         </StackPanel>
-    </Border>
+    </GroupBox>
 </StackPanel>

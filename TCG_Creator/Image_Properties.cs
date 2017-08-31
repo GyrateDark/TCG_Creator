@@ -11,7 +11,8 @@ namespace TCG_Creator
         Fill,
         Letterbox,
         Unified_Fill,
-        None
+        None,
+        N_IMAGE_OPTIONS
     }
 
     public enum IMAGE_LOCATION_TYPE

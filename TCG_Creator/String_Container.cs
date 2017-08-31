@@ -27,7 +27,7 @@ namespace TCG_Creator
 
         public List<String_Drawing> strings = new List<String_Drawing>();
         public TextAlignment TxtAlign { get; set; } = TextAlignment.Left;
-        public String_Properties stringProperties = new String_Properties();
+        public String_Properties stringProperties = new String_Properties(true);
 
         public string GetAllStrings()
         {
@@ -118,7 +118,7 @@ namespace TCG_Creator
             Text = text;
         }
 
-        public String_Properties properties = new String_Properties();
+        public String_Properties properties = new String_Properties(true);
 
         public string Text { get; set; }
 
@@ -137,8 +137,15 @@ namespace TCG_Creator
     {
         public String_Properties()
         {
-            GradientTextBrushStops.Add(new GradientStop(Colors.Orange, 0));
-            GradientTextBrushStops.Add(new GradientStop(Colors.Red, 1));
+            
+        }
+
+        public String_Properties(bool initCollection)
+        {
+            if (initCollection)
+            {
+                GradientTextBrushStops = DefaultGradientTextBrushStops;
+            }
         }
 
         public string FontFamily { get; set; } = "Times New Roman";
@@ -148,11 +155,23 @@ namespace TCG_Creator
 
         public TextBrushMode TextBrushColorMode = TextBrushMode.SolidColor;
 
-
         public GradientStopCollection GradientTextBrushStops { get; set; } = new GradientStopCollection();
         public double GradientTextBrushAngle { get; set; } = 90;
 
         public Color SolidColorTextBrushColor { get; set; } = Colors.White;
+
+        [XmlIgnore]
+        public GradientStopCollection DefaultGradientTextBrushStops
+        {
+            get
+            {
+                return new GradientStopCollection
+            {
+                new GradientStop(Colors.Orange, 0),
+                new GradientStop(Colors.Red, 1)
+            };
+            }
+        }
 
         [XmlIgnore]
         public Brush TextBrush
@@ -168,44 +187,7 @@ namespace TCG_Creator
                     return new SolidColorBrush(SolidColorTextBrushColor);
                 }
             }
-        }
-
-        private string Serialize(object toSerialize)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            // You might want to wrap these in #if DEBUG's 
-            settings.Indent = true;
-            settings.NewLineOnAttributes = true;
-            // this gets rid of the XML version 
-            settings.ConformanceLevel = ConformanceLevel.Fragment;
-            // buffer to a stringbuilder
-            StringBuilder sb = new StringBuilder();
-            XmlWriter writer = XmlWriter.Create(sb, settings);
-            // Need moar documentation on the manager, plox MSDN
-            XamlDesignerSerializationManager manager = new XamlDesignerSerializationManager(writer);
-            manager.XamlWriterMode = XamlWriterMode.Expression;
-            // its extremely rare for this to throw an exception
-            XamlWriter.Save(toSerialize, manager);
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Deserializes an object from xaml.
-        /// </summary>
-        /// <param name="xamlText">The xaml text.</param>
-        /// <returns>The deserialized object</returns>
-        /// <exception cref="XmlException">Thrown if the serialized text is not well formed XML</exception>
-        /// <exception cref="XamlParseException">Thrown if unable to deserialize from xaml</exception>
-        private object Deserialize(string xamlText)
-        {
-            XmlDocument doc = new XmlDocument();
-            // may throw XmlException
-            doc.LoadXml(xamlText);
-            // may throw XamlParseException
-            return XamlReader.Load(new XmlNodeReader(doc));
-        }
-
+        } 
 
         public bool InheritFontFamily { get; set; } = true;
         public bool InheritFontSize { get; set; } = true;

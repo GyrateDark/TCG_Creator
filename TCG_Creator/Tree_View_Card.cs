@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace TCG_Creator
 {
-    public class Tree_View_Card : ObservableObject
+    public class Tree_View_Card
     {
         public Tree_View_Card(ref Card_Collection coll)
         {
@@ -46,7 +46,6 @@ namespace TCG_Creator
                 if (value != _children)
                 {
                     _children = value;
-                    OnPropertyChanged("Children");
                 }
             }
         }
@@ -59,7 +58,6 @@ namespace TCG_Creator
                 if (value != _parentId)
                 {
                     _parentId = value;
-                    OnPropertyChanged("ParentId");
                 }
             }
         }
@@ -72,7 +70,6 @@ namespace TCG_Creator
                 if (value != _id)
                 {
                     _id = value;
-                    OnPropertyChanged("Id");
                 }
             }
         }
@@ -95,7 +92,6 @@ namespace TCG_Creator
                 if (value != Name)
                 {
                     _cardCollection.Find_Card_In_Collection(Id).Name = value;
-                    OnPropertyChanged("Name");
                 }
             }
         }
@@ -112,7 +108,6 @@ namespace TCG_Creator
                 if (value != _isSelected)
                 {
                     _isSelected = value;
-                    OnPropertyChanged("IsSelected");
                 }
             }
         }

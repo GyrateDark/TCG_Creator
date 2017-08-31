@@ -8,57 +8,19 @@
         mc:Ignorable="d"
         WindowState="Maximized"
         Title="TCG Creator" Height="350" Width="525">
-    <Window.Resources>
-        <Storyboard x:Key="Page_Trans_Out">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Main_Frame">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="Page_Trans_In">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Main_Frame">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-    </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.1*"/>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0"
-                    Grid.Column="0" ScrollViewer.CanContentScroll="True">
-            <Button Content="Home" Click="Button_Click_1" Margin="10,10,9.5,10" />
-            <Button Content="Deck Edit" Click="Button_Click"/>
-            <Button x:Name="but_Templates" Content="Templates" Click="But_Templates_Click"/>
-        </StackPanel>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Width="5"/>
-        <Frame x:Name="Main_Frame"
-               Grid.Row="0"
-               Grid.Column="1" NavigationUIVisibility="Hidden" >
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Navigated">
-                    <ei:ControlStoryboardAction Storyboard="{StaticResource Page_Trans_In}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="Navigating">
-                    <ei:ControlStoryboardAction Storyboard="{StaticResource Page_Trans_Out}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Frame>
-    </Grid>
+    <StackPanel>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save..." 
+                          Name="Menu_Save" Click="Menu_Save_Click"/>
+                <MenuItem Header="_Open..." 
+                          Name="Menu_Open" Click="Menu_Open_Click"/>
+            </MenuItem>
+        </Menu>
+        <TabControl>
+            <TabItem Header="Templates">
+                <local:Templates />
+            </TabItem>
+        </TabControl>
+    </StackPanel>
 </Window>

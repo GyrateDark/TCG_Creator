@@ -8,23 +8,22 @@
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <StackPanel Orientation="Horizontal" >
         <ComboBox ItemsSource="{Binding TreeViewCards}"
-                  SelectedValue = "{Binding CurrentlySelectedTreeViewCard}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:Tree_View_Card}">
-                    <TextBlock Text="{Binding Path=DisplayName}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <Button Style="{StaticResource SquareIconButton}" 
-                Command="{Binding Path=AddCardCommand}"/>
+                  SelectedItem="{Binding CurrentlySelectedTreeViewCard, Mode=TwoWay}"
+                  Text="{Binding CurrentlySelectedTreeViewCardDisplayName, Mode=OneTime}"
+                  DisplayMemberPath="DisplayName" 
+                  x:Name="TemplateComboBox"/>
+        <local:PathButton Style="{StaticResource RegionButton}" 
+                          Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
+                          Command="{Binding Path=AddCardCommand}"
+                          ToolTip="Add New Template"
+                          Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"/>
     </StackPanel>
-    <Button Style="{StaticResource TextButton}" 
-            Command="{Binding Path=AddCardCommand}"
-            Content="Template Settings"/>
 
-    <Border Style="{StaticResource StackPanelBorder}">
-        <StackPanel >
-            <Label Content="Current Template"/>
+    <CheckBox IsChecked="{Binding ShowTemplateSettings}"
+              Content="Template Settings"/>
+    <GroupBox Style="{StaticResource StdGroupBox}" 
+              Header="Current Template">
+        <StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource TextButton}"
                         Command="{Binding Path=SaveTemplateCard}"
@@ -34,6 +33,5 @@
                         Content="Delete" />
             </StackPanel>
         </StackPanel>
-    </Border>
-
+    </GroupBox>
 </StackPanel>

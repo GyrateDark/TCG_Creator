@@ -90,6 +90,11 @@ namespace TCG_Creator
                     }
                 }
 
+                if (!calledProperties.Contains("Drawing_Card_Elements"))
+                {
+                    calledProperties.Add("Drawing_Card_Elements");
+                }
+
                 foreach (string i in calledProperties)
                 {
                     RaiseOnPropertyChanged(i);

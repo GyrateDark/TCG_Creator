@@ -8,6 +8,16 @@
 
     <Color x:Key="StackPanelBorderColor">LightGray</Color>
 
+    <Color x:Key="RegionIconColor">Black</Color>
+
+    <Path x:Key="Lock_Icon" Data="F1 M 22.17,36.4216L 25.3369,36.4216L 25.3369,31.6711C 25.3369,24.6745 31.0087,19.0027 38.0053,19.0027C 45.0019,19.0027 50.6737,24.6745 50.6737,31.6711L 50.6737,36.4216L 53.841,36.4216L 53.8411,57.008L 22.17,57.008L 22.17,36.4216 Z M 45.9231,31.6711C 45.9231,27.2982 42.3782,23.7533 38.0053,23.7533C 33.6324,23.7533 30.0875,27.2982 30.0875,31.6711L 30.0875,36.4216L 45.923,36.4216L 45.9231,31.6711 Z "/>
+    <Path x:Key="Unlock_Icon" Data="F1 M 22.1698,36.4215L 25.3366,36.4215L 25.3367,31.6711C 25.3367,24.6745 31.0085,19.0027 38.0051,19.0027C 45.0017,19.0027 50.6735,24.6745 50.6735,31.6711L 45.9228,31.6711C 45.9228,27.2982 42.3779,23.7533 38.0051,23.7533C 33.6322,23.7533 30.0873,27.2982 30.0873,31.6711L 30.0873,36.4216L 53.8408,36.4215L 53.8409,57.008L 22.1698,57.008L 22.1698,36.4215 Z "/>
+    <Path x:Key="New_Region_Icon" Data="F1 M 28,48C 28,50 27.5,53 26.5,53L 48,53C 50.5,53 51,50.5 51,48L 51,29L 28,29L 28,48 Z M 55,48C 55,52.3723 52,57 48.5,57L 22,57C 19.3766,57 17,52.8723 17,48.5L 17,31L 24,31L 24,25L 55,25L 55,48 Z M 21,35L 21,49C 21,51.6234 21.6255,53.25 22.5,53.25C 23.3744,53.25 24,51.6234 24,49L 24,35L 21,35 Z M 40,38L 49,38L 49,48L 40,48L 40,38 Z M 30,32L 49,32L 49,35L 30,35L 30,32 Z M 30,38L 38,38L 38,40L 30,40L 30,38 Z M 30,42L 38,42L 38,44L 30,44L 30,42 Z M 30,46L 38,46L 38,48L 30,48L 30,46 Z M 53,14L 53,20L 50,20L 50,14L 53,14 Z M 61.9215,18.5239L 57.6789,22.7665L 55.5576,20.6452L 59.8002,16.4026L 61.9215,18.5239 Z M 65.0313,28.0313L 59.0313,28.0313L 59.0313,25.0313L 65.0313,25.0313L 65.0313,28.0313 Z M 43.4926,17.1096L 47.7353,21.3523L 45.6139,23.4736L 41.3713,19.231L 43.4926,17.1096 Z M 60.6792,36.8028L 56.3631,32.6349L 58.4471,30.4768L 62.7631,34.6448L 60.6792,36.8028 Z "/>
+    <Path x:Key="Move_Region_Icon" Data="F1 M 25,36L 36,36L 36,25L 31,25L 38,18L 45,25L 40,25L 40,36L 51,36L 51,31L 58,38L 51,45L 51,40L 40,40L 40,51L 45,51L 38,58L 31,51L 36,51L 36,40L 25,40L 25,45L 18,38L 25,31L 25,36 Z "/>
+    <Path x:Key="Delete_Region_Icon" Data="F1 M 18.5088,44.0374L 21.8676,40.6786L 27.4655,46.2765L 33.0634,40.6786L 36.4222,44.0374L 30.8243,49.6353L 36.4222,55.2332L 33.0634,58.592L 27.4655,52.994L 21.8676,58.592L 18.5088,55.2332L 24.1068,49.6353L 18.5088,44.0374 Z M 57.0079,38.0053L 38.0053,47.5066L 36.7482,46.8781L 39.5889,44.0374L 35.2559,39.7977L 38.0053,41.1724L 50.6737,34.8382L 57.0079,38.0053 Z M 19.0026,38.0053L 25.3369,34.8382L 32.3326,38.3361L 29.8968,40.7719L 28.1098,42.5589L 25.7193,41.3636L 21.8676,37.6052L 20.6459,38.8269L 19.0026,38.0053 Z M 38.0053,19.0027L 57.0079,28.504L 38.0053,38.0053L 19.0026,28.504L 38.0053,19.0027 Z M 57.0079,47.5066L 38.0053,57.008L 37.8778,56.9442L 39.5889,55.2332L 33.9909,49.6353L 34.6367,48.9895L 38.0053,50.6738L 50.6737,44.3395L 57.0079,47.5066 Z "/>
+
+    <Path x:Key="New_Card_Icon" Data="F1 M 51.5487,37.9814L 56.814,41.0534L 50.3383,48.7636L 50.3383,48.8841L 60.0205,46.9565L 60.0205,53.0403L 50.2777,51.414L 50.2777,51.5344L 56.814,59.0037L 51.4882,62.0757L 47.978,52.7994L 47.8569,52.7994L 44.4072,62.0757L 39.2025,59.0037L 45.6782,51.4742L 45.6177,51.3537L 36.1159,53.0403L 36.1159,46.9565L 45.5571,48.8841L 45.5571,48.7636L 39.2025,41.1137L 44.5888,37.9814L 47.9174,47.3179L 48.0385,47.3179L 51.5487,37.9814 Z M 20,17L 43.25,17L 56,29.75L 56,39L 52,36.75L 52,34L 39,34L 39,21L 24,21L 24,55L 41,55L 37.5,59L 20,59L 20,17 Z M 43,22.25L 43,30L 50.75,30L 43,22.25 Z "/>
+    
     <SolidColorBrush x:Key="ShowAllRectanglesBrush"
                      Color="{DynamicResource ShowAllRectanglesColor}" />
     <SolidColorBrush x:Key="SelectedRectangleBrush"
@@ -17,7 +27,10 @@
 
     <SolidColorBrush x:Key="StackPanelBorderBrush"
                      Color="{DynamicResource StackPanelBorderColor}" />
-    
+
+    <SolidColorBrush x:Key="RegionIconColorBrush"
+                     Color="{DynamicResource RegionIconColor}" />
+
 
     <Style TargetType="Border"
            x:Key="StackPanelBorder">
@@ -33,19 +46,108 @@
     </Style>
     <Style TargetType="Button"
            x:Key="SquareIconButton">
-        <Setter Property="Margin" Value="10" />
+        <Setter Property="Margin"
+                Value="2" />
     </Style>
     <Style TargetType="Button"
            x:Key="Normal">
     </Style>
+    <Style x:Key="MoveRegionButton" 
+           TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Path x:Name="MainPath"
+                              Width="31.6711" Height="38.0053"
+                              Stretch="Fill"
+                              Fill="{DynamicResource RegionIconColorBrush}"
+                              Data="{Binding Source={StaticResource Move_Region_Icon}, Path=Data}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+    </Style>
+
 
     <Style TargetType="CheckBox"
            x:Key="IconCheckBox">
         <Setter Property="VerticalAlignment"
                 Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
     </Style>
-    <Style TargetType="CheckBox"
-           x:Key="SlavedCheckBox">
+    <Style x:Key="SlavedCheckBox" 
+           TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Image Name="Im"
+                               Source="pack://application:,,,/Resources/Icons/link.ico" />
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Im" 
+                                    Property="Source" 
+                                    Value="pack://application:,,,/Resources/Icons/link_break.ico"  />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+    </Style>
+    <Style x:Key="LockedIconCheckBox" 
+           TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Path x:Name="MainPath"
+                              Width="31.6711" Height="38.0053"
+                              Stretch="Fill"
+                              Fill="{DynamicResource RegionIconColorBrush}"
+                              Data="{Binding Source={StaticResource Lock_Icon}, Path=Data}" />
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="MainPath" 
+                                    Property="Data" 
+                                    Value="{Binding Source={StaticResource Unlock_Icon}, Path=Data}"  />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+    </Style>
+    <Style x:Key="NewRegionCheckBox" 
+           TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Horizontal">
+                        <Path x:Name="MainPath"
+                              Stretch="Uniform"
+                              Fill="{DynamicResource RegionIconColorBrush}"
+                              Data="{Binding Source={StaticResource Lock_Icon}, Path=Data}" />
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="MainPath" 
+                                    Property="Data" 
+                                    Value="{Binding Source={StaticResource Unlock_Icon}, Path=Data}"  />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Setter Property="VerticalAlignment"
                 Value="Center" />
     </Style>
@@ -58,12 +160,22 @@
                 Value="5" />
     </Style>
 
+    <Style TargetType="GroupBox"
+           x:Key="StdGroupBox">
+    </Style>
+
     <Style TargetType="Label"
            x:Key="TitleLabel">
         <Setter Property="FontWeight"
                 Value="ExtraBold" />
     </Style>
 
+    <Style TargetType="local:PathButton"
+           x:Key="RegionButton">
+        <Setter Property="DataStroke"
+                Value="{DynamicResource RegionIconColorBrush}" />
+    </Style>
+    
     <sys:Double x:Key="Selected_Stroke_Thickness">4</sys:Double>
     <Style TargetType="Rectangle" 
            x:Key="Show_All_Card_Rectangle">

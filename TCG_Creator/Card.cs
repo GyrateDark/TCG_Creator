@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace TCG_Creator
 {
-    public class Card : ObservableObject
+    public class Card
     {
         private List<Card_Region> _regions;
         private int _id = -1;
@@ -133,7 +133,6 @@ namespace TCG_Creator
                 if (value != _regions)
                 {
                     _regions = value;
-                    OnPropertyChanged("Regions");
                 }
             }
         }
@@ -146,7 +145,6 @@ namespace TCG_Creator
                 if (value != _id)
                 {
                     _id = value;
-                    OnPropertyChanged("Id");
                 }
             }
         }
@@ -159,7 +157,6 @@ namespace TCG_Creator
                 if (value != _name)
                 {
                     _name = value;
-                    OnPropertyChanged("Name");
                 }
             }
         }
@@ -171,7 +168,6 @@ namespace TCG_Creator
                 if (value != _deckIds)
                 {
                     _deckIds = value;
-                    OnPropertyChanged("DeckIds");
                 }
             }
         }
@@ -184,7 +180,6 @@ namespace TCG_Creator
                 if (value != _parentCardId)
                 {
                     _parentCardId = value;
-                    OnPropertyChanged("ParentCard");
                 }
             }
         }
@@ -197,7 +192,6 @@ namespace TCG_Creator
                 if (value != _templateCard)
                 {
                     _templateCard = value;
-                    OnPropertyChanged("IsTemplateCard");
                 }
             }
         }

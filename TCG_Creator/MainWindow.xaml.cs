@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,35 +21,55 @@ namespace TCG_Creator
     /// </summary>
     public partial class MainWindow : Window
     {
-        Deck_Edit page_Deck_Edit;
-        Landing page_Landing;
-        Templates page_Templates;
+        OpenFileDialog dia_open = new OpenFileDialog();
+        SaveFileDialog dia_save = new SaveFileDialog();
 
         public MainWindow(object context)
         {
             DataContext = context;
-            page_Deck_Edit = new Deck_Edit(context);
-            page_Landing = new Landing(context);
-            page_Templates = new Templates(context);
 
             InitializeComponent();
 
-            Main_Frame.Navigate(page_Landing);
+            dia_save.Title = "Save Card Database";
+            dia_save.DefaultExt = "xml";
+            dia_save.AddExtension = true;
+            dia_save.Filter = "XML File | *.xml";
+
+            dia_open.Title = "Open Card Database";
+            dia_open.DefaultExt = "xml";
+            dia_open.Filter = "XML File | *.xml";
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Menu_Save_Click(object sender, RoutedEventArgs e)
         {
-            Main_Frame.Navigate(page_Deck_Edit);
+            dia_save.ShowDialog();
+
+            View_Model model = (View_Model)DataContext;
+
+            try
+            {
+                model.Xml_Load(dia_save.FileName, true);
+            }
+            catch
+            {
+                MessageBox.Show("Error Saving File");
+            }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Menu_Open_Click(object sender, RoutedEventArgs e)
         {
-            Main_Frame.Navigate(page_Landing);
-        }
+            dia_open.ShowDialog();
 
-        private void But_Templates_Click(object sender, RoutedEventArgs e)
-        {
-            Main_Frame.Navigate(page_Templates);
+            View_Model model = (View_Model)DataContext;
+
+            try
+            {
+                model.Xml_Load(dia_open.FileName, true);
+            }
+            catch
+            {
+                MessageBox.Show("Error Loading File");
+            }
         }
     }
 }

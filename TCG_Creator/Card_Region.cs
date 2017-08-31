@@ -17,7 +17,7 @@ namespace TCG_Creator
 {
     
 
-    public class Card_Region
+    public class Card_Region : ObservableObject
     {
         public Card_Region()
         {
@@ -43,6 +43,7 @@ namespace TCG_Creator
         
         public bool decrease_text_size_to_fit = true;
         public bool InheritRegionBeforeCard { get; set; } = true;
+        public bool IsLocked { get; set; } = false;
 
         private Inherittable_Properties _desiredProperties = new Inherittable_Properties();
         private Inherittable_Properties _renderProperties = new Inherittable_Properties();
@@ -212,10 +213,47 @@ namespace TCG_Creator
 
             return image;
         }
-
+        
         public IList<Color> GetUsedColors()
         {
             return _renderProperties.GetUsedColors();
+        }
+        [XmlIgnore]
+        public string DisplayName
+        {
+            get
+            {
+                if (id == 0)
+                {
+                    return "Base Card";
+                }
+                else if (id == -1)
+                {
+                    return "No Regions";
+                }
+                else
+                {
+                    return "Region " + id.ToString() + " - " + description;
+                }
+            }
+        }
+        [XmlIgnore]
+        private bool _isMousedOver = false;
+        [XmlIgnore]
+        public bool IsMousedOver
+        {
+            get
+            {
+                return _isMousedOver;
+            }
+            set
+            {
+                if (value != _isMousedOver)
+                {
+                    _isMousedOver = value;
+                    OnPropertyChanged("IsMousedOver");
+                }
+            }
         }
     }
 }

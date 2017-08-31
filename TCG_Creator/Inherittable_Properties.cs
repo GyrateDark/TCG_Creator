@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
-    public class Inherittable_Properties : ObservableObject
+    public class Inherittable_Properties
     {
         private Image_Properties _imageProperties = new Image_Properties();
         private String_Container _stringContainer = new String_Container();
@@ -21,7 +21,6 @@ namespace TCG_Creator
                 if (_imageProperties != value)
                 {
                     _imageProperties = value;
-                    OnPropertyChanged("ImageProperties");
                 }
             }
         }
@@ -34,7 +33,6 @@ namespace TCG_Creator
                 if (_stringContainer != value)
                 {
                     _stringContainer = value;
-                    OnPropertyChanged("StringContainer");
                 }
             }
         }
@@ -48,7 +46,6 @@ namespace TCG_Creator
                 if (_stringContainer.stringProperties != value)
                 {
                     _stringContainer.stringProperties = value;
-                    OnPropertyChanged("StringProperties");
                 }
             }
         }

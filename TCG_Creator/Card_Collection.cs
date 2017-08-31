@@ -8,14 +8,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
-    public class Card_Collection : ObservableObject
+    public class Card_Collection
     {
         List<Card> _cards = new List<Card>();
         Card failCard;
         Card newCard;
+
+        private GUI_Settings _GUISettings = new GUI_Settings();
 
         public Card_Collection()
         {
@@ -73,7 +76,6 @@ namespace TCG_Creator
             card.Id = Find_Next_Empty_Card_Id();
 
             _cards.Add(card);
-            OnPropertyChanged("CardCollection");
         }
 
         public bool Modify_Card_In_Collection(Card card)
@@ -83,7 +85,6 @@ namespace TCG_Creator
                 if (_cards[i].Id == card.Id)
                 {
                     _cards[i] = card;
-                    OnPropertyChanged("CardCollection");
                     return true;
                 }
             }
@@ -174,5 +175,46 @@ namespace TCG_Creator
 
             return result;
         }
+
+        #region GUI Properties
+        public int SelectedRegionId
+        {
+            get
+            {
+                return _GUISettings.SelectedRegionId;
+            }
+            set
+            {
+                _GUISettings.SelectedRegionId = value;
+            }
+        }
+        public int SelectedCardId
+        {
+            get
+            {
+                return _GUISettings.SelectedCardId;
+            }
+            set
+            {
+                _GUISettings.SelectedCardId = value;
+            }
+        }
+        public bool ShowAllRegions
+        {
+            get
+            {
+                return _GUISettings.ShowAllRegions;
+            }
+            set
+            {
+                _GUISettings.ShowAllRegions = value;
+            }
+        }
+        public bool ShowTemplateSettings
+        {
+            get { return _GUISettings.ShowTemplateSettings; }
+            set { _GUISettings.ShowTemplateSettings = value; }
+        }
+        #endregion
     }
 }

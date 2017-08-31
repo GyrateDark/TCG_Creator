@@ -40,10 +40,10 @@ namespace TCG_Creator
         private ICommand _getCardCommand;
         private ICommand _saveTemplateCardCommand;
         private ICommand _deleteSelectedTemplateCard;
+        private ICommand _deleteSelectedRegion;
 
         public PercentageConverter percentConvertor = new PercentageConverter();
 
-        private int _selectedRegionId = -1;
         private int _nextRegionId = 0;
 
         private Xceed.Wpf.Toolkit.RichTextBox _richTextBox = new Xceed.Wpf.Toolkit.RichTextBox();
@@ -52,11 +52,8 @@ namespace TCG_Creator
         private bool _richTextBoxEditingTools = false;
         private bool _deleteNextSelectedRegion = false;
         private bool _hideTextEditBox = false;
-        private bool _showAllRegions = false;
 
-        private bool _currentlySaving = false;
-
-        private Tree_View_Card _currentlySelectedTreeViewCard = null;
+        private bool _clickedOnRegion = false;
         #endregion
 
         #region Public Properties/Commands
@@ -109,11 +106,42 @@ namespace TCG_Creator
                 if (_deleteSelectedTemplateCard == null)
                 {
                     _deleteSelectedTemplateCard = new RelayCommand(
-                        param => SaveTemplateCard(),
-                        param => (_deleteSelectedTemplateCard != null)
+                        param => SaveTemplateCard()
                     );
                 }
                 return _deleteSelectedTemplateCard;
+            }
+        }
+        public ICommand DeleteSelectedRegionCommand
+        {
+            get
+            {
+                if (_deleteSelectedRegion == null)
+                {
+                    _deleteSelectedRegion = new RelayCommand(
+                        param => DeleteSelectedRegion()
+                    );
+                }
+                return _deleteSelectedRegion;
+            }
+        }
+        private void DeleteSelectedRegion()
+        {
+            if (SelectedRegionId >= 1)
+            {
+                int regionIdToBeDeleted = SelectedRegionId;
+                SelectedRegionId = 0;
+
+                for (int i = 0; i < CurrentlySelectedCard.Regions.Count; ++i)
+                {
+                    if (CurrentlySelectedCard.Regions[i].id == regionIdToBeDeleted)
+                    {
+                        CurrentlySelectedCard.Regions.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                OnPropertyChanged("CurrentlySelectedCard");
             }
         }
 
@@ -151,7 +179,7 @@ namespace TCG_Creator
                 {
                     if (SelectedRegionId == i.id)
                     {
-                        if (HideTextEditBox)
+                        if (HideTextEditBox || !_clickedOnRegion)
                         {
                             frameworkElement = new Rectangle();
 
@@ -196,8 +224,10 @@ namespace TCG_Creator
                     //DrawingBrush rectFill = new DrawingBrush(i.Draw_Region(new Rect(rectangle.Margin.Left, rectangle.Margin.Top, rectangle.Width, rectangle.Height)));
                     //rectFill.Stretch = Stretch.None;
                     //rectangle.Fill = rectFill;
-
-                    frameworkElement.MouseUp += FrameworkElement_MouseUp; ;
+                    if (i.id != 0)
+                    {
+                        frameworkElement.MouseUp += FrameworkElement_MouseUp;
+                    }
                     frameworkElement.DataContext = i.id;
 
                     result.Add(frameworkElement);
@@ -273,6 +303,7 @@ namespace TCG_Creator
             {
                 DisplayRichTextBoxEditingTools = true;
                 SelectedRegionId = (int)((FrameworkElement)sender).DataContext;
+                _clickedOnRegion = true;
             }
             OnPropertyChanged("Drawing_Card_Elements");
         }
@@ -302,30 +333,65 @@ namespace TCG_Creator
         {
             get
             {
-                return _currentlySelectedTreeViewCard;
+                return findTreeViewCardFromIndex(_cardCollection.SelectedCardId, TreeViewCards);
             }
             set
             {
-                if (_currentlySelectedTreeViewCard != value)
+                if (value != null)
                 {
-                    _currentlySelectedTreeViewCard = value;
-                    OnPropertyChanged("CurrentlySelectedTreeViewCard");
+                    if (_cardCollection.SelectedCardId != value.Id)
+                    {
+                        _cardCollection.SelectedCardId = value.Id;
+                        OnPropertyChanged("CurrentlySelectedTreeViewCard");
+                    }
                 }
             }
         }
+        [DependsUpon("CurrentlySelectedTreeViewCard")]
+        public string CurrentlySelectedTreeViewCardDisplayName
+        {
+            get
+            {
+                return CurrentlySelectedTreeViewCard.DisplayName;
+            }
+        }
 
+        [DependsUpon("CurrentlySelectedCard")]
+        public IList<Card_Region> CurrentlySelectedCardRegions
+        {
+            get
+            {
+                var temp = new List<Card_Region>(CurrentlySelectedCard.Regions);
+
+                if (temp.Count >= 1)
+                {
+                    temp.RemoveAt(0);
+                }
+
+                if (temp.Count == 0)
+                {
+                    temp.Add(new Card_Region());
+                    temp[0].id = -1;
+                }
+
+                return temp;
+            }
+        }
+
+        
         [DependsUpon("CurrentlySelectedCard")]
         public int SelectedRegionId
         {
             get
             {
-                return _selectedRegionId;
+                return _cardCollection.SelectedRegionId;
             }
             set
             {
-                if (_selectedRegionId != value)
+                if (_cardCollection.SelectedRegionId != value)
                 {
-                    _selectedRegionId = value;
+                    _cardCollection.SelectedRegionId = value;
+                    _clickedOnRegion = false;
                     OnPropertyChanged("SelectedRegionId");
                 }
             }
@@ -337,6 +403,16 @@ namespace TCG_Creator
             get
             {
                 return Find_SelectedCard_Region(SelectedRegionId);
+            }
+            set
+            {
+                if (value != null)
+                {
+                    if (value.id != SelectedRegionId)
+                    {
+                        SelectedRegionId = value.id;
+                    }
+                }
             }
         }
         [DependsUpon("CurrentlySelectedRegion")]
@@ -375,6 +451,7 @@ namespace TCG_Creator
 
         [DependsUpon("CurrentCardCollection")]
         [DependsUpon("CurrentlySelectedTreeViewCard")]
+        
         public Card CurrentlySelectedCard
         {
             get
@@ -477,11 +554,11 @@ namespace TCG_Creator
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
 
-            xmlWriterSettings.ConformanceLevel = ConformanceLevel.Auto;
+            xmlWriterSettings.ConformanceLevel = ConformanceLevel.Document;
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.NewLineOnAttributes = true;
             Directory.CreateDirectory(file);
-            _currentlySaving = true;
+
             XmlWriter xmlWriter = XmlWriter.Create(file+"autosave_write.xml", xmlWriterSettings);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Card_Collection));
             
@@ -495,8 +572,6 @@ namespace TCG_Creator
                 File.Delete(file + "autosave.xml");
             }
             File.Move(file + "autosave_write.xml", file + "autosave.xml");
-
-            _currentlySaving = false;
         }
 
         public void Xml_Load(string file, bool only_templates)
@@ -514,21 +589,25 @@ namespace TCG_Creator
 
                 SkipSave = true;
 
-                CurrentCardCollection = null;
-                CurrentlySelectedTreeViewCard = null;
-                SelectedRegionId = -1;
+                Card_Collection oldCollection = _cardCollection;
 
-                CurrentCardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
+                _cardCollection = null;
+
+                try
+                {
+                    CurrentCardCollection = (Card_Collection)xmlSerializer.Deserialize(xmlReader);
+                }
+                catch
+                {
+                    CurrentCardCollection = oldCollection;
+                }
 
                 File.Delete(file + "autosave.xml.tmp");
 
+
+
                 SkipSave = false;
             }
-        }
-
-        public void Tree_View_Selected_Item_Changed()
-        {
-            OnPropertyChanged("CurrentlySelectedCard");
         }
 
         #region Visibility Controls and Checkbox States
@@ -635,12 +714,12 @@ namespace TCG_Creator
         }
         public bool ShowAllRegions
         {
-            get { return _showAllRegions; }
+            get { return _cardCollection.ShowAllRegions; }
             set
             {
-                if (_showAllRegions != value)
+                if (_cardCollection.ShowAllRegions != value)
                 {
-                    _showAllRegions = value;
+                    _cardCollection.ShowAllRegions = value;
                     OnPropertyChanged("ShowAllRegions");
                 }
             }
@@ -819,40 +898,60 @@ namespace TCG_Creator
                 }
             }
         }
+        
+        [DependsUpon("CurrentlySelectedRegion")]
+        public double SelectedGradientFontBrushAngle
+        {
+            get
+            {
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushAngle;
+            }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushAngle != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushAngle = value;
+                    OnPropertyChanged("CurrentlySelectedRegion");
+                }
+            }
+        }
         [DependsUpon("CurrentlySelectedRegion")]
         public Color SelectedGradientFontBrush1
         {
             get
             {
-                if (GradientBrushRequested)
-                {
-                    return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Color;
-                }
-                else
-                {
-                    return Colors.Red;
-                }
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Color;
             }
             set
             {
-                if (GradientBrushRequested)
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Color != value)
                 {
-                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Color != value)
-                    {
-                        GradientStop tmp = new GradientStop(value, 0);
+                    GradientStop tmp = new GradientStop(value, 0);
 
-                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(0);
-                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Insert(0, tmp);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(0);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Insert(0, tmp);
 
-                        OnPropertyChanged("SelectedFontBrush1");
-                    }
+                    OnPropertyChanged("SelectedGradientFontBrush1");
                 }
-                else
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public double SelectedGradientFontBrushOffset1
+        {
+            get
+            {
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Offset;
+            }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Offset != value)
                 {
-                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.SolidColorTextBrushColor != value)
-                    {
-                        return;
-                    }
+                    GradientStop tmp = new GradientStop(CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.First().Color, value);
+
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(0);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Insert(0, tmp);
+
+                    OnPropertyChanged("SelectedGradientFontBrushOffset1");
                 }
             }
         }
@@ -861,32 +960,38 @@ namespace TCG_Creator
         {
             get
             {
-                if (GradientBrushRequested)
-                {
-                    return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Color;
-                }
-                else
-                {
-                    return Colors.Orange;
-                }
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Color;
             }
             set
             {
-                if (GradientBrushRequested)
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Color != value)
                 {
-                    if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Color != value)
-                    {
-                        GradientStop tmp = new GradientStop(value, 1);
+                    GradientStop tmp = new GradientStop(value, 1);
 
-                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(1);
-                        CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Add(tmp);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(1);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Add(tmp);
 
-                        OnPropertyChanged("SelectedFontBrush2");
-                    }
+                    OnPropertyChanged("SelectedGradientFontBrush2");
                 }
-                else
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public double SelectedGradientFontBrushOffset2
+        {
+            get
+            {
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Offset;
+            }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Offset != value)
                 {
-                    return;
+                    GradientStop tmp = new GradientStop(CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Last().Color, value);
+
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.RemoveAt(1);
+                    CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushStops.Add(tmp);
+
+                    OnPropertyChanged("SelectedGradientFontBrushOffset2");
                 }
             }
         }
@@ -1006,6 +1111,134 @@ namespace TCG_Creator
                 return CurrentlySelectedCard.GetUsedColors;
             }
         }
+        public IList<string> AllBackgroundImageFillType
+        {
+            get
+            {
+                IList<string> result = new List<String>();
+
+                for (int i = 0; i < (int)IMAGE_OPTIONS.N_IMAGE_OPTIONS; ++i)
+                {
+                    result.Add("");
+                }
+
+                result[(int)IMAGE_OPTIONS.Fill] = "Fill";
+                result[(int)IMAGE_OPTIONS.Letterbox] = "Letterbox";
+                result[(int)IMAGE_OPTIONS.Unified_Fill] = "Unified Fill";
+                result[(int)IMAGE_OPTIONS.None] = "None";
+
+                return result;
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool InheritBackground
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.InheritBackground; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.InheritBackground != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.InheritBackground = value;
+
+                    OnPropertyChanged("InheritBackground");
+                }
+            }
+        }
+        [DependsUpon("InheritBackground")]
+        public bool NotInheritBackground
+        {
+            get { return !InheritBackground; }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public string BackgroundImageFillType
+        {
+            get { return AllBackgroundImageFillType[(int)CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageFillType]; }
+            set
+            {
+                IMAGE_OPTIONS real_value = (IMAGE_OPTIONS)AllBackgroundImageFillType.IndexOf(value);
+
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageFillType != real_value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageFillType = real_value;
+
+                    OnPropertyChanged("BackgroundImageFillType");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public string BackgroundImageLocation
+        {
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocation; }
+            set
+            {
+                if (CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocation != value)
+                {
+                    CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocation = value;
+
+                    OnPropertyChanged("BackgroundImageLocation");
+                }
+            }
+        }
+
+        [DependsUpon("SelectedRegionId")]
+        [DependsUpon("CurrentlySelectedCard")]
+        [DependsUpon("CurrentlySelectedRegionIsLocked")]
+        public bool CardEditEnable
+        {
+            get
+            {
+                return SelectedRegionId >= 1 && SelectedRegionId < CurrentlySelectedCard.Regions.Count && !CurrentlySelectedRegionIsLocked;
+            }
+        }
+        [DependsUpon("CurrentlySelectedRegion")]
+        public bool CurrentlySelectedRegionIsLocked
+        {
+            get
+            {
+                return CurrentlySelectedRegion.IsLocked;
+            }
+            set
+            {
+                if (CurrentlySelectedRegion.IsLocked != value)
+                {
+                    CurrentlySelectedRegion.IsLocked = value;
+                    OnPropertyChanged("CurrentlySelectedRegionIsLocked");
+                }
+            }
+        }
+
+
+        [DependsUpon("CurrentCardCollection")]
+        public bool ShowTemplateSettings
+        {
+            get { return CurrentCardCollection.ShowTemplateSettings; }
+            set
+            {
+                if (CurrentCardCollection.ShowTemplateSettings != value)
+                {
+                    CurrentCardCollection.ShowTemplateSettings = value;
+                    OnPropertyChanged("ShowTemplateSettings");
+                }
+            }
+        }
+        [DependsUpon("ShowTemplateSettings")]
+        public Visibility VisShowTemplateSettings
+        {
+            get
+            {
+                if (ShowTemplateSettings)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
+
+
 
         #region Template Settings
         [DependsUpon("CurrentlySelectedCard")]
@@ -1204,7 +1437,7 @@ namespace TCG_Creator
             Card newCard = new Card();
 
             newCard.IsTemplateCard = true;
-            if (CurrentlySelectedTreeViewCard != null)
+            if (_cardCollection.SelectedCardId != -1)
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
@@ -1267,7 +1500,7 @@ namespace TCG_Creator
         }
         private Card Find_Selected_Card()
         {
-            if (CurrentlySelectedTreeViewCard == null)
+            if (_cardCollection.SelectedCardId == -1)
             {
                 Card temp = new Card();
 
@@ -1275,23 +1508,31 @@ namespace TCG_Creator
 
                 return temp;
             }
-            return CurrentCardCollection.Find_Card_In_Collection(CurrentlySelectedTreeViewCard.Id);
+            else if (_cardCollection.SelectedCardId == -2)
+            {
+                Card temp = new Card();
+
+                temp.Regions.Add(new Card_Region());
+
+                return temp;
+            }
+            return CurrentCardCollection.Find_Card_In_Collection(_cardCollection.SelectedCardId);
         }
 
-        private int find_selected(IList<Tree_View_Card> cards)
+        private Tree_View_Card findTreeViewCardFromIndex(int cardId, IList<Tree_View_Card> cards)
         {
-            int result = -1;
+            Tree_View_Card result = new Tree_View_Card(ref _cardCollection);
             foreach (Tree_View_Card i in cards)
             {
-                if (i.IsSelected == true)
+                if (i.Id == cardId)
                 {
-                    return i.Id;
+                    return i;
                 }
                 else if (i.Children.Count >= 1)
                 {
-                    result = find_selected(i.Children);
+                    result = findTreeViewCardFromIndex(cardId, i.Children);
 
-                    if (result != -1)
+                    if (result.Id == cardId)
                     {
                         return result;
                     }

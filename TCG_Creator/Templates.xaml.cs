@@ -19,14 +19,10 @@ namespace TCG_Creator
     /// <summary>
     /// Interaction logic for Templates.xaml
     /// </summary>
-    public partial class Templates : Page
+    public partial class Templates : StackPanel
     {
-        OpenFileDialog dia_open = new OpenFileDialog();
-        SaveFileDialog dia_save = new SaveFileDialog();
-
-        public Templates(object context)
+        public Templates()
         {
-            DataContext = context;
             InitializeComponent();
         }
 
