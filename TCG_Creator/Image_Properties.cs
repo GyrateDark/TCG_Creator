@@ -25,12 +25,46 @@ namespace TCG_Creator
 
     public class Image_Properties
     {
-        public IMAGE_LOCATION_TYPE BackgroundImageLocationType { get; set; } = IMAGE_LOCATION_TYPE.None;
+        public IMAGE_LOCATION_TYPE BackgroundImageLocationType
+        {
+            get
+            {
+                string matchedString = BackgroundImageLocation.Replace(" ", "");
+
+                if (matchedString == "")
+                {
+                    return IMAGE_LOCATION_TYPE.None;
+                }
+                else if(matchedString.IndexOf("http") == 0)
+                {
+                    return IMAGE_LOCATION_TYPE.Online;
+                }
+                else if(matchedString.IndexOf(":/") == 1 || matchedString.IndexOf(":\\") == 1)
+                {
+                    return IMAGE_LOCATION_TYPE.Absolute;
+                }
+                else
+                {
+                    return IMAGE_LOCATION_TYPE.Relative;
+                }
+            }
+        }
         public IMAGE_OPTIONS BackgroundImageFillType { get; set; } = IMAGE_OPTIONS.None;
-
-        public string BackgroundImageLocation { get; set; } = "";
-
+        private string _backgroundImageLocation = "";
         public bool InheritBackground { get; set; } = true;
+
+        public string BackgroundImageLocation
+        {
+            get { return _backgroundImageLocation; }
+            set
+            {
+                if (_backgroundImageLocation != value)
+                {
+                    _backgroundImageLocation = value;
+                    _backgroundImageLocation = _backgroundImageLocation.Trim();
+                }
+            }
+        } 
 
         public Image_Properties GetInherittedPropertiesMerging(Image_Properties Source)
         {
@@ -40,7 +74,6 @@ namespace TCG_Creator
             {
                 result.BackgroundImageFillType = Source.BackgroundImageFillType;
                 result.BackgroundImageLocation = Source.BackgroundImageLocation;
-                result.BackgroundImageLocationType = Source.BackgroundImageLocationType;
             }
 
             return result;

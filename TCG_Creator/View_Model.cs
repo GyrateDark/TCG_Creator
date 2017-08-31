@@ -242,8 +242,7 @@ namespace TCG_Creator
             {
                 string data = (string)e.Data.GetData(DataFormats.StringFormat);
                 Card_Region selectedRegion = Find_SelectedCard_Region((int)((FrameworkElement)sender).DataContext);
-
-                selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocationType = IMAGE_LOCATION_TYPE.Online;
+                
                 selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageFillType = IMAGE_OPTIONS.Unified_Fill;
                 selectedRegion.DesiredInherittedProperties.ImageProperties.BackgroundImageLocation = data;
 
@@ -775,6 +774,7 @@ namespace TCG_Creator
                 }
             }
         }
+        [DependsUpon("InheritFontSize")]
         public bool NotInheritFontSize
         {
             get { return !InheritFontSize; }
@@ -808,6 +808,7 @@ namespace TCG_Creator
                 }
             }
         }
+        [DependsUpon("InheritFontStyle")]
         public bool NotInheritFontStyle
         {
             get { return !InheritFontStyle; }
@@ -842,6 +843,7 @@ namespace TCG_Creator
                 }
             }
         }
+        [DependsUpon("InheritFontWeight")]
         public bool NotInheritFontWeight
         {
             get { return !InheritFontWeight; }

@@ -17,7 +17,12 @@
     <Path x:Key="Delete_Region_Icon" Data="F1 M 18.5088,44.0374L 21.8676,40.6786L 27.4655,46.2765L 33.0634,40.6786L 36.4222,44.0374L 30.8243,49.6353L 36.4222,55.2332L 33.0634,58.592L 27.4655,52.994L 21.8676,58.592L 18.5088,55.2332L 24.1068,49.6353L 18.5088,44.0374 Z M 57.0079,38.0053L 38.0053,47.5066L 36.7482,46.8781L 39.5889,44.0374L 35.2559,39.7977L 38.0053,41.1724L 50.6737,34.8382L 57.0079,38.0053 Z M 19.0026,38.0053L 25.3369,34.8382L 32.3326,38.3361L 29.8968,40.7719L 28.1098,42.5589L 25.7193,41.3636L 21.8676,37.6052L 20.6459,38.8269L 19.0026,38.0053 Z M 38.0053,19.0027L 57.0079,28.504L 38.0053,38.0053L 19.0026,28.504L 38.0053,19.0027 Z M 57.0079,47.5066L 38.0053,57.008L 37.8778,56.9442L 39.5889,55.2332L 33.9909,49.6353L 34.6367,48.9895L 38.0053,50.6738L 50.6737,44.3395L 57.0079,47.5066 Z "/>
 
     <Path x:Key="New_Card_Icon" Data="F1 M 51.5487,37.9814L 56.814,41.0534L 50.3383,48.7636L 50.3383,48.8841L 60.0205,46.9565L 60.0205,53.0403L 50.2777,51.414L 50.2777,51.5344L 56.814,59.0037L 51.4882,62.0757L 47.978,52.7994L 47.8569,52.7994L 44.4072,62.0757L 39.2025,59.0037L 45.6782,51.4742L 45.6177,51.3537L 36.1159,53.0403L 36.1159,46.9565L 45.5571,48.8841L 45.5571,48.7636L 39.2025,41.1137L 44.5888,37.9814L 47.9174,47.3179L 48.0385,47.3179L 51.5487,37.9814 Z M 20,17L 43.25,17L 56,29.75L 56,39L 52,36.75L 52,34L 39,34L 39,21L 24,21L 24,55L 41,55L 37.5,59L 20,59L 20,17 Z M 43,22.25L 43,30L 50.75,30L 43,22.25 Z "/>
-    
+
+    <Path x:Key="Bold_Icon" Data="F1 M 27,58L 27,20L 38.9937,20C 42.6524,20 45.549,20.7945 47.6837,22.3835C 49.8184,23.9725 50.8857,26.0421 50.8857,28.5924C 50.8857,30.7243 50.2849,32.5776 49.0833,34.1524C 47.8816,35.7273 46.2205,36.8455 44.1,37.5071L 44.1,37.6174C 46.6559,37.9171 48.6973,38.8926 50.2241,40.5437C 51.7509,42.1949 52.5143,44.3409 52.5143,46.9817C 52.5143,50.2615 51.2448,52.9178 48.7058,54.9507C 46.1668,56.9835 42.9606,58 39.087,58L 27,58 Z M 33.0143,24.8857L 33.0143,35.7429L 37.5009,35.7429C 39.644,35.7429 41.3249,35.224 42.5435,34.1864C 43.7621,33.1487 44.3714,31.6799 44.3714,29.7799C 44.3714,26.5171 42.2452,24.8857 37.9929,24.8857L 33.0143,24.8857 Z M 33.0143,40.6286L 33.0143,53.1143L 38.7817,53.1143C 41.0832,53.1143 42.8616,52.5502 44.117,51.4221C 45.3723,50.294 46,48.7403 46,46.7612C 46,42.6728 43.3253,40.6286 37.9759,40.6286L 33.0143,40.6286 Z "/>
+    <Path x:Key="Italic_Icon" Data="F1 M 47.9383,20L 47.2449,24.05L 43.4449,24.05L 37.8979,53.95L 41.6979,53.95L 41.0046,58L 28.0617,58L 28.7551,53.95L 32.5551,53.95L 38.102,24.05L 34.302,24.05L 34.9954,20L 47.9383,20 Z "/>
+
+    <Path x:Key="Expand_Right_Icon" Data="F1 M 57,19L 57,57L 19,57L 19,19L 57,19 Z M 22,54L 54,54L 54,22.0001L 22,22L 22,54 Z M 24,24.0001L 36,24.0001L 36,52L 24,52L 24,24.0001 Z M 38,36L 46.6666,36L 42.9999,31.0001L 46.9999,31L 52,38L 46.9999,45L 42.9999,45L 46.6666,40L 38,40L 38,36 Z "/>
+
     <SolidColorBrush x:Key="ShowAllRectanglesBrush"
                      Color="{DynamicResource ShowAllRectanglesColor}" />
     <SolidColorBrush x:Key="SelectedRectangleBrush"
@@ -32,6 +37,13 @@
                      Color="{DynamicResource RegionIconColor}" />
 
 
+    <Style TargetType="local:PathButton"
+           x:Key="RegionButton">
+        <Setter Property="DataStroke"
+                Value="{DynamicResource RegionIconColorBrush}" />
+    </Style>
+    
+    
     <Style TargetType="Border"
            x:Key="StackPanelBorder">
         <Setter Property="BorderThickness"
@@ -108,36 +120,10 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Path x:Name="MainPath"
-                              Width="31.6711" Height="38.0053"
-                              Stretch="Fill"
-                              Fill="{DynamicResource RegionIconColorBrush}"
-                              Data="{Binding Source={StaticResource Lock_Icon}, Path=Data}" />
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked" Value="False">
-                            <Setter TargetName="MainPath" 
-                                    Property="Data" 
-                                    Value="{Binding Source={StaticResource Unlock_Icon}, Path=Data}"  />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="VerticalAlignment"
-                Value="Center" />
-    </Style>
-    <Style x:Key="NewRegionCheckBox" 
-           TargetType="CheckBox">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="CheckBox">
-                    <StackPanel Orientation="Horizontal">
-                        <Path x:Name="MainPath"
-                              Stretch="Uniform"
-                              Fill="{DynamicResource RegionIconColorBrush}"
-                              Data="{Binding Source={StaticResource Lock_Icon}, Path=Data}" />
-                    </StackPanel>
-
+                          Width="31.6711" Height="38.0053"
+                          Stretch="Fill"
+                          Fill="{DynamicResource RegionIconColorBrush}"
+                          Data="{Binding Source={StaticResource Lock_Icon}, Path=Data}" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="False">
                             <Setter TargetName="MainPath" 
@@ -170,12 +156,32 @@
                 Value="ExtraBold" />
     </Style>
 
-    <Style TargetType="local:PathButton"
-           x:Key="RegionButton">
+    
+
+    <Style TargetType="local:PathCheckBox"
+           x:Key="PathCheckBox">
         <Setter Property="DataStroke"
                 Value="{DynamicResource RegionIconColorBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Path x:Name="MainPath"
+                          Width="31.6711" Height="38.0053"
+                          Stretch="Fill"
+                          Fill="{DynamicResource RegionIconColorBrush}"
+                          Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PathCheckBox}}, Path=Data}" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="MainPath" 
+                                    Property="Data" 
+                                    Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PathCheckBox}}, Path=CheckedData}"  />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
-    
+
     <sys:Double x:Key="Selected_Stroke_Thickness">4</sys:Double>
     <Style TargetType="Rectangle" 
            x:Key="Show_All_Card_Rectangle">

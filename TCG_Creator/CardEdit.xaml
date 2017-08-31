@@ -110,9 +110,11 @@
             </ScrollViewer>
             <UniformGrid Grid.Row="1"
                          Columns="5" >
-                <CheckBox Style="{StaticResource LockedIconCheckBox}"
-                          IsChecked="{Binding CurrentlySelectedRegionIsLocked}"
-                          ToolTip="Lock Region"/>
+                <local:PathCheckBox Style="{StaticResource PathCheckBox}"
+                                    Data="{Binding Source={StaticResource Unlock_Icon}, Path=Data}"
+                                    CheckedData="{Binding Source={StaticResource Lock_Icon}, Path=Data}"
+                                    IsChecked="{Binding CurrentlySelectedRegionIsLocked}"
+                                    ToolTip="Lock Region"/>
                 <local:PathButton Style="{StaticResource RegionButton}" 
                                   Data="{Binding Source={StaticResource New_Region_Icon}, Path=Data}" 
                                   ToolTip="New Region"/>

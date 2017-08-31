@@ -120,6 +120,7 @@
     <Compile Include="GUI_Settings.cs" />
     <Compile Include="Image_Properties.cs" />
     <Compile Include="Inherittable_Properties.cs" />
+    <Compile Include="PathCheckBox.cs" />
     <Compile Include="PathButton.cs" />
     <Compile Include="PercentageConvertor.cs" />
     <Compile Include="String_Container.cs" />
