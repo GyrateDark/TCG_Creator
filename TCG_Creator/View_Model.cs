@@ -606,7 +606,7 @@ namespace TCG_Creator
         {
             get
             {
-                return findTreeViewCardFromIndex(_cardCollection.SelectedCardId, TreeViewCards);
+                return FindSelectedTreeViewCard(TreeViewCards);
             }
             set
             {
@@ -618,6 +618,14 @@ namespace TCG_Creator
                         OnPropertyChanged("CurrentlySelectedTreeViewCard");
                     }
                 }
+            }
+        }
+        public bool CurrentlySelectedTreeViewCardChanged
+        {
+            get { return false; }
+            set
+            {
+                RaiseOnPropertyChanged("CurrentlySelectedTreeViewCard");
             }
         }
         [DependsUpon("CurrentlySelectedTreeViewCard")]
@@ -1986,7 +1994,7 @@ namespace TCG_Creator
 
         private Tree_View_Card findTreeViewCardFromIndex(int cardId, IList<Tree_View_Card> cards)
         {
-            Tree_View_Card result = new Tree_View_Card(ref _cardCollection);
+            Tree_View_Card result = null;
             foreach (Tree_View_Card i in cards)
             {
                 if (i.Id == cardId)
@@ -2004,7 +2012,29 @@ namespace TCG_Creator
                 }
             }
 
-            return result;
+            return null;
+        }
+        private Tree_View_Card FindSelectedTreeViewCard(IList<Tree_View_Card> cards)
+        {
+            Tree_View_Card result = null;
+            foreach (Tree_View_Card i in cards)
+            {
+                if (i.IsSelected)
+                {
+                    return i;
+                }
+                else if (i.Children.Count >= 1)
+                {
+                    result = FindSelectedTreeViewCard(i.Children);
+
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return  null;
         }
 
         private List<Card_Region> GetAllRelatedRegions(int regionId, int cardId, int parentId)

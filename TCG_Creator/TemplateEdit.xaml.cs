@@ -17,11 +17,18 @@ namespace TCG_Creator
     /// <summary>
     /// Interaction logic for Template_Edit.xaml
     /// </summary>
-    public partial class TemplateEdit : VirtualizingStackPanel
+    public partial class TemplateEdit : StackPanel
     {
         public TemplateEdit()
         {
             InitializeComponent();
+        }
+
+        private void ComboBoxTreeView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            View_Model model = (View_Model)DataContext;
+
+            model.CurrentlySelectedTreeViewCardChanged = true;
         }
     }
 }

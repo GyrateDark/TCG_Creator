@@ -19,7 +19,7 @@ namespace TCG_Creator
 
         public ComboBoxTreeView()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ComboBoxTreeView), new FrameworkPropertyMetadata(typeof(ComboBoxTreeView)));
+            this.DefaultStyleKey = typeof(ComboBoxTreeView);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -30,7 +30,7 @@ namespace TCG_Creator
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            
+
             _treeView = (ExtendedTreeView)this.GetTemplateChild("treeView");
             _treeView.OnHierarchyMouseUp += new MouseEventHandler(OnTreeViewHierarchyMouseUp);
             _contentPresenter = (ContentPresenter)this.GetTemplateChild("ContentPresenter");
@@ -60,6 +60,20 @@ namespace TCG_Creator
             this.SelectedItem = _treeView.SelectedItem;
 
             this.IsDropDownOpen = false;
+        }
+
+        public new IEnumerable<ITreeViewItemModel> ItemsSource
+        {
+            get { return (IEnumerable<ITreeViewItemModel>)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly new DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ITreeViewItemModel>), typeof(ComboBoxTreeView), new PropertyMetadata(null, new PropertyChangedCallback(OnItemsSourceChanged)));
+
+        private static void OnItemsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            ((ComboBoxTreeView)sender).UpdateItemsSource();
         }
 
         /// <summary>
@@ -96,6 +110,30 @@ namespace TCG_Creator
             ((ComboBoxTreeView)sender).UpdateSelectedHierarchy();
         }
 
+        private void UpdateItemsSource()
+        {
+            var allItems = new List<ITreeViewItemModel>();
+
+            Action<IEnumerable<ITreeViewItemModel>> selectAllItemsRecursively = null;
+            selectAllItemsRecursively = items =>
+            {
+                if (items == null)
+                {
+                    return;
+                }
+
+                foreach (var item in items)
+                {
+                    allItems.Add(item);
+                    selectAllItemsRecursively(item.GetChildren());
+                }
+            };
+
+            selectAllItemsRecursively(this.ItemsSource);
+
+            base.ItemsSource = allItems.Count > 0 ? allItems : null;
+        }
+
         private void UpdateSelectedItem()
         {
             if (this.SelectedItem is TreeViewItem)
@@ -113,6 +151,8 @@ namespace TCG_Creator
                 }
 
                 this.SetSelectedItemToHeader();
+
+                base.SelectedItem = this.SelectedItem;
             }
         }
 
@@ -182,7 +222,7 @@ namespace TCG_Creator
             string content = null;
 
             var item = this.SelectedItem as ITreeViewItemModel;
-            if (item != null)
+            if (item != null && false)
             {
                 //Get hierarchy and display it as the selected item
                 var hierarchy = item.GetHierarchy().Select(i => i.DisplayValuePath).ToArray();
@@ -190,6 +230,10 @@ namespace TCG_Creator
                 {
                     content = string.Join(" - ", hierarchy);
                 }
+            }
+            else if (item != null)
+            {
+                content = item.DisplayValuePath;
             }
 
             this.SetContentAsTextBlock(content);

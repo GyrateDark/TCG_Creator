@@ -65,6 +65,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationTheme.Aero, Version=0.1.6444.1133, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PresentationTheme.Aero.0.1.6444.1133\lib\net45\PresentationTheme.Aero.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -151,6 +155,10 @@
     </Compile>
     <Compile Include="View_Model.cs" />
     <Page Include="CardDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

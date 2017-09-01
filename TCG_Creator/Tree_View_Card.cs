@@ -36,7 +36,7 @@ namespace TCG_Creator
         private Tree_View_Card _parent;
         private int _id;
         private int _parentId;
-        private bool _isSelected;
+        private bool _isSelected = false;
 
         private Card_Collection _cardCollection;
 
@@ -132,7 +132,7 @@ namespace TCG_Creator
 
         public string SelectedValuePath { get { return DisplayName; } }
 
-        public string DisplayValuePath { get { return Id.ToString(); } }
+        public string DisplayValuePath { get { return DisplayName; } }
 
         private bool _isExpanded = true;
         public bool IsExpanded
@@ -147,10 +147,6 @@ namespace TCG_Creator
                 }
             }
         }
-
-        string ITreeViewItemModel.SelectedValuePath { get { return SelectedValuePath; } }
-
-        string ITreeViewItemModel.DisplayValuePath { get { return DisplayValuePath; } }
 
         public IEnumerable<ITreeViewItemModel> GetHierarchy()
         {
