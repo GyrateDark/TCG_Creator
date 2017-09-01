@@ -15,6 +15,7 @@ namespace TCG_Creator
         int currentNumberOfUnsavedChanges = 0;
         const int MAX_NUMBER_OF_UNSAVED_CHANGES = 1;
         protected bool SkipSave = false;
+        protected string autosaveFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TCG_Creator\\autosave.xml";
 
         /// <summary>
         /// Raised when a property on this object has a new value.
@@ -54,7 +55,7 @@ namespace TCG_Creator
             {
                 currentNumberOfUnsavedChanges = 0;
 
-                Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TCG_Creator\\");
+                Save(autosaveFile);
             }
 
             calledProperties.Add(propertyName);
@@ -90,7 +91,7 @@ namespace TCG_Creator
                     }
                 }
 
-                if (!calledProperties.Contains("Drawing_Card_Elements"))
+                if (TypeDescriptor.GetProperties(this)["Drawing_Card_Elements"] != null && !calledProperties.Contains("Drawing_Card_Elements"))
                 {
                     calledProperties.Add("Drawing_Card_Elements");
                 }

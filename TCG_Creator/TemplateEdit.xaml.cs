@@ -17,7 +17,7 @@ namespace TCG_Creator
     /// <summary>
     /// Interaction logic for Template_Edit.xaml
     /// </summary>
-    public partial class TemplateEdit : StackPanel
+    public partial class TemplateEdit : VirtualizingStackPanel
     {
         public TemplateEdit()
         {

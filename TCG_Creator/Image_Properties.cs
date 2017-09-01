@@ -39,7 +39,7 @@ namespace TCG_Creator
                 {
                     return IMAGE_LOCATION_TYPE.Online;
                 }
-                else if(matchedString.IndexOf(":/") == 1 || matchedString.IndexOf(":\\") == 1)
+                else if(matchedString.IndexOf(":/") == 1 || matchedString.IndexOf(":\\") == 1 || matchedString.IndexOf("pack://application:,,,/TCG_Creator;component") == 0)
                 {
                     return IMAGE_LOCATION_TYPE.Absolute;
                 }

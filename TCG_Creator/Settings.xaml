@@ -1,0 +1,18 @@
+﻿<Window x:Class="TCG_Creator.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCG_Creator"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Settings" Height="300" Width="300">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="PPI"/>
+            <xctk:DoubleUpDown Value="{Binding PPI}" />
+        </StackPanel>
+        <CheckBox Content="Show all regions"
+                  IsChecked="{Binding ShowAllRegions}" />
+    </StackPanel>
+</Window>

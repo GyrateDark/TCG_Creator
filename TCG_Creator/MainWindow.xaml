@@ -16,11 +16,17 @@
                 <MenuItem Header="_Open..." 
                           Name="Menu_Open" Click="Menu_Open_Click"/>
             </MenuItem>
+            <MenuItem Header="_Deck">
+                <MenuItem Header="_Add..."
+                          Click="Menu_Add_Deck"/>
+                <MenuItem Header="_Export Deck as PDF"/>
+                <MenuItem Header="_Export Deck Cards"/>
+            </MenuItem>
+            <MenuItem Header="Settings..."
+                      Click="Menu_Settings_Click"/>
         </Menu>
-        <TabControl>
-            <TabItem Header="Templates">
-                <local:Templates />
-            </TabItem>
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}"
+                    ItemsSource="{Binding DeckTabsWithTemplate}">
         </TabControl>
     </StackPanel>
 </Window>

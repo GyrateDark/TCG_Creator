@@ -8,78 +8,162 @@
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <StackPanel IsEnabled="{Binding CardEditEnable}">
         <Label Style="{StaticResource TitleLabel}" 
-               Content="Region Settings" />
-        <StackPanel Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
-                      SelectedItem="{Binding SelectedFontFamily}"
-                      IsEnabled="{Binding NotInheritFontFamily}"/>
-            <CheckBox Style="{StaticResource SlavedCheckBox}"
-                      IsChecked="{Binding InheritFontFamily}"
-                      ToolTip="Inherit Font" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <CheckBox Style="{StaticResource IconCheckBox}"
-                      IsChecked="{Binding Bold}"
-                      ToolTip="Bold"/>
-            <CheckBox Style="{StaticResource IconCheckBox}"
-                      IsChecked="{Binding Italic}"
-                      ToolTip="Italic"/>
-            <xctk:DoubleUpDown IsEnabled="{Binding NotInheritFontSize}"
-                               Value="{Binding FontSize}"
-                               Minimum="0.1"/>
-            <CheckBox Style="{StaticResource SlavedCheckBox}"
-                      IsChecked="{Binding InheritFontSize}"
-                      ToolTip="Inherit Font Size"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Label Content="Solid Text Color" />
-            <CheckBox Style="{StaticResource SlavedCheckBox}"
-                      IsChecked="{Binding InheritTextBrush}"
-                      ToolTip="Inherit Font Color"
-                      HorizontalAlignment="Right"/>
-        </StackPanel>
-        <xctk:ColorPicker SelectedColor="{Binding SelectedTextFontBrushColor}" 
-                          RecentColors="{Binding GetUsedCardColors}"
-                          IsEnabled="{Binding NotGradientBrushRequested}"/>
-        <GroupBox Style="{StaticResource StdGroupBox}" 
-                  Header="Gradient Text Options">
+                       Content="Region Settings" />
+        <GroupBox Header="Text Options">
             <StackPanel>
-                <CheckBox Content="Enable"
-                          IsChecked="{Binding GradientBrushRequested}" />
-                <Label Content="Gradient Angle" />
-                <Slider IsEnabled="{Binding GradientBrushRequested}"
-                        Value="{Binding SelectedGradientFontBrushAngle}"
-                        Maximum="360"
-                        Minimum="0"/>
-                <Label Content="Gradient Color One" />
-                <xctk:ColorPicker SelectedColor="{Binding SelectedGradientFontBrush1}" 
-                                  RecentColors="{Binding GetUsedCardColors}"
-                                  IsEnabled="{Binding GradientBrushRequested}"/>
-                <Slider IsEnabled="{Binding GradientBrushRequested}"
-                        Value="{Binding SelectedGradientFontBrushOffset1}"
-                        Maximum="{Binding SelectedGradientFontBrushOffset2}"
-                        Minimum="0"/>
-                <Label Content="Gradient Color Two" />
-                <xctk:ColorPicker SelectedColor="{Binding SelectedGradientFontBrush2}" 
-                                  RecentColors="{Binding GetUsedCardColors}"
-                                  IsEnabled="{Binding GradientBrushRequested}"/>
-                <Slider IsEnabled="{Binding GradientBrushRequested}"
-                        Value="{Binding SelectedGradientFontBrushOffset2}"
-                        Minimum="{Binding SelectedGradientFontBrushOffset1}"
-                        Maximum="1"/>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding AllFontFamilies}" 
+                              SelectedItem="{Binding SelectedFontFamily}"
+                              IsEnabled="{Binding NotInheritFontFamily}"/>
+                    <CheckBox Style="{StaticResource SlavedCheckBox}"
+                              IsChecked="{Binding InheritFontFamily}"
+                              ToolTip="Inherit Font" />
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <CheckBox Style="{StaticResource IconCheckBox}"
+                              IsChecked="{Binding Bold}"
+                              ToolTip="Bold"/>
+                    <CheckBox Style="{StaticResource IconCheckBox}"
+                              IsChecked="{Binding Italic}"
+                              ToolTip="Italic"/>
+                    <xctk:DoubleUpDown IsEnabled="{Binding NotInheritFontSize}"
+                                   Value="{Binding FontSize}"
+                                   Minimum="0.1"/>
+                    <CheckBox Style="{StaticResource SlavedCheckBox}"
+                              IsChecked="{Binding InheritFontSize}"
+                              ToolTip="Inherit Font Size"/>
+                </StackPanel>
+                <GroupBox Style="{StaticResource StdGroupBox}">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Text Color Options" />
+                                <CheckBox Style="{StaticResource SlavedCheckBox}"
+                                          IsChecked="{Binding InheritTextBrush}"
+                                          ToolTip="Inherit Text Color" />
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <StackPanel>
+                        <Label Content="Solid Text Color" />
+                        <xctk:ColorPicker Style="{StaticResource StdColorPicker}" 
+                                      SelectedColor="{Binding SelectedTextFontBrushColor}" 
+                                      IsEnabled="{Binding NotGradientBrushRequested}"/>
+                    <GroupBox Style="{StaticResource StdGroupBox}">
+                            <GroupBox.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Gradient Options" />
+                                    <CheckBox IsChecked="{Binding GradientBrushRequested}"
+                                              ToolTip="Use Gradient Brush" 
+                                              Content="Enable"/>
+                                </StackPanel>
+                            </GroupBox.Header>
+                            <StackPanel>
+                                <Label Content="Gradient Angle" />
+                                <Slider Style="{StaticResource StdSlider}"
+                                        IsEnabled="{Binding GradientBrushRequested}"
+                                        Value="{Binding SelectedGradientFontBrushAngle}"
+                                        Maximum="360"
+                                        Minimum="0"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions >
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Label Content="Gradient Color One" />
+                                    <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                                      SelectedColor="{Binding SelectedGradientFontBrush1}" 
+                                                      IsEnabled="{Binding GradientBrushRequested}"
+                                                      Grid.Row="1"
+                                                      Grid.Column="0"/>
+                                    <Slider Style="{StaticResource StdSlider}" 
+                                            IsEnabled="{Binding GradientBrushRequested}"
+                                            Value="{Binding SelectedGradientFontBrushOffset1}"
+                                            Maximum="{Binding SelectedGradientFontBrushOffset2}"
+                                            Minimum="0" 
+                                            Grid.Column="0"
+                                            Grid.Row="2"/>
+                                    <Label Content="Gradient Color Two" 
+                                           Grid.Column="1"
+                                           Grid.Row="0"/>
+                                    <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                                      SelectedColor="{Binding SelectedGradientFontBrush2}"
+                                                      IsEnabled="{Binding GradientBrushRequested}"
+                                                      Grid.Column="1"
+                                                      Grid.Row="1"/>
+                                    <Slider Style="{StaticResource StdSlider}" 
+                                            IsEnabled="{Binding GradientBrushRequested}"
+                                            Value="{Binding SelectedGradientFontBrushOffset2}"
+                                            Minimum="{Binding SelectedGradientFontBrushOffset1}"
+                                            Maximum="1"
+                                            Grid.Column="1"
+                                            Grid.Row="2"/>
+                                </Grid>
+                            
+                                
+                        </StackPanel>
+                    </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Style="{StaticResource StdGroupBox}">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Text Stroke Options" />
+                            <CheckBox Style="{StaticResource SlavedCheckBox}"
+                                      IsChecked="{Binding InheritStrokeProperties}"
+                                      ToolTip="Inherit Stroke Properties" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <StackPanel IsEnabled="{Binding NotInheritStrokeProperties}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions >
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label Content="Stroke Thickness"
+                                   Grid.Column="0"
+                                   Grid.Row="0"/>
+                            <Slider Style="{StaticResource StdSlider}" 
+                                    Value="{Binding StrokeThickness}"
+                                    Minimum="0"
+                                    Maximum="10"
+                                    IsEnabled="{Binding StrokeOn}"
+                                    Grid.Column="0"
+                                    Grid.Row="1"/>
+                            <Label Content="Stroke Color" 
+                                   Grid.Column="1"
+                                   Grid.Row="0"/>
+                            <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                              SelectedColor="{Binding TextStrokeColor}"
+                                              IsEnabled="{Binding GradientBrushRequested}"
+                                              Grid.Column="1"
+                                              Grid.Row="1"/>
+                        </Grid>
+                        
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </GroupBox>
-        <GroupBox Style="{StaticResource StdGroupBox}"
-                  Header="Background Image">
+        <GroupBox Style="{StaticResource StdGroupBox}">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Background Image" />
+                    <CheckBox Style="{StaticResource SlavedCheckBox}"
+                                      IsChecked="{Binding InheritBackground}"
+                                      ToolTip="Inherit Background" />
+                </StackPanel>
+            </GroupBox.Header>
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <ComboBox ItemsSource="{Binding AllBackgroundImageFillType}" 
                               SelectedItem="{Binding BackgroundImageFillType}"
                               IsEnabled="{Binding NotInheritBackground}"/>
-                    <CheckBox Style="{StaticResource SlavedCheckBox}"
-                              IsChecked="{Binding InheritBackground}"
-                              ToolTip="Inherit Background"
-                              HorizontalAlignment="Right" />
                 </StackPanel>
                 <Label Content="Background Image Location" />
                 <TextBox Text="{Binding BackgroundImageLocation}" />
@@ -101,6 +185,12 @@
                 <ListBox Grid.Row="0"
                          ItemsSource="{Binding CurrentlySelectedCardRegions}"
                          SelectedItem="{Binding CurrentlySelectedRegion}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <EventSetter Event="MouseEnter" Handler="RegionListMouseEnter" />
+                            <EventSetter Event="MouseLeave" Handler="RegionListMouseLeave" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:Card_Region}">
                             <TextBlock Text="{Binding Path=DisplayName}" />
@@ -114,16 +204,22 @@
                                     Data="{Binding Source={StaticResource Unlock_Icon}, Path=Data}"
                                     CheckedData="{Binding Source={StaticResource Lock_Icon}, Path=Data}"
                                     IsChecked="{Binding CurrentlySelectedRegionIsLocked}"
+                                    IsEnabled="{Binding IsValidToLockRegion}"
                                     ToolTip="Lock Region"/>
                 <local:PathButton Style="{StaticResource RegionButton}" 
                                   Data="{Binding Source={StaticResource New_Region_Icon}, Path=Data}" 
+                                  Command="{Binding Path=AddNewRegionCommand}"
+                                  IsEnabled="{Binding IsValidToAddRegion}"
                                   ToolTip="New Region"/>
                 <local:PathButton Style="{StaticResource RegionButton}" 
                                   Data="{Binding Source={StaticResource Move_Region_Icon}, Path=Data}" 
+                                  Command="{Binding Path=MoveSelectedRegionCommand}"
+                                  IsEnabled="{Binding IsValidToMoveRegion}"
                                   ToolTip="Move Region"/>
                 <local:PathButton Style="{StaticResource RegionButton}" 
                                   Data="{Binding Source={StaticResource Delete_Region_Icon}, Path=Data}" 
                                   Command="{Binding Path=DeleteSelectedRegionCommand}"
+                                  IsEnabled="{Binding IsValidToDeleteRegion}"
                                   ToolTip="Delete Region"/>
             </UniformGrid>
         </Grid>

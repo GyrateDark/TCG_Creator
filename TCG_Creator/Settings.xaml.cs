@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace TCG_Creator
 {
     /// <summary>
-    /// Interaction logic for Templates.xaml
+    /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class Templates : StackPanel
+    public partial class Settings : Window
     {
-        public Templates()
+        public Settings()
         {
             InitializeComponent();
         }

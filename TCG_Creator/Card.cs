@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
@@ -20,7 +21,9 @@ namespace TCG_Creator
         private bool _templateCard;
 
         private Size _physicalSize = new Size(2.5, 3.5);
-        private double _levelOfDetail = 330;
+
+        [XmlIgnore]
+        public bool IsBaseTemplate { get; set; } = false;
 
         public double PhysicalSizeHeight
         {
@@ -41,17 +44,6 @@ namespace TCG_Creator
                 if (_physicalSize.Width != value)
                 {
                     _physicalSize.Width = value;
-                }
-            }
-        }
-        public double LevelOfDetail
-        {
-            get { return _levelOfDetail; }
-            set
-            {
-                if (_levelOfDetail != value)
-                {
-                    _levelOfDetail = value;
                 }
             }
         }
@@ -256,7 +248,7 @@ namespace TCG_Creator
             }
         }
 
-        public DrawingGroup Render_Card(Rect location, ref Card_Collection allCardsRef)
+        public DrawingGroup Render_Card(Rect location, ref Card_Collection allCardsRef, double PPI)
         {
             CalcInherittableProperties(ref allCardsRef);
 
@@ -296,10 +288,18 @@ namespace TCG_Creator
                     Height = location.Height * i.ideal_location.Height
                 };
 
-                card_drawing.Children.Add(i.Draw_Region(draw_location));
+                card_drawing.Children.Add(i.Draw_Region(draw_location, PPI));
             }
 
             return card_drawing;
+        }
+
+        public void SetAllInherittableProperties(bool val)
+        {
+            foreach (Card_Region i in Regions)
+            {
+                i.DesiredInherittedProperties.SetAllInheritValues(val);
+            }
         }
 
         public void CopyAll<T>(T source, T target)

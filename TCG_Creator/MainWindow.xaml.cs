@@ -23,6 +23,7 @@ namespace TCG_Creator
     {
         OpenFileDialog dia_open = new OpenFileDialog();
         SaveFileDialog dia_save = new SaveFileDialog();
+        Settings _settings;
 
         public MainWindow(object context)
         {
@@ -70,6 +71,28 @@ namespace TCG_Creator
             {
                 MessageBox.Show("Error Loading File");
             }
+        }
+
+        private void Menu_Add_Deck(object sender, RoutedEventArgs e)
+        {
+            View_Model model = (View_Model)DataContext;
+
+            try
+            {
+                model.AddNewDeck();
+            }
+            catch
+            {
+                MessageBox.Show("Error Adding Deck");
+            }
+        }
+
+        private void Menu_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            _settings = new Settings();
+            _settings.DataContext = DataContext;
+
+            _settings.Show();
         }
     }
 }

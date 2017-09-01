@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,12 @@ using System.Windows.Media.Imaging;
 
 namespace TCG_Creator
 {
-    public class Tree_View_Card
+    public class Tree_View_Card : ITreeViewItemModel
     {
         public Tree_View_Card(ref Card_Collection coll)
         {
             _children = new List<Tree_View_Card>();
+            _parent = null;
             _parentId = -1;
 
             _cardCollection = coll;
@@ -22,6 +24,7 @@ namespace TCG_Creator
         public Tree_View_Card(int id, string name, int parentId, ref Card_Collection coll)
         {
             _children = new List<Tree_View_Card>();
+            _parent = null;
             _id = id;
             _parentId = parentId;
             
@@ -30,11 +33,14 @@ namespace TCG_Creator
         }
 
         private List<Tree_View_Card> _children;
+        private Tree_View_Card _parent;
         private int _id;
         private int _parentId;
         private bool _isSelected;
 
         private Card_Collection _cardCollection;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region Properties
 
@@ -46,6 +52,17 @@ namespace TCG_Creator
                 if (value != _children)
                 {
                     _children = value;
+                }
+            }
+        }
+        public Tree_View_Card Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (value != _parent)
+                {
+                    _parent = value;
                 }
             }
         }
@@ -108,9 +125,63 @@ namespace TCG_Creator
                 if (value != _isSelected)
                 {
                     _isSelected = value;
+                    RaisePropertyChanged("IsSelected");
                 }
             }
         }
+
+        public string SelectedValuePath { get { return DisplayName; } }
+
+        public string DisplayValuePath { get { return Id.ToString(); } }
+
+        private bool _isExpanded = true;
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    RaisePropertyChanged("IsExpanded");
+                }
+            }
+        }
+
+        string ITreeViewItemModel.SelectedValuePath { get { return SelectedValuePath; } }
+
+        string ITreeViewItemModel.DisplayValuePath { get { return DisplayValuePath; } }
+
+        public IEnumerable<ITreeViewItemModel> GetHierarchy()
+        {
+            return GetAscendingHierarchy().Reverse();
+        }
+        private IEnumerable<Tree_View_Card> GetAscendingHierarchy()
+        {
+            var vm = this;
+
+            yield return vm;
+            while (vm.Parent != null)
+            {
+                yield return vm.Parent;
+                vm = vm.Parent;
+            }
+        }
+
+
+        public IEnumerable<ITreeViewItemModel> GetChildren()
+        {
+            return Children;
+        }
+
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
 
         #endregion // Properties
     }

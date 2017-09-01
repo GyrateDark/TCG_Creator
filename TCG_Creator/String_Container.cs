@@ -40,7 +40,7 @@ namespace TCG_Creator
             return result;
         }
 
-        public FormattedText ConvertToFormattedText()
+        public FormattedText ConvertToFormattedText(double PPI)
         {
             FormattedText result = new FormattedText(GetAllStrings(), CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Times New Roman"), 32, Brushes.White);
 
@@ -55,8 +55,14 @@ namespace TCG_Creator
                     throw new ArgumentException("String Properties are not valid");
                 }
 
-                result.SetFontFamily(stringProperties.FontFamily, startPosition, stopPosition);
-                result.SetFontSize(stringProperties.FontSize, startPosition, stopPosition);
+                FontFamily fontFamily = new FontFamily(stringProperties.FontFamily);
+                if (stringProperties.FontFamily.IndexOf("#") == 0)
+                {
+                    fontFamily = new FontFamily(new Uri("pack://application:,,,/"), "/Resources/Fonts/"+stringProperties.FontFamily);
+                }
+
+                result.SetFontFamily(fontFamily, startPosition, stopPosition);
+                result.SetFontSize(stringProperties.FontSize*PPI/300, startPosition, stopPosition);
                 result.SetFontWeight(stringProperties.SFontWeight, startPosition, stopPosition);
                 result.SetFontStyle(stringProperties.SFontStyle, startPosition, stopPosition);
 
@@ -76,6 +82,7 @@ namespace TCG_Creator
             {
                 i.properties.SetAllInheritValues(val);
             }
+            stringProperties.SetAllInheritValues(val);
         }
 
         public String_Container GetInherittedPropertiesMerging(String_Container inherittedSource)
@@ -160,6 +167,16 @@ namespace TCG_Creator
 
         public Color SolidColorTextBrushColor { get; set; } = Colors.White;
 
+        public bool InheritTextVerticalAlignment { get; set; } = true;
+        public VerticalAlignment TextVerticalAlignment { get; set; } = VerticalAlignment.Center;
+        public bool InheritTextHorizontalAlignment { get; set; } = true;
+        public HorizontalAlignment TextHorizontalAlignment { get; set; } = HorizontalAlignment.Left;
+
+        public bool InheritStrokeProperties { get; set; } = true;
+        public bool StrokeOn { get; set; } = true;
+        public double StrokeThickness { get; set; } = 3.0;
+        public Color TextStrokeColor { get; set; } = Colors.Black;
+
         [XmlIgnore]
         public GradientStopCollection DefaultGradientTextBrushStops
         {
@@ -228,6 +245,23 @@ namespace TCG_Creator
                 result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
                 result.InheritFontBrush = inherittedSource.InheritFontBrush;
             }
+            if (result.InheritStrokeProperties)
+            {
+                result.TextStrokeColor = inherittedSource.TextStrokeColor;
+                result.StrokeOn = inherittedSource.StrokeOn;
+                result.StrokeThickness = inherittedSource.StrokeThickness;
+                result.InheritStrokeProperties = inherittedSource.InheritStrokeProperties;
+            }
+            if (result.InheritTextHorizontalAlignment)
+            {
+                result.TextHorizontalAlignment = inherittedSource.TextHorizontalAlignment;
+                result.InheritTextHorizontalAlignment = inherittedSource.InheritTextHorizontalAlignment;
+            }
+            if (result.InheritTextVerticalAlignment)
+            {
+                result.TextVerticalAlignment = inherittedSource.TextVerticalAlignment;
+                result.InheritTextVerticalAlignment = inherittedSource.InheritTextVerticalAlignment;
+            }
 
             return result;
         }
@@ -243,6 +277,10 @@ namespace TCG_Creator
             InheritFontSize = val;
             InheritFontStyle = val;
             InheritFontWeight = val;
+            InheritFontBrush = val;
+            InheritStrokeProperties = val;
+            InheritTextHorizontalAlignment = val;
+            InheritTextVerticalAlignment = val;
         }
 
         public String_Properties Clone()

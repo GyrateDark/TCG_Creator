@@ -117,12 +117,19 @@
     <Compile Include="CardDisplay.xaml.cs">
       <DependentUpon>CardDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Combobox Treeview\ComboBoxTreeView.cs" />
+    <Compile Include="Combobox Treeview\ExtendedTreeView.cs" />
+    <Compile Include="Combobox Treeview\ITreeViewItemModel.cs" />
+    <Compile Include="Deck.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GUI_Settings.cs" />
     <Compile Include="Image_Properties.cs" />
     <Compile Include="Inherittable_Properties.cs" />
     <Compile Include="PathCheckBox.cs" />
     <Compile Include="PathButton.cs" />
-    <Compile Include="PercentageConvertor.cs" />
+    <Compile Include="Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="String_Container.cs" />
     <Compile Include="CardEdit.xaml.cs">
       <DependentUpon>CardEdit.xaml</DependentUpon>
@@ -139,7 +146,6 @@
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="RelayCommand.cs" />
-    <Compile Include="Serializable_Brush.cs" />
     <Compile Include="Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
@@ -167,6 +173,10 @@
     <Page Include="CardEdit.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TemplateSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -204,6 +214,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Fonts\ap.ttf" />
+    <Resource Include="Resources\Fonts\CrashLandingBB.otf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -212,16 +224,13 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serializable_Typeface.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\Icons\link_break.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Icons\link.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Resources\SotM_Blank_Hero_Card.jpg" />
+    <Resource Include="Resources\BlankCards\SotM_Blank_Hero_Card.jpg" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

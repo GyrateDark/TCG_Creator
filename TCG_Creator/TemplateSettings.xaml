@@ -58,10 +58,6 @@
                                    Minimum="0.1" 
                                    Value="{Binding CardPhysicalWidth}"/>
             </Grid>
-            <Label Content="Level of Detail" />
-            <Slider Value="{Binding LevelOfDetail}" 
-                    Minimum="{Binding MinLevelOfDetail}"
-                    Maximum="{Binding MaxLevelOfDetail}" />
         </StackPanel>
     </GroupBox>
 </StackPanel>

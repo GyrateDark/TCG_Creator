@@ -49,47 +49,96 @@ namespace TCG_Creator
         private Inherittable_Properties _renderProperties = new Inherittable_Properties();
 
         // Call SetRenderInherittableProperties() First
-        public DrawingGroup Draw_Region(Rect draw_location)
+        public DrawingGroup Draw_Region(Rect draw_location, double PPI)
         {
             DrawingGroup reg_img = new DrawingGroup();
 
             if (_renderProperties.ImageProperties.BackgroundImageFillType != IMAGE_OPTIONS.None && _renderProperties.ImageProperties.BackgroundImageLocationType != IMAGE_LOCATION_TYPE.None)
             {
-                BitmapImage background;
-
-                if (_renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Absolute || _renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Relative)
+                try
                 {
-                    background = new BitmapImage(new Uri(_renderProperties.ImageProperties.BackgroundImageLocation));
+                    BitmapImage background;
+
+                    if (_renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Absolute)
+                    {
+                        background = new BitmapImage(new Uri(_renderProperties.ImageProperties.BackgroundImageLocation, UriKind.Absolute));
+                    }
+                    else if (_renderProperties.ImageProperties.BackgroundImageLocationType == IMAGE_LOCATION_TYPE.Relative)
+                    {
+                        background = new BitmapImage(new Uri(_renderProperties.ImageProperties.BackgroundImageLocation, UriKind.Relative));
+                    }
+                    else
+                    {
+                        background = URLToBitmap(_renderProperties.ImageProperties.BackgroundImageLocation);
+                    }
+
+                    ImageBrush image_brush = new ImageBrush(background);
+                    if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Fill)
+                        image_brush.Stretch = Stretch.Fill;
+                    else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Letterbox)
+                        image_brush.Stretch = Stretch.Uniform;
+                    else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Unified_Fill)
+                        image_brush.Stretch = Stretch.UniformToFill;
+
+                    GeometryDrawing image_rec_drawing = new GeometryDrawing(image_brush, new Pen(Brushes.Transparent, 0), new RectangleGeometry(draw_location));
+
+                    reg_img.Children.Add(image_rec_drawing);
                 }
-                else
+                catch
                 {
-                    background = URLToBitmap(_renderProperties.ImageProperties.BackgroundImageLocation);
+                    MessageBox.Show("Invalid background image for region "+id.ToString());
                 }
-
-                ImageBrush image_brush = new ImageBrush(background);
-                if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Fill)
-                    image_brush.Stretch = Stretch.Fill;
-                else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Letterbox)
-                    image_brush.Stretch = Stretch.Uniform;
-                else if (_renderProperties.ImageProperties.BackgroundImageFillType == IMAGE_OPTIONS.Unified_Fill)
-                    image_brush.Stretch = Stretch.UniformToFill;
-
-                GeometryDrawing image_rec_drawing = new GeometryDrawing(image_brush, new Pen(Brushes.Transparent, 0), new RectangleGeometry(draw_location));
-
-                reg_img.Children.Add(image_rec_drawing);
             }
 
             if (_renderProperties.StringContainer.strings.Count >= 1)
             {
-                FormattedText formatText = _renderProperties.StringContainer.ConvertToFormattedText();
+                FormattedText formatText = _renderProperties.StringContainer.ConvertToFormattedText(PPI);
 
                 formatText.MaxTextWidth = draw_location.Width;
-                formatText.MaxTextHeight = draw_location.Height;
+                //formatText.MaxTextHeight = draw_location.Height;
+
+                Size formatTextBounds = new Size(formatText.Width, formatText.Height);
+                Rect textDrawLocation = draw_location;
+
+                if (_renderProperties.StringProperties.FontFamily == "#CrashLanding BB")
+                {
+                    formatTextBounds.Height *= 1.25;
+                }
+
+                if (_renderProperties.StringProperties.TextHorizontalAlignment == HorizontalAlignment.Center)
+                {
+                    textDrawLocation.X += (textDrawLocation.Width - formatTextBounds.Width) / 2;
+                }
+                else if (_renderProperties.StringProperties.TextHorizontalAlignment == HorizontalAlignment.Right)
+                {
+                    textDrawLocation.X += (textDrawLocation.Width - formatTextBounds.Width);
+                }
+
+                if (_renderProperties.StringProperties.TextVerticalAlignment == VerticalAlignment.Bottom)
+                {
+                    textDrawLocation.Y += (textDrawLocation.Height - formatTextBounds.Height);
+                }
+                else if (_renderProperties.StringProperties.TextVerticalAlignment == VerticalAlignment.Center)
+                {
+                    textDrawLocation.Y += (textDrawLocation.Height - formatTextBounds.Height) / 2;
+                }
                 
                 DrawingContext text_drawing = reg_img.Open();
 
-                text_drawing.DrawText(formatText, draw_location.Location);
+                formatText.MaxTextWidth = draw_location.Width;
+                //formatText.MaxTextHeight = draw_location.Height;
+
+                text_drawing.DrawText(formatText, textDrawLocation.Location);
+
                 text_drawing.Close();
+
+
+                if (_renderProperties.StringProperties.StrokeOn)
+                {
+                    GeometryDrawing textStrokeDrawing = new GeometryDrawing(Brushes.Transparent, new Pen(new SolidColorBrush(_renderProperties.StringProperties.TextStrokeColor), _renderProperties.StringProperties.StrokeThickness*PPI/300), formatText.BuildGeometry(textDrawLocation.Location));
+
+                    reg_img.Children.Add(textStrokeDrawing);
+                }
             }
 
             return reg_img;
@@ -233,25 +282,32 @@ namespace TCG_Creator
                 }
                 else
                 {
-                    return "Region " + id.ToString() + " - " + description;
+                    if (description != "")
+                    {
+                        return description;
+                    }
+                    else
+                    {
+                        return "<No Description>";
+                    }
                 }
             }
         }
         [XmlIgnore]
-        private bool _isMousedOver = false;
+        private bool _isMouseOver = false;
         [XmlIgnore]
-        public bool IsMousedOver
+        public bool IsMouseOver
         {
             get
             {
-                return _isMousedOver;
+                return _isMouseOver;
             }
             set
             {
-                if (value != _isMousedOver)
+                if (value != _isMouseOver)
                 {
-                    _isMousedOver = value;
-                    OnPropertyChanged("IsMousedOver");
+                    _isMouseOver = value;
+                    OnPropertyChanged("IsMouseOver");
                 }
             }
         }

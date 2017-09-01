@@ -1,4 +1,4 @@
-﻿<StackPanel x:Class="TCG_Creator.CardDisplay"
+﻿<VirtualizingStackPanel x:Class="TCG_Creator.CardDisplay"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,17 +6,32 @@
             xmlns:local="clr-namespace:TCG_Creator"
             mc:Ignorable="d"
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
-    <Viewbox VerticalAlignment="Center"
-             Stretch="Uniform">
+    <Viewbox Grid.Column="1">
         <Canvas Height="{Binding CardRenderHeight}"
-                Width="{Binding CardRenderWidth}" >
-            <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas IsItemsHost="True"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                    Width="{Binding CardRenderWidth}" >
+            <Canvas Name="Main"
+                    MouseMove="Main_MouseMove"
+                    MouseDown="Main_MouseLeftButtonDown"
+                    MouseUp="Main_MouseLeftButtonUp"
+                    Background="Transparent">
+                <ItemsControl ItemsSource="{Binding Drawing_Card_Elements}" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <Canvas>
+                    <!-- This canvas is overlaid over the previous canvas and is used to 
+                place the rectangle that implements the drag selection box. -->
+                    <Rectangle  x:Name="selectionBox"
+                                Visibility="Collapsed"
+                                Stroke="Black"
+                                StrokeThickness="1"
+                                Canvas.Left="{Binding SelectionRegionLeft}"
+                                Canvas.Top="{Binding SelectionRegionTop}"/>
+                </Canvas>
+            </Canvas>
         </Canvas>
     </Viewbox>
-</StackPanel>
+</VirtualizingStackPanel>

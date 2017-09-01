@@ -1,4 +1,4 @@
-﻿<StackPanel x:Class="TCG_Creator.TemplateEdit"
+﻿<VirtualizingStackPanel x:Class="TCG_Creator.TemplateEdit"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,31 +7,47 @@
             mc:Ignorable="d"
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <StackPanel Orientation="Horizontal" >
+        <StackPanel.Resources>
+            <HierarchicalDataTemplate x:Key="treeViewDataTemplate"
+                   ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding DisplayName}" />
+            </HierarchicalDataTemplate>
+        </StackPanel.Resources>
+        <!--
         <ComboBox ItemsSource="{Binding TreeViewCards}"
                   SelectedItem="{Binding CurrentlySelectedTreeViewCard, Mode=TwoWay}"
                   Text="{Binding CurrentlySelectedTreeViewCardDisplayName, Mode=OneTime}"
                   DisplayMemberPath="DisplayName" 
-                  x:Name="TemplateComboBox"/>
+                  x:Name="TemplateComboBox"/>-->
+        <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
+                                SelectedItem="{Binding CurrentlySelectedTreeViewCard}"
+                                ItemTemplate="{StaticResource treeViewDataTemplate}"
+                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                Width="200"/>
         <local:PathButton Style="{StaticResource RegionButton}" 
                           Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
-                          Command="{Binding Path=AddCardCommand}"
+                          Command="{Binding Path=AddTemplateCardCommand}"
                           ToolTip="Add New Template"
                           Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"/>
+
     </StackPanel>
+    
+
 
     <CheckBox IsChecked="{Binding ShowTemplateSettings}"
-              Content="Template Settings"/>
+              Content="Template Settings"
+              Visibility="Collapsed"/>
     <GroupBox Style="{StaticResource StdGroupBox}" 
               Header="Current Template">
         <StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource TextButton}"
-                        Command="{Binding Path=SaveTemplateCard}"
+                        Command="{Binding Path=SaveTemplateCardCommand}"
                         Content="Save" />
                 <Button Style="{StaticResource TextButton}"
-                        Command="{Binding Path=DeleteSelectedTemplateCard}"
+                        Command="{Binding Path=DeleteSelectedTemplateCardCommand}"
                         Content="Delete" />
             </StackPanel>
         </StackPanel>
     </GroupBox>
-</StackPanel>
+</VirtualizingStackPanel>

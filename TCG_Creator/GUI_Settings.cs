@@ -12,5 +12,6 @@ namespace TCG_Creator
         public int SelectedCardId { get; set; } = -1;
         public bool ShowAllRegions { get; set; } = false;
         public bool ShowTemplateSettings { get; set; } = false;
+        public int SelectedDeckId { get; set; } = 0;
     }
 }
