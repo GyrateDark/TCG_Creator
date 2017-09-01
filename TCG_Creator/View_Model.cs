@@ -813,21 +813,7 @@ namespace TCG_Creator
                 }
             }
         }
-
-        public double MaxLevelOfDetail
-        {
-            get
-            {
-                return 3000;
-            }
-        }
-        public double MinLevelOfDetail
-        {
-            get
-            {
-                return 1;
-            }
-        }
+        
 
         [DependsUpon("CardPhysicalHeight")]
         [DependsUpon("LevelOfDetail")]
@@ -1026,6 +1012,40 @@ namespace TCG_Creator
                 return sortedResult.Keys;
             }
         }
+
+
+        [DependsUpon("InheritFontFamily")]
+        [DependsUpon("InheritFontSize")]
+        [DependsUpon("InheritFontWeight")]
+        [DependsUpon("InheritTextHorizontalAlignment")]
+        [DependsUpon("InheritTextVerticalAlignment")]
+        public bool InheritTextProperties
+        {
+            get
+            {
+                bool result = true;
+
+                result &= InheritFontFamily;
+                result &= InheritFontSize;
+                result &= InheritFontWeight;
+                result &= InheritTextHorizontalAlignment;
+                result &= InheritTextVerticalAlignment;
+
+                return result;
+            }
+            set
+            {
+                if (InheritTextProperties != value)
+                {
+                    InheritFontFamily = true;
+                    InheritFontSize = true;
+                    InheritFontWeight = true;
+                    InheritTextHorizontalAlignment = true;
+                    InheritTextVerticalAlignment = true;
+                }
+            }
+        }
+
 
         [DependsUpon("CurrentlySelectedRegion")]
         public bool InheritFontSize
@@ -1460,6 +1480,19 @@ namespace TCG_Creator
                 }
             }
         }
+        public IList<HorizontalAlignment> AllHorizontalAlignments
+        {
+            get
+            {
+                IList<HorizontalAlignment> result = new List<HorizontalAlignment>();
+
+                result.Add(HorizontalAlignment.Left);
+                result.Add(HorizontalAlignment.Center);
+                result.Add(HorizontalAlignment.Right);
+
+                return result;
+            }
+        }
 
         [DependsUpon("CurrentlySelectedRegion")]
         public bool InheritTextVerticalAlignment
@@ -1492,6 +1525,20 @@ namespace TCG_Creator
                 }
             }
         }
+        public IList<VerticalAlignment> AllVerticalAlignments
+        {
+            get
+            {
+                IList<VerticalAlignment> result = new List<VerticalAlignment>();
+
+                result.Add(VerticalAlignment.Top);
+                result.Add(VerticalAlignment.Center);
+                result.Add(VerticalAlignment.Bottom);
+
+                return result;
+            }
+        }
+
 
         [DependsUpon("CurrentlySelectedRegion")]
         public bool InheritStrokeProperties

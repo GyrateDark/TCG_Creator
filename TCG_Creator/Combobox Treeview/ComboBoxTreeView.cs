@@ -19,7 +19,7 @@ namespace TCG_Creator
 
         public ComboBoxTreeView()
         {
-            this.DefaultStyleKey = typeof(ComboBoxTreeView);
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ComboBoxTreeView), new FrameworkPropertyMetadata(typeof(ComboBoxTreeView)));
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -30,7 +30,7 @@ namespace TCG_Creator
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-
+            
             _treeView = (ExtendedTreeView)this.GetTemplateChild("treeView");
             _treeView.OnHierarchyMouseUp += new MouseEventHandler(OnTreeViewHierarchyMouseUp);
             _contentPresenter = (ContentPresenter)this.GetTemplateChild("ContentPresenter");
@@ -60,20 +60,6 @@ namespace TCG_Creator
             this.SelectedItem = _treeView.SelectedItem;
 
             this.IsDropDownOpen = false;
-        }
-
-        public new IEnumerable<ITreeViewItemModel> ItemsSource
-        {
-            get { return (IEnumerable<ITreeViewItemModel>)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
-        }
-
-        public static readonly new DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ITreeViewItemModel>), typeof(ComboBoxTreeView), new PropertyMetadata(null, new PropertyChangedCallback(OnItemsSourceChanged)));
-
-        private static void OnItemsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            ((ComboBoxTreeView)sender).UpdateItemsSource();
         }
 
         /// <summary>
@@ -110,30 +96,6 @@ namespace TCG_Creator
             ((ComboBoxTreeView)sender).UpdateSelectedHierarchy();
         }
 
-        private void UpdateItemsSource()
-        {
-            var allItems = new List<ITreeViewItemModel>();
-
-            Action<IEnumerable<ITreeViewItemModel>> selectAllItemsRecursively = null;
-            selectAllItemsRecursively = items =>
-            {
-                if (items == null)
-                {
-                    return;
-                }
-
-                foreach (var item in items)
-                {
-                    allItems.Add(item);
-                    selectAllItemsRecursively(item.GetChildren());
-                }
-            };
-
-            selectAllItemsRecursively(this.ItemsSource);
-
-            base.ItemsSource = allItems.Count > 0 ? allItems : null;
-        }
-
         private void UpdateSelectedItem()
         {
             if (this.SelectedItem is TreeViewItem)
@@ -151,8 +113,6 @@ namespace TCG_Creator
                 }
 
                 this.SetSelectedItemToHeader();
-
-                base.SelectedItem = this.SelectedItem;
             }
         }
 
