@@ -22,7 +22,7 @@
         <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
                                 SelectedItem="{Binding CurrentlySelectedTreeViewCard}"
                                 ItemTemplate="{StaticResource treeViewDataTemplate}"
-                                Height="Auto" SelectionChanged="ComboBoxTreeView_SelectionChanged"/>
+                                Height="Auto"/>
         <local:PathButton Style="{StaticResource RegionButton}" 
                           Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
                           Command="{Binding Path=AddTemplateCardCommand}"

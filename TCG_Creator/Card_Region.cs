@@ -272,23 +272,30 @@ namespace TCG_Creator
         {
             get
             {
+                string result = "";
+
+                if (IsLocked)
+                {
+                    result += "🔒 ";
+                }
+
                 if (id == 0)
                 {
-                    return "Base Card";
+                    return result + "Base Card";
                 }
                 else if (id == -1)
                 {
-                    return "No Regions";
+                    return result + "No Regions";
                 }
                 else
                 {
                     if (description != "")
                     {
-                        return description;
+                        return result + description;
                     }
                     else
                     {
-                        return "<No Description>";
+                        return result + "<No Description>";
                     }
                 }
             }

@@ -41,6 +41,8 @@ namespace TCG_Creator
             tmpBinding.NotifyOnSourceUpdated = true;
             _textBox.SetBinding(TextBox.TextProperty, tmpBinding);
             _textBox.TextWrapping = TextWrapping.WrapWithOverflow;
+
+            findTreeViewCardFromIndex(CurrentCardCollection.SelectedCardId, TreeViewCards).IsSelected = true;
         }
 
         #region Fields
@@ -134,7 +136,7 @@ namespace TCG_Creator
                 if (_deleteSelectedTemplateCard == null)
                 {
                     _deleteSelectedTemplateCard = new RelayCommand(
-                        param => SaveTemplateCard()
+                        param => DeleteSelectedTemplateCard()
                     );
                 }
                 return _deleteSelectedTemplateCard;
@@ -597,7 +599,7 @@ namespace TCG_Creator
         {
             get
             {
-                List<Tree_View_Card> result = new List<Tree_View_Card>(CurrentCardCollection.Get_Tree_View_Template_Cards(ref _cardCollection));
+                List<Tree_View_Card> result = new List<Tree_View_Card>(CurrentCardCollection.Get_Tree_View_Template_Cards(ref _cardCollection, CurrentlySelectedTreeViewCardChanged));
                 return result;
             }
         }
@@ -620,13 +622,10 @@ namespace TCG_Creator
                 }
             }
         }
-        public bool CurrentlySelectedTreeViewCardChanged
+        public void CurrentlySelectedTreeViewCardChanged(int newCardId)
         {
-            get { return false; }
-            set
-            {
-                RaiseOnPropertyChanged("CurrentlySelectedTreeViewCard");
-            }
+            CurrentCardCollection.SelectedCardId = newCardId;
+            OnPropertyChanged("CurrentlySelectedTreeViewCard");
         }
         [DependsUpon("CurrentlySelectedTreeViewCard")]
         public string CurrentlySelectedTreeViewCardDisplayName
@@ -1950,6 +1949,7 @@ namespace TCG_Creator
         private void AddNewTemplateCard()
         {
             AddNewCard(true);
+            _addNewTemplateCardCommand = null;
         }
         private void AddNewCard(bool IsTemplate = false)
         {
@@ -1975,6 +1975,50 @@ namespace TCG_Creator
         private void DeleteSelectedTemplateCard()
         {
             // You would implement your Product save here
+            
+
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("This will delete all children cards and templates. Are you sure?", "Delete Confirmation", System.Windows.MessageBoxButton.YesNo);
+
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                if (CurrentlySelectedCard.IsBaseTemplate == false)
+                {
+                    List<int> cardIdsToRemove = new List<int>();
+
+                    cardIdsToRemove.Add(CurrentlySelectedCard.Id);
+                    CurrentCardCollection.SelectedCardId = CurrentlySelectedCard.ParentCard;
+                    OnPropertyChanged("CurrentlySelectedCard");
+                    bool stop = false;
+
+                    while (!stop)
+                    {
+                        stop = true;
+                        foreach (Card i in CurrentCardCollection.CustomCardsOnly)
+                        {
+                            if (cardIdsToRemove.Contains(i.ParentCard) && !cardIdsToRemove.Contains(i.Id))
+                            {
+                                cardIdsToRemove.Add(i.Id);
+                                stop = false;
+                            }
+                        }
+                    }
+
+                    foreach (int i in cardIdsToRemove)
+                    {
+                        for (int j = 0; j < CurrentCardCollection.CustomCardsOnly.Count; ++j)
+                        {
+                            if (CurrentCardCollection.CustomCardsOnly[j].Id == i)
+                            {
+                                CurrentCardCollection.CustomCardsOnly.RemoveAt(j);
+                                break;
+                            }
+                        }
+                    }
+
+                    OnPropertyChanged("CurrentCardCollection");
+                }
+            }
+
             _deleteSelectedTemplateCard = null;
         }
         private void SaveTemplateCard()
@@ -2020,6 +2064,10 @@ namespace TCG_Creator
         }
         private Card Find_Selected_Card()
         {
+            if (CurrentlySelectedTreeViewCard != null)
+            {
+                CurrentCardCollection.SelectedCardId = CurrentlySelectedTreeViewCard.Id;
+            }
             if (CurrentCardCollection.SelectedCardId == -1)
             {
                 Card temp = new Card();
@@ -2090,7 +2138,7 @@ namespace TCG_Creator
 
             foreach(Card i in CurrentCardCollection.CardCollection)
             {
-                if (i.Id == parentId || i.ParentCard == cardId)
+                if (i.ParentCard == cardId)
                 {
                     foreach(Card_Region j in i.Regions)
                     {

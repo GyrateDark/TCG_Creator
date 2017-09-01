@@ -12,22 +12,25 @@ namespace TCG_Creator
 {
     public class Tree_View_Card : ITreeViewItemModel
     {
-        public Tree_View_Card(ref Card_Collection coll)
+        public Tree_View_Card(ref Card_Collection coll, OnPropertyChangedDelegate propertyChanged)
         {
             _children = new List<Tree_View_Card>();
             _parent = null;
             _parentId = -1;
 
+            OnPropertyChanged = propertyChanged;
+
             _cardCollection = coll;
         }
 
-        public Tree_View_Card(int id, string name, int parentId, ref Card_Collection coll)
+        public Tree_View_Card(int id, string name, int parentId, ref Card_Collection coll, OnPropertyChangedDelegate propertyChanged)
         {
             _children = new List<Tree_View_Card>();
             _parent = null;
             _id = id;
             _parentId = parentId;
-            
+
+            OnPropertyChanged = propertyChanged;
 
             _cardCollection = coll;
         }
@@ -37,6 +40,8 @@ namespace TCG_Creator
         private int _id;
         private int _parentId;
         private bool _isSelected = false;
+        public delegate void OnPropertyChangedDelegate(int newCardId);
+        private OnPropertyChangedDelegate OnPropertyChanged;
 
         private Card_Collection _cardCollection;
 
@@ -125,9 +130,18 @@ namespace TCG_Creator
                 if (value != _isSelected)
                 {
                     _isSelected = value;
+
+                    if (value == true)
+                    {
+                        OnPropertyChanged(Id);
+                    }
                     RaisePropertyChanged("IsSelected");
                 }
             }
+        }
+        public void SetIsSelected()
+        {
+            _isSelected = true;
         }
 
         public string SelectedValuePath { get { return DisplayName; } }
