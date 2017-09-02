@@ -138,6 +138,9 @@
     <Compile Include="CardEdit.xaml.cs">
       <DependentUpon>CardEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeckEdit.xaml.cs">
+      <DependentUpon>DeckEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TemplateSettings.xaml.cs">
       <DependentUpon>TemplateSettings.xaml</DependentUpon>
     </Compile>
@@ -155,6 +158,10 @@
     </Compile>
     <Compile Include="View_Model.cs" />
     <Page Include="CardDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeckEdit.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

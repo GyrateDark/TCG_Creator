@@ -42,13 +42,19 @@ namespace TCG_Creator
             _textBox.SetBinding(TextBox.TextProperty, tmpBinding);
             _textBox.TextWrapping = TextWrapping.WrapWithOverflow;
 
-            findTreeViewCardFromIndex(CurrentCardCollection.SelectedCardId, TreeViewCards).IsSelected = true;
+            Tree_View_Card SelectedCard = findTreeViewCardFromIndex(CurrentCardCollection.SelectedCardId, TreeViewCards);
+
+            if (SelectedCard != null)
+            { 
+                SelectedCard.IsSelected = true;
+            }
         }
 
         #region Fields
 
         private Card_Collection _cardCollection = new Card_Collection();
         private ICommand _addNewTemplateCardCommand;
+        private ICommand _addNewDeckCardCommand;
         private ICommand _saveTemplateCardCommand;
         private ICommand _addNewRegionCommand;
         private ICommand _deleteSelectedTemplateCard;
@@ -114,6 +120,19 @@ namespace TCG_Creator
                     );
                 }
                 return _addNewTemplateCardCommand;
+            }
+        }
+        public ICommand AddDeckCardCommand
+        {
+            get
+            {
+                if (_addNewDeckCardCommand == null)
+                {
+                    _addNewDeckCardCommand = new RelayCommand(
+                        param => AddNewTemplateCard()
+                    );
+                }
+                return _addNewDeckCardCommand;
             }
         }
         public ICommand AddNewRegionCommand
@@ -349,12 +368,13 @@ namespace TCG_Creator
 
                 if (SelectedRegionId != -1)
                 {
+                    string setText = _textBox.Text;
                     DisplayRichTextBoxEditingTools = false;
                     // Find_SelectedCard_Region(SelectedRegion).ConvertFromFlowDocumentToStringContainer(_richTextBox.Document);
                     if (!HideTextEditBox && ! CurrentlySelectedRegionIsLocked)
                     {
                         CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.strings = new List<String_Drawing>();
-                        CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.strings.Add(new String_Drawing(_textBox.Text));
+                        CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.strings.Add(new String_Drawing(setText));
                     }
 
                     SelectedRegionId = -1;
@@ -604,11 +624,15 @@ namespace TCG_Creator
         }
         
         [DependsUpon("CurrentCardCollection")]
+        [DependsUpon("IsDeckSelected")]
         public List<Tree_View_Card> TreeViewCards
         {
             get
             {
-                List<Tree_View_Card> result = new List<Tree_View_Card>(CurrentCardCollection.Get_Tree_View_Template_Cards(ref _cardCollection, CurrentlySelectedTreeViewCardChanged));
+                List<Tree_View_Card> result;
+
+                result = new List<Tree_View_Card>(CurrentCardCollection.Get_Tree_View_Cards(ref _cardCollection, IsDeckSelected, CurrentlySelectedTreeViewCardChanged));
+                
                 return result;
             }
         }
@@ -776,6 +800,14 @@ namespace TCG_Creator
                     throw new Exception("Selected deck does not exist.");
                 }
                 return new Deck();
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool IsDeckSelected
+        {
+            get
+            {
+                return CurrentlySelectedDeckId != 0 && CurrentlySelectedDeckId != -1;
             }
         }
 
@@ -1045,11 +1077,11 @@ namespace TCG_Creator
             {
                 if (InheritTextProperties != value)
                 {
-                    InheritFontFamily = true;
-                    InheritFontSize = true;
-                    InheritFontWeight = true;
-                    InheritTextHorizontalAlignment = true;
-                    InheritTextVerticalAlignment = true;
+                    InheritFontFamily = value;
+                    InheritFontSize = value;
+                    InheritFontWeight = value;
+                    InheritTextHorizontalAlignment = value;
+                    InheritTextVerticalAlignment = value;
                 }
             }
         }
@@ -1294,7 +1326,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritText
+        public InheritTextOptions InheritText
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText; }
             set
@@ -1304,6 +1336,33 @@ namespace TCG_Creator
                     CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText = value;
                     OnPropertyChanged("InheritText");
                 }
+            }
+        }
+        public int SelectedInheritTextIndex
+        {
+            get { return (int)CurrentlySelectedRegion.DesiredInherittedProperties.StringContainer.InheritText; }
+            set
+            {
+                InheritText = (InheritTextOptions)value;
+            }
+        }
+        public List<string> AllInheritTextOptions
+        {
+            get
+            {
+                List<string> result = new List<string>();
+
+                for (int i = 0; i < (int)InheritTextOptions.N_INHERIT_TEXT_OPTIONS; ++i)
+                {
+                    result.Add("");
+                }
+
+                result[(int)InheritTextOptions.AddInherittedTextAfter] = "Add Inheritted Text After";
+                result[(int)InheritTextOptions.AddInherittedTextBefore] = "Add Inheritted Text Before";
+                result[(int)InheritTextOptions.UseOnlyInherittedText] = "Use Only Inheritted Text";
+                result[(int)InheritTextOptions.UseOnlyLocalText] = "Use Only Local Text";
+
+                return result;
             }
         }
         [DependsUpon("CurrentlySelectedRegion")]
@@ -1959,6 +2018,12 @@ namespace TCG_Creator
         {
             AddNewCard(true);
             _addNewTemplateCardCommand = null;
+        }
+        private void AddNewDeckCard()
+        {
+            AddNewCard(false);
+            CurrentlySelectedDeck.Cards.Add(new DeckCard(CurrentlySelectedCard.Id, 1));
+            _addNewDeckCardCommand = null;
         }
         private void AddNewCard(bool IsTemplate = false)
         {

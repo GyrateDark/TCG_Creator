@@ -1,0 +1,68 @@
+﻿<StackPanel x:Class="TCG_Creator.DeckEdit"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:TCG_Creator"
+            mc:Ignorable="d"
+            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <StackPanel Orientation="Horizontal" >
+        <StackPanel.Resources>
+            <HierarchicalDataTemplate x:Key="treeViewDataTemplate"
+                   ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding DisplayName}" />
+            </HierarchicalDataTemplate>
+        </StackPanel.Resources>
+        <!--
+        <ComboBox ItemsSource="{Binding TreeViewCards}"
+                  SelectedItem="{Binding CurrentlySelectedTreeViewCard, Mode=TwoWay}"
+                  Text="{Binding CurrentlySelectedTreeViewCardDisplayName, Mode=OneTime}"
+                  DisplayMemberPath="DisplayName" 
+                  x:Name="TemplateComboBox"/>-->
+        <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
+                                SelectedItem="{Binding CurrentlySelectedTreeViewCard}"
+                                ItemTemplate="{StaticResource treeViewDataTemplate}"
+                                Height="Auto"/>
+        <local:PathButton Style="{StaticResource RegionButton}" 
+                          Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
+                          Command="{Binding Path=AddDeckCardCommand}"
+                          ToolTip="Create new card based on selected template"
+                          Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"/>
+
+    </StackPanel>
+    
+
+
+    <CheckBox IsChecked="{Binding ShowTemplateSettings}"
+              Content="Template Settings"
+              Visibility="Collapsed"/>
+    <GroupBox Style="{StaticResource StdGroupBox}" 
+              Header="Current Deck">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                
+            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button Style="{StaticResource TextButton}"
+                        Command="{Binding Path=SaveTemplateCardCommand}"
+                        Content="Save" 
+                        Grid.Row="0"
+                        Grid.Column="0"/>
+                <Button Style="{StaticResource TextButton}"
+                        Command="{Binding Path=DeleteSelectedTemplateCardCommand}"
+                        Content="Delete" 
+                        Grid.Row="0"
+                        Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </GroupBox>
+</StackPanel>

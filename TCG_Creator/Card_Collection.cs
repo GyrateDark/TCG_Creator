@@ -213,30 +213,38 @@ namespace TCG_Creator
             return prev_id + 1;
         }
 
-        public List<Tree_View_Card> Get_Tree_View_Template_Cards(ref Card_Collection coll, Tree_View_Card.OnPropertyChangedDelegate propertyChanged)
+        public List<Tree_View_Card> Get_Tree_View_Cards(ref Card_Collection coll, bool OnlyTemplateCards, Tree_View_Card.OnPropertyChangedDelegate propertyChanged)
         {
-            var onlyTemplateCards = new List<Card>();
+            var searchCards = new List<Card>();
 
-            foreach (Card i in CardCollection)
+            if(OnlyTemplateCards)
             {
-                if (i.IsTemplateCard)
+                foreach (Card i in CardCollection)
                 {
-                    onlyTemplateCards.Add(i);
+                    if (i.IsTemplateCard)
+                    {
+                        searchCards.Add(i);
+                    }
                 }
             }
+            else
+            {
+                searchCards.AddRange(CardCollection);
+            }
+            
 
             List<Tree_View_Card> result = new List<Tree_View_Card>();
 
-            if (onlyTemplateCards.Count >= 1)
+            if (searchCards.Count >= 1)
             {
-                result = Get_Tree_View_Template_Cards_For_Parent(null, ref coll, propertyChanged);
+                result = Get_Tree_View_Cards_For_Parent(null, ref coll, propertyChanged);
             }
             result.Add(new Tree_View_Card(-2, "<New>", -1, ref coll, propertyChanged));
 
             return result;
         }
 
-        private List<Tree_View_Card> Get_Tree_View_Template_Cards_For_Parent(Tree_View_Card Parent, ref Card_Collection coll, Tree_View_Card.OnPropertyChangedDelegate propertyChanged)
+        private List<Tree_View_Card> Get_Tree_View_Cards_For_Parent(Tree_View_Card Parent, ref Card_Collection coll, Tree_View_Card.OnPropertyChangedDelegate propertyChanged)
         {
             List<Tree_View_Card> result = new List<Tree_View_Card>();
 
@@ -246,7 +254,7 @@ namespace TCG_Creator
                 if ((Parent == null && i.ParentCard == -1) || (Parent != null && i.ParentCard == Parent.Id))
                 {
                     Tree_View_Card tmp = new Tree_View_Card(i.Id, i.Name, i.ParentCard, ref coll, propertyChanged);
-                    tmp.Children = Get_Tree_View_Template_Cards_For_Parent(tmp, ref coll, propertyChanged);
+                    tmp.Children = Get_Tree_View_Cards_For_Parent(tmp, ref coll, propertyChanged);
                     tmp.Parent = Parent;
 
                     if (tmp.Id == SelectedCardId)

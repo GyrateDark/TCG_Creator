@@ -60,6 +60,27 @@
                                 Grid.Row="1"
                               IsEnabled="{Binding NotInheritTextVerticalAlignment}"/>
                 </Grid>
+                <Expander Header="Advanced">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Inherit Font Family" />
+                            <CheckBox Style="{StaticResource SlavedCheckBox}"
+                                  IsChecked="{Binding InheritFontFamily}"
+                                  ToolTip="Inherit Font Family"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Inherit Font Size" />
+                            <CheckBox Style="{StaticResource SlavedCheckBox}"
+                                  IsChecked="{Binding InheritFontSize}"
+                                  ToolTip="Inherit Font Size"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Inherit Text" />
+                            <ComboBox ItemsSource="{Binding AllInheritTextOptions}"
+                                      SelectedIndex="{Binding SelectedInheritTextIndex}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
                 </StackPanel>
             </GroupBox>
             <GroupBox Style="{StaticResource StdGroupBox}">

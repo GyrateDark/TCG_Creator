@@ -20,10 +20,18 @@ namespace TCG_Creator
         Gradient,
         SolidColor
     }
+    public enum InheritTextOptions
+    {
+        AddInherittedTextAfter,
+        AddInherittedTextBefore,
+        UseOnlyInherittedText,
+        UseOnlyLocalText,
+        N_INHERIT_TEXT_OPTIONS
+    }
 
     public class String_Container
     {
-        public bool InheritText { get; set; } = true;
+        public InheritTextOptions InheritText { get; set; } = InheritTextOptions.UseOnlyInherittedText;
 
         public List<String_Drawing> strings = new List<String_Drawing>();
         public TextAlignment TxtAlign { get; set; } = TextAlignment.Left;
@@ -48,7 +56,7 @@ namespace TCG_Creator
 
             foreach (String_Drawing i in strings)
             {
-                int stopPosition = i.Text.Length + startPosition;
+                int stopPosition = i.Text.Length;
 
                 if (!stringProperties.IsValid())
                 {
@@ -67,6 +75,7 @@ namespace TCG_Creator
                 result.SetFontStyle(stringProperties.SFontStyle, startPosition, stopPosition);
 
                 result.SetForegroundBrush(stringProperties.TextBrush, startPosition, stopPosition);
+                startPosition = stopPosition;
             }
 
             result.TextAlignment = TxtAlign;
@@ -76,7 +85,14 @@ namespace TCG_Creator
 
         public void SetAllInheritValues(bool val)
         {
-            InheritText = val;
+            if (val)
+            {
+                InheritText = InheritTextOptions.UseOnlyInherittedText;
+            }
+            else
+            {
+                InheritText = InheritTextOptions.UseOnlyLocalText;
+            }
 
             foreach(String_Drawing i in strings)
             {
@@ -91,10 +107,24 @@ namespace TCG_Creator
 
             result.stringProperties = result.stringProperties.GetInherittedPropertiesMerging(inherittedSource.stringProperties);
             
-            if (result.InheritText)
+            if (result.InheritText == InheritTextOptions.AddInherittedTextAfter)
+            {
+                result.strings.AddRange(inherittedSource.strings);
+                result.InheritText = inherittedSource.InheritText;
+            }
+            else if (result.InheritText == InheritTextOptions.AddInherittedTextBefore)
+            {
+                result.strings.InsertRange(0, inherittedSource.strings);
+                result.InheritText = inherittedSource.InheritText;
+            }
+            else if (result.InheritText == InheritTextOptions.UseOnlyInherittedText)
             {
                 result.strings = inherittedSource.strings;
                 result.InheritText = inherittedSource.InheritText;
+            }
+            else if (result.InheritText == InheritTextOptions.UseOnlyLocalText)
+            {
+
             }
 
             return result;

@@ -25,6 +25,16 @@ namespace TCG_Creator
 
     public class DeckCard
     {
+        public DeckCard()
+        {
+
+        }
+        public DeckCard(int cardId, int numberOfCardsInDeck)
+        {
+            CardId = cardId;
+            NumberOfCardInDeck = numberOfCardsInDeck;
+        }
+
         public int NumberOfCardInDeck { get; set; } = -1;
         public int CardId { get; set; } = -1;
     }
