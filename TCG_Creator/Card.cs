@@ -194,7 +194,7 @@ namespace TCG_Creator
         }
         #endregion // Properties
 
-        public void CalcInherittableProperties(ref Card_Collection allCardsRef)
+        public void CalcInherittableProperties(ref Card_Collection allCardsRef, bool UseDeckProperties, Inherittable_Properties deckProperties)
         {
             if (_regions.Count >= 1)
             {
@@ -211,7 +211,7 @@ namespace TCG_Creator
                 {
                     Card parentCard = allCardsRef.Find_Card_In_Collection(ParentCard);
 
-                    parentCard.CalcInherittableProperties(ref allCardsRef);
+                    parentCard.CalcInherittableProperties(ref allCardsRef, UseDeckProperties, deckProperties);
 
                     for (int i = 0; i < _regions.Count; ++i)
                     {
@@ -234,13 +234,13 @@ namespace TCG_Creator
 
                 for (int i = 1; i < _regions.Count; ++i)
                 {
-                    if (_regions[i].InheritRegionBeforeCard)
+                    if (UseDeckProperties && _regions[i].DesiredInherittedProperties.InheritDeckFirst)
                     {
-                        properties[i].Add(baseCardProperties);
+                        properties[i].Insert(0, deckProperties);
                     }
-                    else
+                    else if (UseDeckProperties)
                     {
-                        properties[i].Insert(0, baseCardProperties);
+                        properties[i].Add(deckProperties);
                     }
 
                     _regions[i].SetRenderInherittableProperties(properties[i]);
@@ -248,10 +248,12 @@ namespace TCG_Creator
             }
         }
 
+        public void CalcInherittableProperties_Card(ref Card_Collection allCardsRef, bool UseDeckProperties, Inherittable_Properties DeckProperties)
+        {
+            CalcInherittableProperties(ref allCardsRef, UseDeckProperties, DeckProperties);
+        }
         public DrawingGroup Render_Card(Rect location, ref Card_Collection allCardsRef, double PPI)
         {
-            CalcInherittableProperties(ref allCardsRef);
-
             DrawingGroup card_drawing = new DrawingGroup();
 
             if (location.Height == 0 || location.Width == 0)

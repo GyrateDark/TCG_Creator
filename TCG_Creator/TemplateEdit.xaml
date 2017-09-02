@@ -40,13 +40,43 @@
               Header="Current Template">
         <StackPanel>
             <StackPanel Orientation="Horizontal">
+                
+            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <Button Style="{StaticResource TextButton}"
                         Command="{Binding Path=SaveTemplateCardCommand}"
-                        Content="Save" />
+                        Content="Save" 
+                        Grid.Row="0"
+                        Grid.Column="0"/>
                 <Button Style="{StaticResource TextButton}"
                         Command="{Binding Path=DeleteSelectedTemplateCardCommand}"
-                        Content="Delete" />
-            </StackPanel>
+                        Content="Delete" 
+                        Grid.Row="0"
+                        Grid.Column="1"/>
+                <Label Grid.Column="0" 
+                       Grid.Row="1" 
+                       Content="Height (in)" />
+            <xctk:DoubleUpDown Grid.Column="0" 
+                                   Grid.Row="2" 
+                                   Minimum="0.1" 
+                                   Value="{Binding CardPhysicalHeight}"/>
+            <Label Grid.Column="1" 
+                       Grid.Row="1" 
+                       Content="Width (in):" />
+            <xctk:DoubleUpDown Grid.Column="1"
+                                   Grid.Row="2"
+                                   Minimum="0.1" 
+                                   Value="{Binding CardPhysicalWidth}"/>
+            </Grid>
         </StackPanel>
     </GroupBox>
 </StackPanel>

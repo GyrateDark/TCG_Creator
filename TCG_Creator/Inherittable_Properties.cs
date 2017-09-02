@@ -13,6 +13,8 @@ namespace TCG_Creator
         private Image_Properties _imageProperties = new Image_Properties();
         private String_Container _stringContainer = new String_Container();
 
+        public bool InheritDeckFirst = true;
+
         public Image_Properties ImageProperties
         {
             get { return _imageProperties; }

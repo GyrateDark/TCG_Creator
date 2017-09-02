@@ -201,6 +201,15 @@ namespace TCG_Creator
                 IList<FrameworkElement> result = new List<FrameworkElement>();
 
                 Card selectedCard = Find_Selected_Card();
+
+                bool UseDeckProperties = CurrentlySelectedDeckId >= 1;
+                Inherittable_Properties deckProperties = new Inherittable_Properties();
+                if (UseDeckProperties)
+                {
+                    deckProperties = CurrentlySelectedDeck.DesiredDeckProperties;
+                }
+
+                selectedCard.CalcInherittableProperties_Card(ref _cardCollection, UseDeckProperties, deckProperties);
                 DrawingGroup cardDrawing = selectedCard.Render_Card(new Rect(0, 0, CardRenderWidth, CardRenderHeight), ref _cardCollection, PPI);
 
                 FrameworkElement frameworkElement = new Rectangle();
