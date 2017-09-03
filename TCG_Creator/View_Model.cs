@@ -999,7 +999,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritFontFamily
+        public bool? InheritFontFamily
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontFamily; }
             set
@@ -1016,7 +1016,7 @@ namespace TCG_Creator
         {
             get
             {
-                return !InheritFontFamily;
+                return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontFamily == InheritPriorities.DoNotInherit;
             }
         }
         [DependsUpon("CurrentlySelectedRegion")]
@@ -1059,11 +1059,11 @@ namespace TCG_Creator
         [DependsUpon("InheritFontWeight")]
         [DependsUpon("InheritTextHorizontalAlignment")]
         [DependsUpon("InheritTextVerticalAlignment")]
-        public bool InheritTextProperties
+        public bool? InheritTextProperties
         {
             get
             {
-                bool result = true;
+                bool? result = true;
 
                 result &= InheritFontFamily;
                 result &= InheritFontSize;
@@ -1088,7 +1088,7 @@ namespace TCG_Creator
 
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritFontSize
+        public bool? InheritFontSize
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontSize; }
             set
@@ -1104,7 +1104,7 @@ namespace TCG_Creator
         [DependsUpon("InheritFontSize")]
         public bool NotInheritFontSize
         {
-            get { return !InheritFontSize; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontSize == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         public double FontSize
@@ -1122,7 +1122,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritFontStyle
+        public bool? InheritFontStyle
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontStyle; }
             set
@@ -1138,7 +1138,7 @@ namespace TCG_Creator
         [DependsUpon("InheritFontStyle")]
         public bool NotInheritFontStyle
         {
-            get { return !InheritFontStyle; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontStyle == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         [DependsUpon("Italic")]
@@ -1157,7 +1157,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritFontWeight
+        public bool? InheritFontWeight
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontWeight; }
             set
@@ -1173,7 +1173,7 @@ namespace TCG_Creator
         [DependsUpon("InheritFontWeight")]
         public bool NotInheritFontWeight
         {
-            get { return !InheritFontWeight; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontWeight == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         [DependsUpon("Bold")]
@@ -1192,7 +1192,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritTextBrush
+        public bool? InheritTextBrush
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontBrush; }
             set
@@ -1208,7 +1208,7 @@ namespace TCG_Creator
         [DependsUpon("InheritTextBrush")]
         public bool NotInheritTextBrush
         {
-            get { return !InheritTextBrush; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritFontBrush == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         [DependsUpon("GradientBrushRequested")]
@@ -1467,7 +1467,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritBackground
+        public bool? InheritBackground
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.InheritBackground; }
             set
@@ -1483,7 +1483,7 @@ namespace TCG_Creator
         [DependsUpon("InheritBackground")]
         public bool NotInheritBackground
         {
-            get { return !InheritBackground; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.ImageProperties.InheritBackground == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         public string BackgroundImageFillType
@@ -1517,7 +1517,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritTextHorizontalAlignment
+        public bool? InheritTextHorizontalAlignment
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritTextHorizontalAlignment; }
             set
@@ -1532,7 +1532,7 @@ namespace TCG_Creator
         [DependsUpon("InheritTextHorizontalAlignment")]
         public bool NotInheritTextHorizontalAlignment
         {
-            get { return !InheritTextHorizontalAlignment; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritTextHorizontalAlignment == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         public HorizontalAlignment TextHorizonalAlignment
@@ -1562,7 +1562,7 @@ namespace TCG_Creator
         }
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritTextVerticalAlignment
+        public bool? InheritTextVerticalAlignment
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritTextVerticalAlignment; }
             set
@@ -1577,7 +1577,7 @@ namespace TCG_Creator
         [DependsUpon("InheritTextVerticalAlignment")]
         public bool NotInheritTextVerticalAlignment
         {
-            get { return !InheritTextVerticalAlignment; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritTextVerticalAlignment == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         public VerticalAlignment TextVerticalAlignment
@@ -1608,7 +1608,7 @@ namespace TCG_Creator
 
 
         [DependsUpon("CurrentlySelectedRegion")]
-        public bool InheritStrokeProperties
+        public bool? InheritStrokeProperties
         {
             get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritStrokeProperties; }
             set
@@ -1623,7 +1623,7 @@ namespace TCG_Creator
         [DependsUpon("InheritStrokeProperties")]
         public bool NotInheritStrokeProperties
         {
-            get { return !InheritStrokeProperties; }
+            get { return CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.InheritStrokeProperties == InheritPriorities.DoNotInherit; }
         }
         [DependsUpon("CurrentlySelectedRegion")]
         public bool StrokeOn
@@ -1725,192 +1725,8 @@ namespace TCG_Creator
         
 
 
-        #region Template Settings
-        [DependsUpon("CurrentlySelectedCard")]
-        public bool TemplateInheritFontFamily
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontFamily; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontFamily != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontFamily = value;
-                    OnPropertyChanged("TemplateInheritFontFamily");
-                }
-            }
-        }
-        [DependsUpon("TemplateInheritFontFamily")]
-        public bool NotTemplateInheritFontFamily
-        {
-            get
-            {
-                return !TemplateInheritFontFamily;
-            }
-        }
-        [DependsUpon("CurrentlySelectedCard")]
-        public FontFamily TemplateSelectedFontFamily
-        {
-            get { return new FontFamily(CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontFamily); }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontFamily != value.Source)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontFamily = value.Source;
-
-                    OnPropertyChanged("TemplateSelectedFontFamily");
-                }
-            }
-        }
-
-        [DependsUpon("CurrentlySelectedCard")]
-        public bool TemplateInheritFontSize
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontSize; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontSize != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontSize = value;
-
-                    OnPropertyChanged("TemplateInheritFontSize");
-                }
-            }
-        }
-        public bool NotTemplateInheritFontSize
-        {
-            get { return !TemplateInheritFontSize; }
-        }
-        [DependsUpon("CurrentlySelectedCard")]
-        public double TemplateFontSize
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontSize; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontSize != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.FontSize = value;
-
-                    OnPropertyChanged("TemplateFontSize");
-                }
-            }
-        }
-
-        [DependsUpon("CurrentlySelectedCard")]
-        public bool TemplateInheritFontStyle
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontStyle; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontStyle != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontStyle = value;
-
-                    OnPropertyChanged("TemplateInheritFontStyle");
-                }
-            }
-        }
-        public bool NotTemplateInheritFontStyle
-        {
-            get { return !TemplateInheritFontStyle; }
-        }
-        [DependsUpon("CurrentlySelectedCard")]
-        [DependsUpon("TemplateItalic")]
-        public FontStyle TemplateSelectedFontStyle
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontStyle; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontStyle != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontStyle = value;
-
-                    OnPropertyChanged("TemplateSelectedFontStyle");
-                }
-            }
-        }
-
-        [DependsUpon("CurrentlySelectedCard")]
-        public bool TemplateInheritFontWeight
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontWeight; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontWeight != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.InheritFontWeight = value;
-
-                    OnPropertyChanged("TemplateInheritFontWeight");
-                }
-            }
-        }
-        public bool NotTemplateInheritFontWeight
-        {
-            get { return !TemplateInheritFontWeight; }
-        }
-        [DependsUpon("CurrentlySelectedCard")]
-        [DependsUpon("TemplateBold")]
-        public FontWeight TemplateSelectedFontWeight
-        {
-            get { return CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontWeight; }
-            set
-            {
-                if (CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontWeight != value)
-                {
-                    CurrentlySelectedCard.Regions[0].DesiredInherittedProperties.StringProperties.SFontWeight = value;
-
-                    OnPropertyChanged("TemplateSelectedFontWeight");
-                }
-            }
-        }
-
-        [DependsUpon("TemplateSelectedFontWeight")]
-        public bool TemplateBold
-        {
-            get
-            {
-                return TemplateSelectedFontWeight == FontWeights.Bold;
-            }
-            set
-            {
-                if ((TemplateSelectedFontWeight == FontWeights.Bold) != value)
-                {
-                    if (value)
-                    {
-                        TemplateSelectedFontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        TemplateSelectedFontWeight = FontWeights.Normal;
-                    }
-
-                    OnPropertyChanged("TemplateBold");
-                }
-            }
-        }
-        [DependsUpon("TemplateSelectedFontStyle")]
-        public bool TemplateItalic
-        {
-            get
-            {
-                return TemplateSelectedFontStyle == FontStyles.Italic;
-            }
-            set
-            {
-                if ((TemplateSelectedFontStyle == FontStyles.Italic) != value)
-                {
-                    if (value)
-                    {
-                        TemplateSelectedFontStyle = FontStyles.Italic;
-                    }
-                    else
-                    {
-                        TemplateSelectedFontStyle = FontStyles.Italic;
-                    }
-
-                    OnPropertyChanged("TemplateItalic");
-                }
-            }
-        }
+        #region Deck Settings
+        
         #endregion
 
         #endregion
@@ -2229,6 +2045,36 @@ namespace TCG_Creator
             return result;
         }
 
+        private bool? InheritPrioritiesToBool(InheritPriorities source)
+        {
+            if (source == InheritPriorities.DoNotInherit)
+            {
+                return false;
+            }
+            else if (source == InheritPriorities.InheritDeckFirst)
+            {
+                return null;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        private InheritPriorities BoolToInheritPriorities(bool? source)
+        {
+            if (source == false)
+            {
+                return InheritPriorities.DoNotInherit;
+            }
+            else if (source == null)
+            {
+                return InheritPriorities.InheritDeckFirst;
+            }
+            else
+            {
+                return InheritPriorities.InheritRegionFirst;
+            }
+        }
         #endregion
 
         #region Public Functions

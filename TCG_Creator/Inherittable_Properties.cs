@@ -8,6 +8,63 @@ using System.Xml.Serialization;
 
 namespace TCG_Creator
 {
+    public class InheritPriorities
+    {
+        public const int InheritRegionFirst = 0;
+        public const int InheritDeckFirst = 1;
+        public const int DoNotInherit = 2;
+
+        private int _val = InheritRegionFirst;
+
+        public static implicit operator bool?(InheritPriorities value)
+        {
+            if (value._val == InheritRegionFirst)
+            {
+                return true;
+            }
+            else if (value._val == InheritDeckFirst)
+            {
+                return null;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public static implicit operator InheritPriorities(bool? value)
+        {
+            InheritPriorities result = new InheritPriorities();
+
+            if (value == true)
+            {
+                result._val = InheritRegionFirst;
+            }
+            else if (value == null)
+            {
+                result._val = InheritDeckFirst;
+            }
+            else
+            {
+                result._val = DoNotInherit;
+            }
+
+            return result;
+        }
+        public static implicit operator InheritPriorities(int value)
+        {
+            InheritPriorities result = new InheritPriorities();
+
+            result = value;
+
+            return result;
+        }
+        public static implicit operator int(InheritPriorities value)
+        {
+            return value._val;
+        }
+    }
+
+
     public class Inherittable_Properties
     {
         private Image_Properties _imageProperties = new Image_Properties();
@@ -52,17 +109,17 @@ namespace TCG_Creator
             }
         }
 
-        public Inherittable_Properties GetInherittedPropertiesMerging(Inherittable_Properties Source)
+        public Inherittable_Properties GetInherittedPropertiesMerging(Inherittable_Properties Source, Inherittable_Properties Deck)
         {
             Inherittable_Properties result = Clone();
 
-            result.ImageProperties = result._imageProperties.GetInherittedPropertiesMerging(Source._imageProperties);
-            result.StringContainer = result._stringContainer.GetInherittedPropertiesMerging(Source._stringContainer);
+            result.ImageProperties = result._imageProperties.GetInherittedPropertiesMerging(Source.ImageProperties, Deck.ImageProperties);
+            result.StringContainer = result._stringContainer.GetInherittedPropertiesMerging(Source.StringContainer, Deck.StringContainer);
 
             return result;
         }
 
-        public void SetAllInheritValues(bool val)
+        public void SetAllInheritValues(InheritPriorities val)
         {
             _imageProperties.SetAllInheritValues(val);
             _stringContainer.SetAllInheritValues(val);
@@ -72,7 +129,7 @@ namespace TCG_Creator
         {
             IList<Color> result = new List<Color>();
 
-            if (!StringProperties.InheritFontBrush)
+            if (StringProperties.InheritFontBrush == InheritPriorities.DoNotInherit)
             {
                 if (StringProperties.TextBrushColorMode == TextBrushMode.SolidColor)
                 {

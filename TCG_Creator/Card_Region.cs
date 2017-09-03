@@ -163,17 +163,15 @@ namespace TCG_Creator
             }
         }
 
-        public void SetRenderInherittableProperties(List<Inherittable_Properties> Properties)
+        public void SetRenderInherittableProperties(List<Inherittable_Properties> RegionProperties, Inherittable_Properties DeckProperties)
         {
             _renderProperties = _desiredProperties.Clone();
 
-            if (Properties != null)
+            foreach (Inherittable_Properties i in RegionProperties)
             {
-                foreach (Inherittable_Properties i in Properties)
-                {
-                    _renderProperties = _renderProperties.GetInherittedPropertiesMerging(i);
-                }
+                _renderProperties = _renderProperties.GetInherittedPropertiesMerging(i, DeckProperties);
             }
+            
         }
         /*
         public FlowDocument ConvertFromStringContainerToFlowDocument(String_Properties cardRenderProperties)

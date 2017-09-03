@@ -83,9 +83,9 @@ namespace TCG_Creator
             return result;
         }
 
-        public void SetAllInheritValues(bool val)
+        public void SetAllInheritValues(InheritPriorities val)
         {
-            if (val)
+            if (val != InheritPriorities.DoNotInherit)
             {
                 InheritText = InheritTextOptions.UseOnlyInherittedText;
             }
@@ -101,11 +101,11 @@ namespace TCG_Creator
             stringProperties.SetAllInheritValues(val);
         }
 
-        public String_Container GetInherittedPropertiesMerging(String_Container inherittedSource)
+        public String_Container GetInherittedPropertiesMerging(String_Container inherittedSource, String_Container deck)
         {
             String_Container result = Clone();
 
-            result.stringProperties = result.stringProperties.GetInherittedPropertiesMerging(inherittedSource.stringProperties);
+            result.stringProperties = result.stringProperties.GetInherittedPropertiesMerging(inherittedSource.stringProperties, deck.stringProperties);
             
             if (result.InheritText == InheritTextOptions.AddInherittedTextAfter)
             {
@@ -197,12 +197,12 @@ namespace TCG_Creator
 
         public Color SolidColorTextBrushColor { get; set; } = Colors.White;
 
-        public bool InheritTextVerticalAlignment { get; set; } = true;
+        public InheritPriorities InheritTextVerticalAlignment { get; set; } = InheritPriorities.InheritRegionFirst;
         public VerticalAlignment TextVerticalAlignment { get; set; } = VerticalAlignment.Center;
-        public bool InheritTextHorizontalAlignment { get; set; } = true;
+        public InheritPriorities InheritTextHorizontalAlignment { get; set; } = InheritPriorities.InheritRegionFirst;
         public HorizontalAlignment TextHorizontalAlignment { get; set; } = HorizontalAlignment.Left;
 
-        public bool InheritStrokeProperties { get; set; } = true;
+        public InheritPriorities InheritStrokeProperties { get; set; } = InheritPriorities.InheritRegionFirst;
         public bool StrokeOn { get; set; } = true;
         public double StrokeThickness { get; set; } = 3.0;
         public Color TextStrokeColor { get; set; } = Colors.Black;
@@ -236,72 +236,204 @@ namespace TCG_Creator
             }
         } 
 
-        public bool InheritFontFamily { get; set; } = true;
-        public bool InheritFontSize { get; set; } = true;
-        public bool InheritFontStyle { get; set; } = true;
-        public bool InheritFontWeight { get; set; } = true;
+        public InheritPriorities InheritFontFamily { get; set; } = InheritPriorities.InheritRegionFirst;
+        public InheritPriorities InheritFontSize { get; set; } = InheritPriorities.InheritRegionFirst;
+        public InheritPriorities InheritFontStyle { get; set; } = InheritPriorities.InheritRegionFirst;
+        public InheritPriorities InheritFontWeight { get; set; } = InheritPriorities.InheritRegionFirst;
 
-        public bool InheritFontBrush { get; set; } = true;
+        public InheritPriorities InheritFontBrush { get; set; } = InheritPriorities.InheritRegionFirst;
 
-        public String_Properties GetInherittedPropertiesMerging(String_Properties inherittedSource)
+        public String_Properties GetInherittedPropertiesMerging(String_Properties inherittedSource, String_Properties deck)
         {
             String_Properties result = Clone();
 
-            if (result.InheritFontSize)
+            GetInherittedPropertiesMergingOnce(result.InheritFontSize, GetInherittedPropertiesMergingFontSize, result, inherittedSource, deck);
+            if (result.InheritFontSize == InheritPriorities.InheritRegionFirst)
             {
-                result.FontSize = inherittedSource.FontSize;
-                result.InheritFontSize = inherittedSource.InheritFontSize;
+                GetInherittedPropertiesMergingFontSize(ref result, inherittedSource);
+                if (inherittedSource.InheritFontSize == InheritPriorities.InheritDeckFirst)
+                {
+                    GetInherittedPropertiesMergingFontSize(ref result, deck);
+                }
             }
-            if (result.InheritFontFamily)
+            else if (result.InheritFontSize == InheritPriorities.InheritDeckFirst)
+            {
+                GetInherittedPropertiesMergingFontSize(ref result, deck);
+                if (deck.InheritFontSize == InheritPriorities.InheritRegionFirst)
+                {
+                    GetInherittedPropertiesMergingFontSize(ref result, inherittedSource);
+                }
+            }
+            if (result.InheritFontFamily == InheritPriorities.InheritRegionFirst)
             {
                 result.FontFamily = inherittedSource.FontFamily;
-                result.InheritFontFamily = inherittedSource.InheritFontFamily;
+                if (inherittedSource.InheritFontFamily == InheritPriorities.InheritDeckFirst)
+                {
+                    result.FontFamily = deck.FontFamily;
+                }
             }
-            if (result.InheritFontStyle)
+            else if (result.InheritFontFamily == InheritPriorities.InheritDeckFirst)
+            {
+                result.FontFamily = deck.FontFamily;
+                if (deck.InheritFontFamily == InheritPriorities.InheritRegionFirst)
+                {
+                    result.FontFamily = inherittedSource.FontFamily;
+                }
+            }
+            if (result.InheritFontStyle == InheritPriorities.InheritRegionFirst)
             {
                 result.SFontStyle = inherittedSource.SFontStyle;
-                result.InheritFontStyle = inherittedSource.InheritFontStyle;
+                if (inherittedSource.InheritFontStyle == InheritPriorities.InheritDeckFirst)
+                {
+                    result.SFontStyle = deck.SFontStyle;
+                }
             }
-            if (result.InheritFontWeight)
+            else if (result.InheritFontStyle == InheritPriorities.InheritDeckFirst)
+            {
+                result.SFontStyle = deck.SFontStyle;
+                if (deck.InheritFontStyle == InheritPriorities.InheritRegionFirst)
+                {
+                    result.SFontStyle = inherittedSource.SFontStyle;
+                }
+            }
+            if (result.InheritFontWeight == InheritPriorities.InheritRegionFirst)
             {
                 result.SFontWeight = inherittedSource.SFontWeight;
-                result.InheritFontWeight = inherittedSource.InheritFontWeight;
+                if (inherittedSource.InheritFontWeight == InheritPriorities.InheritDeckFirst)
+                {
+                    result.SFontWeight = deck.SFontWeight;
+                }
             }
-            if (result.InheritFontBrush)
+            else if (result.InheritFontWeight == InheritPriorities.InheritDeckFirst)
+            {
+                result.SFontWeight = deck.SFontWeight;
+                if (deck.InheritFontWeight == InheritPriorities.InheritRegionFirst)
+                {
+                    result.SFontWeight = inherittedSource.SFontWeight;
+                }
+            }
+            if (result.InheritFontBrush == InheritPriorities.InheritRegionFirst)
             {
                 result.GradientTextBrushStops = inherittedSource.GradientTextBrushStops.Clone();
                 result.GradientTextBrushAngle = inherittedSource.GradientTextBrushAngle;
                 result.SolidColorTextBrushColor = inherittedSource.SolidColorTextBrushColor;
                 result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
-                result.InheritFontBrush = inherittedSource.InheritFontBrush;
+                if (inherittedSource.InheritFontBrush == InheritPriorities.InheritDeckFirst)
+                {
+                    result.GradientTextBrushStops = deck.GradientTextBrushStops.Clone();
+                    result.GradientTextBrushAngle = deck.GradientTextBrushAngle;
+                    result.SolidColorTextBrushColor = deck.SolidColorTextBrushColor;
+                    result.TextBrushColorMode = deck.TextBrushColorMode;
+                }
             }
-            if (result.InheritStrokeProperties)
+            else if (result.InheritFontBrush == InheritPriorities.InheritDeckFirst)
+            {
+                result.GradientTextBrushStops = deck.GradientTextBrushStops.Clone();
+                result.GradientTextBrushAngle = deck.GradientTextBrushAngle;
+                result.SolidColorTextBrushColor = deck.SolidColorTextBrushColor;
+                result.TextBrushColorMode = deck.TextBrushColorMode;
+                if (deck.InheritFontBrush == InheritPriorities.InheritRegionFirst)
+                {
+                    result.GradientTextBrushStops = inherittedSource.GradientTextBrushStops.Clone();
+                    result.GradientTextBrushAngle = inherittedSource.GradientTextBrushAngle;
+                    result.SolidColorTextBrushColor = inherittedSource.SolidColorTextBrushColor;
+                    result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
+                }
+            }
+            if (result.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
             {
                 result.TextStrokeColor = inherittedSource.TextStrokeColor;
                 result.StrokeOn = inherittedSource.StrokeOn;
                 result.StrokeThickness = inherittedSource.StrokeThickness;
-                result.InheritStrokeProperties = inherittedSource.InheritStrokeProperties;
+                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
+                {
+                    result.TextStrokeColor = deck.TextStrokeColor;
+                    result.StrokeOn = deck.StrokeOn;
+                    result.StrokeThickness = deck.StrokeThickness;
+                }
             }
-            if (result.InheritTextHorizontalAlignment)
+            else if (result.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
+            {
+                result.TextStrokeColor = deck.TextStrokeColor;
+                result.StrokeOn = deck.StrokeOn;
+                result.StrokeThickness = deck.StrokeThickness;
+                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
+                {
+                    result.TextStrokeColor = inherittedSource.TextStrokeColor;
+                    result.StrokeOn = inherittedSource.StrokeOn;
+                    result.StrokeThickness = inherittedSource.StrokeThickness;
+                }
+            }
+            if (result.InheritTextHorizontalAlignment == InheritPriorities.InheritRegionFirst)
             {
                 result.TextHorizontalAlignment = inherittedSource.TextHorizontalAlignment;
-                result.InheritTextHorizontalAlignment = inherittedSource.InheritTextHorizontalAlignment;
+                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
+                {
+                    result.TextHorizontalAlignment = deck.TextHorizontalAlignment;
+                }
             }
-            if (result.InheritTextVerticalAlignment)
+            else if (result.InheritTextHorizontalAlignment == InheritPriorities.InheritDeckFirst)
+            {
+                result.TextHorizontalAlignment = deck.TextHorizontalAlignment;
+                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
+                {
+                    result.TextHorizontalAlignment = inherittedSource.TextHorizontalAlignment;
+                }
+            }
+            if (result.InheritTextVerticalAlignment == InheritPriorities.InheritRegionFirst)
             {
                 result.TextVerticalAlignment = inherittedSource.TextVerticalAlignment;
-                result.InheritTextVerticalAlignment = inherittedSource.InheritTextVerticalAlignment;
+                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
+                {
+                    result.TextVerticalAlignment = deck.TextVerticalAlignment;
+                }
+            }
+            else if (result.InheritTextVerticalAlignment == InheritPriorities.InheritDeckFirst)
+            {
+                result.TextVerticalAlignment = deck.TextVerticalAlignment;
+                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
+                {
+                    result.TextVerticalAlignment = inherittedSource.TextVerticalAlignment;
+                }
             }
 
             return result;
         }
+
+        #region InheritCopyFunctions
+        private void GetInherittedPropertiesMergingOnce(ref InheritPriorities prior, Action<String_Properties, String_Properties> PropCopy, String_Properties result, String_Properties source, String_Properties deck)
+        {
+
+        }
+
+        private void GetInherittedPropertiesMergingFontFamily(ref String_Properties result, String_Properties source)
+        {
+            result.FontFamily = source.FontFamily;
+            result.InheritFontFamily = source.InheritFontFamily;
+        }
+        private void GetInherittedPropertiesMergingFontSize(ref String_Properties result, String_Properties source)
+        {
+            result.FontSize = source.FontSize;
+            result.InheritFontSize = source.InheritFontSize;
+        }
+        private void GetInherittedPropertiesMergingFontStyle(ref String_Properties result, String_Properties source)
+        {
+            result.SFontStyle = source.SFontStyle;
+            result.InheritFontStyle = source.InheritFontStyle;
+        }
+        private void GetInherittedPropertiesMergingFontWeight(ref String_Properties result, String_Properties source)
+        {
+            result.SFontWeight = source.SFontWeight;
+            result.InheritFontWeight = source.InheritFontWeight;
+        }
+        #endregion
 
         public bool IsValid()
         {
             return !(FontFamily == "" || FontSize == 0 || TextBrush == null);
         }
 
-        public void SetAllInheritValues(bool val)
+        public void SetAllInheritValues(InheritPriorities val)
         {
             InheritFontFamily = val;
             InheritFontSize = val;

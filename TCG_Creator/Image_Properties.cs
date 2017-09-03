@@ -51,7 +51,7 @@ namespace TCG_Creator
         }
         public IMAGE_OPTIONS BackgroundImageFillType { get; set; } = IMAGE_OPTIONS.None;
         private string _backgroundImageLocation = "";
-        public bool InheritBackground { get; set; } = true;
+        public InheritPriorities InheritBackground { get; set; } = InheritPriorities.InheritRegionFirst;
 
         public string BackgroundImageLocation
         {
@@ -66,20 +66,39 @@ namespace TCG_Creator
             }
         } 
 
-        public Image_Properties GetInherittedPropertiesMerging(Image_Properties Source)
+        public Image_Properties GetInherittedPropertiesMerging(Image_Properties Source, Image_Properties Deck)
         {
             Image_Properties result = Clone();
 
-            if (InheritBackground)
+            if (InheritBackground == InheritPriorities.InheritRegionFirst)
             {
                 result.BackgroundImageFillType = Source.BackgroundImageFillType;
                 result.BackgroundImageLocation = Source.BackgroundImageLocation;
+                result.InheritBackground = Source.InheritBackground;
+                if (result.InheritBackground == InheritPriorities.InheritDeckFirst)
+                {
+                    result.BackgroundImageFillType = Deck.BackgroundImageFillType;
+                    result.BackgroundImageLocation = Deck.BackgroundImageLocation;
+                    result.InheritBackground = Deck.InheritBackground;
+                }
+            }
+            else if (InheritBackground == InheritPriorities.InheritDeckFirst)
+            {
+                result.BackgroundImageFillType = Deck.BackgroundImageFillType;
+                result.BackgroundImageLocation = Deck.BackgroundImageLocation;
+                result.InheritBackground = Deck.InheritBackground;
+                if (result.InheritBackground == InheritPriorities.InheritRegionFirst)
+                {
+                    result.BackgroundImageFillType = Source.BackgroundImageFillType;
+                    result.BackgroundImageLocation = Source.BackgroundImageLocation;
+                    result.InheritBackground = Source.InheritBackground;
+                }
             }
 
             return result;
         }
 
-        public void SetAllInheritValues(bool val)
+        public void SetAllInheritValues(InheritPriorities val)
         {
             InheritBackground = val;
         }

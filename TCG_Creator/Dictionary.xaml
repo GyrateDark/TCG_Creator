@@ -138,6 +138,8 @@
         </Setter>
         <Setter Property="VerticalAlignment"
                 Value="Center" />
+        <Setter Property="IsThreeState"
+                Value="True"/>
     </Style>
 
     <Style TargetType="GridSplitter"

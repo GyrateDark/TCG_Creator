@@ -194,7 +194,7 @@ namespace TCG_Creator
         }
         #endregion // Properties
 
-        public void CalcInherittableProperties(ref Card_Collection allCardsRef, bool UseDeckProperties, Inherittable_Properties deckProperties)
+        public void CalcInherittableProperties(ref Card_Collection allCardsRef, Inherittable_Properties deckProperties)
         {
             if (_regions.Count >= 1)
             {
@@ -211,7 +211,7 @@ namespace TCG_Creator
                 {
                     Card parentCard = allCardsRef.Find_Card_In_Collection(ParentCard);
 
-                    parentCard.CalcInherittableProperties(ref allCardsRef, UseDeckProperties, deckProperties);
+                    parentCard.CalcInherittableProperties(ref allCardsRef, deckProperties);
 
                     for (int i = 0; i < _regions.Count; ++i)
                     {
@@ -224,26 +224,11 @@ namespace TCG_Creator
                         }
                     }
                 }
-
-                _regions[0].SetRenderInherittableProperties(properties[0]);
-
-                Inherittable_Properties baseCardProperties = _regions[0].RenderInherittableProperties;
-
-                // Don't inherit base card background
-                baseCardProperties.ImageProperties.BackgroundImageFillType = IMAGE_OPTIONS.None;
-
-                for (int i = 1; i < _regions.Count; ++i)
+                
+                for (int i = 0; i < _regions.Count; ++i)
                 {
-                    if (UseDeckProperties && _regions[i].DesiredInherittedProperties.InheritDeckFirst)
-                    {
-                        properties[i].Insert(0, deckProperties);
-                    }
-                    else if (UseDeckProperties)
-                    {
-                        properties[i].Add(deckProperties);
-                    }
 
-                    _regions[i].SetRenderInherittableProperties(properties[i]);
+                    _regions[i].SetRenderInherittableProperties(properties, deckProperties);
                 }
             }
         }
