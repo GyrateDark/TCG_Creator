@@ -15,7 +15,7 @@
                         <TextBlock Text="Text Options" />
                         <CheckBox Style="{StaticResource SlavedCheckBox}"
                                     IsChecked="{Binding InheritTextProperties}"
-                                    ToolTip="Inherit Text Properties" />
+                                    Tag="Text Properties" Checked="CheckBox_Checked" />
                     </StackPanel>
                 </GroupBox.Header>
                 <StackPanel>

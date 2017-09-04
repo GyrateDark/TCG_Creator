@@ -98,7 +98,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Image Name="Im"
-                               Source="pack://application:,,,/Resources/Icons/link.ico" />
+                           Source="pack://application:,,,/Resources/Icons/link.ico" 
+                           ToolTip="{Binding Tag}"/>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="False">
@@ -106,6 +107,11 @@
                                     Property="Source" 
                                     Value="pack://application:,,,/Resources/Icons/link_break.ico"  />
 
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="Im" 
+                                    Property="Source" 
+                                    Value="pack://application:,,,/Resources/Icons/link_deck.png"  />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -115,6 +121,14 @@
                 Value="Center" />
         <Setter Property="HorizontalAlignment"
                 Value="Center" />
+        <Setter Property="IsThreeState"
+                Value="True"/>
+        <Style.Triggers>
+            <Trigger Property="IsChecked"
+                     Value="{x:Null}">
+                
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="LockedIconCheckBox" 
            TargetType="CheckBox">
@@ -138,8 +152,6 @@
         </Setter>
         <Setter Property="VerticalAlignment"
                 Value="Center" />
-        <Setter Property="IsThreeState"
-                Value="True"/>
     </Style>
 
     <Style TargetType="GridSplitter"

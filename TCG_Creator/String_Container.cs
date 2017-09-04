@@ -75,7 +75,7 @@ namespace TCG_Creator
                 result.SetFontStyle(stringProperties.SFontStyle, startPosition, stopPosition);
 
                 result.SetForegroundBrush(stringProperties.TextBrush, startPosition, stopPosition);
-                startPosition = stopPosition;
+                startPosition += stopPosition;
             }
 
             result.TextAlignment = TxtAlign;
@@ -247,184 +247,103 @@ namespace TCG_Creator
         {
             String_Properties result = Clone();
 
-            GetInherittedPropertiesMergingOnce(result.InheritFontSize, GetInherittedPropertiesMergingFontSize, result, inherittedSource, deck);
-            if (result.InheritFontSize == InheritPriorities.InheritRegionFirst)
-            {
-                GetInherittedPropertiesMergingFontSize(ref result, inherittedSource);
-                if (inherittedSource.InheritFontSize == InheritPriorities.InheritDeckFirst)
-                {
-                    GetInherittedPropertiesMergingFontSize(ref result, deck);
-                }
-            }
-            else if (result.InheritFontSize == InheritPriorities.InheritDeckFirst)
-            {
-                GetInherittedPropertiesMergingFontSize(ref result, deck);
-                if (deck.InheritFontSize == InheritPriorities.InheritRegionFirst)
-                {
-                    GetInherittedPropertiesMergingFontSize(ref result, inherittedSource);
-                }
-            }
-            if (result.InheritFontFamily == InheritPriorities.InheritRegionFirst)
-            {
-                result.FontFamily = inherittedSource.FontFamily;
-                if (inherittedSource.InheritFontFamily == InheritPriorities.InheritDeckFirst)
-                {
-                    result.FontFamily = deck.FontFamily;
-                }
-            }
-            else if (result.InheritFontFamily == InheritPriorities.InheritDeckFirst)
-            {
-                result.FontFamily = deck.FontFamily;
-                if (deck.InheritFontFamily == InheritPriorities.InheritRegionFirst)
-                {
-                    result.FontFamily = inherittedSource.FontFamily;
-                }
-            }
-            if (result.InheritFontStyle == InheritPriorities.InheritRegionFirst)
-            {
-                result.SFontStyle = inherittedSource.SFontStyle;
-                if (inherittedSource.InheritFontStyle == InheritPriorities.InheritDeckFirst)
-                {
-                    result.SFontStyle = deck.SFontStyle;
-                }
-            }
-            else if (result.InheritFontStyle == InheritPriorities.InheritDeckFirst)
-            {
-                result.SFontStyle = deck.SFontStyle;
-                if (deck.InheritFontStyle == InheritPriorities.InheritRegionFirst)
-                {
-                    result.SFontStyle = inherittedSource.SFontStyle;
-                }
-            }
-            if (result.InheritFontWeight == InheritPriorities.InheritRegionFirst)
-            {
-                result.SFontWeight = inherittedSource.SFontWeight;
-                if (inherittedSource.InheritFontWeight == InheritPriorities.InheritDeckFirst)
-                {
-                    result.SFontWeight = deck.SFontWeight;
-                }
-            }
-            else if (result.InheritFontWeight == InheritPriorities.InheritDeckFirst)
-            {
-                result.SFontWeight = deck.SFontWeight;
-                if (deck.InheritFontWeight == InheritPriorities.InheritRegionFirst)
-                {
-                    result.SFontWeight = inherittedSource.SFontWeight;
-                }
-            }
-            if (result.InheritFontBrush == InheritPriorities.InheritRegionFirst)
-            {
-                result.GradientTextBrushStops = inherittedSource.GradientTextBrushStops.Clone();
-                result.GradientTextBrushAngle = inherittedSource.GradientTextBrushAngle;
-                result.SolidColorTextBrushColor = inherittedSource.SolidColorTextBrushColor;
-                result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
-                if (inherittedSource.InheritFontBrush == InheritPriorities.InheritDeckFirst)
-                {
-                    result.GradientTextBrushStops = deck.GradientTextBrushStops.Clone();
-                    result.GradientTextBrushAngle = deck.GradientTextBrushAngle;
-                    result.SolidColorTextBrushColor = deck.SolidColorTextBrushColor;
-                    result.TextBrushColorMode = deck.TextBrushColorMode;
-                }
-            }
-            else if (result.InheritFontBrush == InheritPriorities.InheritDeckFirst)
-            {
-                result.GradientTextBrushStops = deck.GradientTextBrushStops.Clone();
-                result.GradientTextBrushAngle = deck.GradientTextBrushAngle;
-                result.SolidColorTextBrushColor = deck.SolidColorTextBrushColor;
-                result.TextBrushColorMode = deck.TextBrushColorMode;
-                if (deck.InheritFontBrush == InheritPriorities.InheritRegionFirst)
-                {
-                    result.GradientTextBrushStops = inherittedSource.GradientTextBrushStops.Clone();
-                    result.GradientTextBrushAngle = inherittedSource.GradientTextBrushAngle;
-                    result.SolidColorTextBrushColor = inherittedSource.SolidColorTextBrushColor;
-                    result.TextBrushColorMode = inherittedSource.TextBrushColorMode;
-                }
-            }
-            if (result.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
-            {
-                result.TextStrokeColor = inherittedSource.TextStrokeColor;
-                result.StrokeOn = inherittedSource.StrokeOn;
-                result.StrokeThickness = inherittedSource.StrokeThickness;
-                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
-                {
-                    result.TextStrokeColor = deck.TextStrokeColor;
-                    result.StrokeOn = deck.StrokeOn;
-                    result.StrokeThickness = deck.StrokeThickness;
-                }
-            }
-            else if (result.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
-            {
-                result.TextStrokeColor = deck.TextStrokeColor;
-                result.StrokeOn = deck.StrokeOn;
-                result.StrokeThickness = deck.StrokeThickness;
-                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
-                {
-                    result.TextStrokeColor = inherittedSource.TextStrokeColor;
-                    result.StrokeOn = inherittedSource.StrokeOn;
-                    result.StrokeThickness = inherittedSource.StrokeThickness;
-                }
-            }
-            if (result.InheritTextHorizontalAlignment == InheritPriorities.InheritRegionFirst)
-            {
-                result.TextHorizontalAlignment = inherittedSource.TextHorizontalAlignment;
-                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
-                {
-                    result.TextHorizontalAlignment = deck.TextHorizontalAlignment;
-                }
-            }
-            else if (result.InheritTextHorizontalAlignment == InheritPriorities.InheritDeckFirst)
-            {
-                result.TextHorizontalAlignment = deck.TextHorizontalAlignment;
-                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
-                {
-                    result.TextHorizontalAlignment = inherittedSource.TextHorizontalAlignment;
-                }
-            }
-            if (result.InheritTextVerticalAlignment == InheritPriorities.InheritRegionFirst)
-            {
-                result.TextVerticalAlignment = inherittedSource.TextVerticalAlignment;
-                if (inherittedSource.InheritStrokeProperties == InheritPriorities.InheritDeckFirst)
-                {
-                    result.TextVerticalAlignment = deck.TextVerticalAlignment;
-                }
-            }
-            else if (result.InheritTextVerticalAlignment == InheritPriorities.InheritDeckFirst)
-            {
-                result.TextVerticalAlignment = deck.TextVerticalAlignment;
-                if (deck.InheritStrokeProperties == InheritPriorities.InheritRegionFirst)
-                {
-                    result.TextVerticalAlignment = inherittedSource.TextVerticalAlignment;
-                }
-            }
+            GetInherittedPropertiesMergingOnce(result.InheritFontSize, GetInherittedPropertiesMergingFontSize, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritFontFamily, GetInherittedPropertiesMergingFontFamily, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritFontStyle, GetInherittedPropertiesMergingFontStyle, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritFontWeight, GetInherittedPropertiesMergingFontWeight, ref result, inherittedSource, deck);
+
+            GetInherittedPropertiesMergingOnce(result.InheritFontBrush, GetInherittedPropertiesMergingFontBrush, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritStrokeProperties, GetInherittedPropertiesMergingFontStroke, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritTextHorizontalAlignment, GetInherittedPropertiesMergingHorizontalAlignment, ref result, inherittedSource, deck);
+            GetInherittedPropertiesMergingOnce(result.InheritTextVerticalAlignment, GetInherittedPropertiesMergingVerticalAlignment, ref result, inherittedSource, deck);
 
             return result;
         }
 
         #region InheritCopyFunctions
-        private void GetInherittedPropertiesMergingOnce(ref InheritPriorities prior, Action<String_Properties, String_Properties> PropCopy, String_Properties result, String_Properties source, String_Properties deck)
-        {
+        private InheritPriorities tempPrior = InheritPriorities.InheritRegionFirst;
 
+        private void GetInherittedPropertiesMergingOnce(InheritPriorities priority, Func<String_Properties, String_Properties, String_Properties> PropCopy, ref String_Properties result, String_Properties source, String_Properties deck)
+        {
+            result.tempPrior = priority;
+
+            if (source != null && result.tempPrior == InheritPriorities.InheritRegionFirst)
+            {
+                result = PropCopy(result, source);
+            }
+            if (deck != null && result.tempPrior == InheritPriorities.InheritDeckFirst)
+            {
+                deck.TextBrushColorMode = result.TextBrushColorMode;
+                deck.StrokeThickness = result.StrokeThickness;
+                deck.StrokeOn = result.StrokeOn;
+                result = PropCopy(result, deck);
+            }
+            if (source!= null && result.tempPrior == InheritPriorities.InheritRegionFirst)
+            {
+                result = PropCopy(result, source);
+            }
         }
 
-        private void GetInherittedPropertiesMergingFontFamily(ref String_Properties result, String_Properties source)
+        private String_Properties GetInherittedPropertiesMergingFontBrush(String_Properties result, String_Properties source)
+        {
+            result.GradientTextBrushStops = source.GradientTextBrushStops.Clone();
+            result.GradientTextBrushAngle = source.GradientTextBrushAngle;
+            result.SolidColorTextBrushColor = source.SolidColorTextBrushColor;
+            result.TextBrushColorMode = source.TextBrushColorMode;
+            result.InheritFontBrush = source.InheritFontBrush;
+            result.tempPrior = result.InheritFontBrush;
+            return result;
+        }
+        private String_Properties GetInherittedPropertiesMergingFontFamily(String_Properties result, String_Properties source)
         {
             result.FontFamily = source.FontFamily;
             result.InheritFontFamily = source.InheritFontFamily;
+            result.tempPrior = result.InheritFontFamily;
+            return result;
         }
-        private void GetInherittedPropertiesMergingFontSize(ref String_Properties result, String_Properties source)
+        private String_Properties GetInherittedPropertiesMergingFontSize(String_Properties result, String_Properties source)
         {
             result.FontSize = source.FontSize;
             result.InheritFontSize = source.InheritFontSize;
+            result.tempPrior = result.InheritFontSize;
+            return result;
         }
-        private void GetInherittedPropertiesMergingFontStyle(ref String_Properties result, String_Properties source)
+        private String_Properties GetInherittedPropertiesMergingFontStroke(String_Properties result, String_Properties source)
+        {
+            result.StrokeOn = source.StrokeOn;
+            result.StrokeThickness = source.StrokeThickness;
+            result.TextStrokeColor = source.TextStrokeColor;
+            result.InheritStrokeProperties = source.InheritStrokeProperties;
+            result.tempPrior = result.InheritStrokeProperties;
+            return result;
+        }
+        private String_Properties GetInherittedPropertiesMergingFontStyle(String_Properties result, String_Properties source)
         {
             result.SFontStyle = source.SFontStyle;
             result.InheritFontStyle = source.InheritFontStyle;
+            result.tempPrior = result.InheritFontStyle;
+            return result;
         }
-        private void GetInherittedPropertiesMergingFontWeight(ref String_Properties result, String_Properties source)
+        private String_Properties GetInherittedPropertiesMergingFontWeight(String_Properties result, String_Properties source)
         {
             result.SFontWeight = source.SFontWeight;
             result.InheritFontWeight = source.InheritFontWeight;
+            result.tempPrior = result.InheritFontWeight;
+            return result;
+        }
+        private String_Properties GetInherittedPropertiesMergingHorizontalAlignment(String_Properties result, String_Properties source)
+        {
+            result.TextHorizontalAlignment = source.TextHorizontalAlignment;
+            result.InheritTextHorizontalAlignment = source.InheritTextHorizontalAlignment;
+            result.tempPrior = result.InheritTextHorizontalAlignment;
+            return result;
+        }
+        private String_Properties GetInherittedPropertiesMergingVerticalAlignment(String_Properties result, String_Properties source)
+        {
+            result.TextVerticalAlignment = source.TextVerticalAlignment;
+            result.InheritTextVerticalAlignment = source.InheritTextVerticalAlignment;
+            result.tempPrior = result.InheritTextVerticalAlignment;
+            return result;
         }
         #endregion
 

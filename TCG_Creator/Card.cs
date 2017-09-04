@@ -228,14 +228,14 @@ namespace TCG_Creator
                 for (int i = 0; i < _regions.Count; ++i)
                 {
 
-                    _regions[i].SetRenderInherittableProperties(properties, deckProperties);
+                    _regions[i].SetRenderInherittableProperties(properties[i], deckProperties);
                 }
             }
         }
 
-        public void CalcInherittableProperties_Card(ref Card_Collection allCardsRef, bool UseDeckProperties, Inherittable_Properties DeckProperties)
+        public void CalcInherittableProperties_Card(ref Card_Collection allCardsRef, Inherittable_Properties DeckProperties)
         {
-            CalcInherittableProperties(ref allCardsRef, UseDeckProperties, DeckProperties);
+            CalcInherittableProperties(ref allCardsRef, DeckProperties);
         }
         public DrawingGroup Render_Card(Rect location, ref Card_Collection allCardsRef, double PPI)
         {

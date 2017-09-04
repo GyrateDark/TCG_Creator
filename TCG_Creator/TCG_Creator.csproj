@@ -242,6 +242,7 @@
     <Content Include="Resources\Icons\link_break.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Icons\link_deck.png" />
     <Resource Include="Resources\Icons\link.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

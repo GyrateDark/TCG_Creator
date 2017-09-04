@@ -54,7 +54,7 @@ namespace TCG_Creator
         {
             InheritPriorities result = new InheritPriorities();
 
-            result = value;
+            result._val = value;
 
             return result;
         }
@@ -112,6 +112,21 @@ namespace TCG_Creator
         public Inherittable_Properties GetInherittedPropertiesMerging(Inherittable_Properties Source, Inherittable_Properties Deck)
         {
             Inherittable_Properties result = Clone();
+
+            if (Deck == null)
+            {
+                Deck = new Inherittable_Properties();
+
+                Deck.ImageProperties = null;
+                Deck.StringProperties = null;
+            }
+            if (Source == null)
+            {
+                Source = new Inherittable_Properties();
+
+                Source.ImageProperties = null;
+                Source.StringProperties = null;
+            }
 
             result.ImageProperties = result._imageProperties.GetInherittedPropertiesMerging(Source.ImageProperties, Deck.ImageProperties);
             result.StringContainer = result._stringContainer.GetInherittedPropertiesMerging(Source.StringContainer, Deck.StringContainer);
