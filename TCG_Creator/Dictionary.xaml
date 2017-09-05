@@ -38,6 +38,20 @@
                      Color="{DynamicResource RegionIconColor}" />
 
 
+    <ToolTip x:Key="InheritDeckFirst" 
+             Content=""
+             ContentStringFormat="Inherit {0}From Deck First"/>
+    <ToolTip x:Key="InheritRegionFirst" 
+             Content=""
+             ContentStringFormat="Inherit {0}From Region First"/>
+    <ToolTip x:Key="DoNotInherit" 
+             Content=""
+             ContentStringFormat="Do Not Inherit{0}"/>
+    <ToolTip x:Key="OldDoNotInherit" 
+             Content="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"
+             ContentStringFormat="Do Not Inherit{0}"/>
+
+
     <Style TargetType="local:PathButton"
            x:Key="RegionButton">
         <Setter Property="DataStroke"
@@ -92,14 +106,13 @@
         <Setter Property="HorizontalAlignment"
                 Value="Center" />
     </Style>
-    <Style x:Key="SlavedCheckBox" 
+    <Style x:Key="SlavedCheckBox2States"
            TargetType="CheckBox">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Image Name="Im"
-                           Source="pack://application:,,,/Resources/Icons/link.ico" 
-                           ToolTip="{Binding Tag}"/>
+                           Source="pack://application:,,,/Resources/Icons/link.ico" />
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="False">
@@ -121,14 +134,29 @@
                 Value="Center" />
         <Setter Property="HorizontalAlignment"
                 Value="Center" />
-        <Setter Property="IsThreeState"
-                Value="True"/>
         <Style.Triggers>
             <Trigger Property="IsChecked"
+                     Value="True">
+                <Setter Property="ToolTip"
+                        Value="{StaticResource InheritRegionFirst}" />
+            </Trigger>
+            <Trigger Property="IsChecked"
                      Value="{x:Null}">
-                
+                <Setter Property="ToolTip"
+                        Value="{StaticResource InheritDeckFirst}" />
+            </Trigger>
+            <Trigger Property="IsChecked"
+                     Value="False">
+                <Setter Property="ToolTip"
+                        Value="{StaticResource DoNotInherit}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+    <Style x:Key="SlavedCheckBox" 
+           TargetType="CheckBox"
+           BasedOn="{StaticResource SlavedCheckBox2States}">
+        <Setter Property="IsThreeState"
+                Value="True"/>
     </Style>
     <Style x:Key="LockedIconCheckBox" 
            TargetType="CheckBox">

@@ -141,6 +141,9 @@
     <Compile Include="DeckEdit.xaml.cs">
       <DependentUpon>DeckEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeckSettings.xaml.cs">
+      <DependentUpon>DeckSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TemplateSettings.xaml.cs">
       <DependentUpon>TemplateSettings.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="DeckEdit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeckSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -229,6 +236,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Fonts\RedStateBlueStateBB_reg.ttf" />
     <Resource Include="Resources\Fonts\ap.ttf" />
     <Resource Include="Resources\Fonts\CrashLandingBB.otf" />
   </ItemGroup>

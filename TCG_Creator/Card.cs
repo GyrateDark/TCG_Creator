@@ -152,6 +152,26 @@ namespace TCG_Creator
                 }
             }
         }
+        public string DisplayName
+        {
+            get
+            {
+                string result = "";
+
+                if (IsBaseTemplate)
+                {
+                    result += "B";
+                }
+                if (IsTemplateCard)
+                {
+                    result += "T ";
+                }
+
+                result += Name;
+
+                return result;
+            }
+        }
         public List<int> DeckIds
         {
             get { return _deckIds; }

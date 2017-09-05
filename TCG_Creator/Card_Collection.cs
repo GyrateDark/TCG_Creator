@@ -150,8 +150,8 @@ namespace TCG_Creator
                     return CardCollection[i];
                 }
             }
-            throw new IndexOutOfRangeException("Given card id does not exist, " + cardId.ToString());
-            //return failCard;
+            //throw new IndexOutOfRangeException("Given card id does not exist, " + cardId.ToString());
+            return failCard;
         }
 
         private int Find_Next_Empty_Card_Id()
@@ -314,10 +314,10 @@ namespace TCG_Creator
                 _GUISettings.ShowAllRegions = value;
             }
         }
-        public bool ShowTemplateSettings
+        public bool ShowDeckSettings
         {
-            get { return _GUISettings.ShowTemplateSettings; }
-            set { _GUISettings.ShowTemplateSettings = value; }
+            get { return _GUISettings.ShowDeckSettings; }
+            set { _GUISettings.ShowDeckSettings = value; }
         }
         #endregion
 

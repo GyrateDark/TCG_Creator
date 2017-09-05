@@ -9,13 +9,16 @@
     <StackPanel IsEnabled="{Binding CardEditEnable}">
         <Label Style="{StaticResource TitleLabel}" 
                        Content="Region Settings" />
+        <Label Content="Region Desciprion" />
+        <TextBox Text="{Binding CurrentlySelectedRegionDescription}" 
+                 ToolTip="Region Description"/>
         <GroupBox Style="{StaticResource StdGroupBox}">
                 <GroupBox.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Text Options" />
                         <CheckBox Style="{StaticResource SlavedCheckBox}"
                                     IsChecked="{Binding InheritTextProperties}"
-                                    Tag="Text Properties" Checked="CheckBox_Checked" />
+                                    Tag="Text Properties" />
                     </StackPanel>
                 </GroupBox.Header>
                 <StackPanel>
@@ -66,13 +69,13 @@
                             <TextBlock Text="Inherit Font Family" />
                             <CheckBox Style="{StaticResource SlavedCheckBox}"
                                   IsChecked="{Binding InheritFontFamily}"
-                                  ToolTip="Inherit Font Family"/>
+                                  Tag="Font Family"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Inherit Font Size" />
                             <CheckBox Style="{StaticResource SlavedCheckBox}"
                                   IsChecked="{Binding InheritFontSize}"
-                                  ToolTip="Inherit Font Size"/>
+                                  Tag="Font Size"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Inherit Text" />
@@ -89,7 +92,7 @@
                         <TextBlock Text="Text Color Options" />
                             <CheckBox Style="{StaticResource SlavedCheckBox}"
                                         IsChecked="{Binding InheritTextBrush}"
-                                        ToolTip="Inherit Text Color" />
+                                        Tag="Text Color" />
                         </StackPanel>
                     </GroupBox.Header>
                     <StackPanel>
@@ -164,7 +167,7 @@
                     <TextBlock Text="Text Stroke Options" />
                     <CheckBox Style="{StaticResource SlavedCheckBox}"
                                     IsChecked="{Binding InheritStrokeProperties}"
-                                    ToolTip="Inherit Stroke Properties" />
+                                    Tag="Stroke Properties" />
                 </StackPanel>
             </GroupBox.Header>
             <StackPanel IsEnabled="{Binding NotInheritStrokeProperties}">
@@ -192,7 +195,6 @@
                                 Grid.Row="0"/>
                     <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
                                             SelectedColor="{Binding TextStrokeColor}"
-                                            IsEnabled="{Binding GradientBrushRequested}"
                                             Grid.Column="1"
                                             Grid.Row="1"/>
                 </Grid>
@@ -205,7 +207,7 @@
                     <TextBlock Text="Background Image" />
                     <CheckBox Style="{StaticResource SlavedCheckBox}"
                                       IsChecked="{Binding InheritBackground}"
-                                      ToolTip="Inherit Background" />
+                                      Tag="Background" />
                 </StackPanel>
             </GroupBox.Header>
             <StackPanel>

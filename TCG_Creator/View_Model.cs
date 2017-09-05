@@ -820,6 +820,22 @@ namespace TCG_Creator
                 return Find_Selected_Card();
             }
         }
+        [DependsUpon("CurrentlySelectedCard")]
+        public string CurrentlySelectedCardName
+        {
+            get
+            {
+                return CurrentlySelectedCard.Name;
+            }
+            set
+            {
+                if (CurrentlySelectedCardName != value)
+                {
+                    CurrentlySelectedCard.Name = value;
+                    OnPropertyChanged("CurrentlySelectedCardName");
+                }
+            }
+        }
 
         [DependsUpon("CurrentlySelectedCard")]
         public double CardPhysicalHeight
@@ -1240,7 +1256,7 @@ namespace TCG_Creator
                 if (CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushAngle != value)
                 {
                     CurrentlySelectedRegion.DesiredInherittedProperties.StringProperties.GradientTextBrushAngle = value;
-                    OnPropertyChanged("CurrentlySelectedRegion");
+                    OnPropertyChanged("SelectedGradientFontBrushAngle");
                 }
             }
         }
@@ -1693,25 +1709,31 @@ namespace TCG_Creator
         }
 
 
-        [DependsUpon("CurrentCardCollection")]
-        public bool ShowTemplateSettings
+        
+
+        
+
+
+        #region Deck Settings
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool ShowDeckSettings
         {
-            get { return CurrentCardCollection.ShowTemplateSettings; }
+            get { return CurrentCardCollection.ShowDeckSettings; }
             set
             {
-                if (CurrentCardCollection.ShowTemplateSettings != value)
+                if (CurrentCardCollection.ShowDeckSettings != value)
                 {
-                    CurrentCardCollection.ShowTemplateSettings = value;
-                    OnPropertyChanged("ShowTemplateSettings");
+                    CurrentCardCollection.ShowDeckSettings = value;
+                    OnPropertyChanged("ShowDeckSettings");
                 }
             }
         }
-        [DependsUpon("ShowTemplateSettings")]
-        public Visibility VisShowTemplateSettings
+        [DependsUpon("ShowDeckSettings")]
+        public Visibility VisShowDeckSettings
         {
             get
             {
-                if (ShowTemplateSettings)
+                if (ShowDeckSettings)
                 {
                     return Visibility.Visible;
                 }
@@ -1722,11 +1744,419 @@ namespace TCG_Creator
             }
         }
 
-        
+        #region Text Properties
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckFontFamily
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontFamily; }
+            set
+            {
+                if (InheritDeckFontFamily != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontFamily = value;
+                    OnPropertyChanged("InheritDeckFontFamily");
+                }
+            }
+                
+        }
+        [DependsUpon("InheritDeckSelectedFontFamily")]
+        public bool NotInheritDeckFontFamily
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontFamily == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public string DeckFontFamily
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.FontFamily; }
+            set
+            {
+                if (DeckFontFamily != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.FontFamily = value;
+                    OnPropertyChanged("DeckFontFamily");
+                }
+            }
+        }
 
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckFontSize
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontSize; }
+            set
+            {
+                if (InheritDeckFontSize != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontSize = value;
+                    OnPropertyChanged("InheritDeckFontSize");
+                }
+            }
 
-        #region Deck Settings
+        }
+        [DependsUpon("InheritDeckSelectedFontSize")]
+        public bool NotInheritDeckFontSize
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontSize == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public double DeckFontSize
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.FontSize; }
+            set
+            {
+                if (DeckFontSize != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.FontSize = value;
+                    OnPropertyChanged("DeckFontSize");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckFontWeight
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontWeight; }
+            set
+            {
+                if (InheritDeckFontWeight != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontWeight = value;
+                    OnPropertyChanged("InheritDeckFontWeight");
+                }
+            }
+
+        }
+        [DependsUpon("InheritDeckFontWeight")]
+        public bool NotInheritDeckFontWeight
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontWeight == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public FontWeight DeckFontWeight
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SFontWeight; }
+            set
+            {
+                if (DeckFontWeight != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SFontWeight = value;
+                    OnPropertyChanged("DeckFontWeight");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckFontStyle
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontStyle; }
+            set
+            {
+                if (InheritDeckFontStyle != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontStyle = value;
+                    OnPropertyChanged("InheritDeckFontStyle");
+                }
+            }
+
+        }
+        [DependsUpon("InheritDeckFontStyle")]
+        public bool NotInheritDeckFontStyle
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontWeight == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public FontStyle DeckFontStyle
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SFontStyle; }
+            set
+            {
+                if (DeckFontStyle != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SFontStyle = value;
+                    OnPropertyChanged("DeckFontStyle");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckTextHorizontalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextHorizontalAlignment; }
+            set
+            {
+                if (InheritDeckTextHorizontalAlignment != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextHorizontalAlignment = value;
+                    OnPropertyChanged("InheritDeckTextHorizontalAlignment");
+                }
+            }
+
+        }
+        [DependsUpon("InheritDeckTextHorizontalAlignment")]
+        public bool NotInheritDeckTextHorizontalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextHorizontalAlignment == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public HorizontalAlignment DeckTextHorizontalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextHorizontalAlignment; }
+            set
+            {
+                if (DeckTextHorizontalAlignment != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextHorizontalAlignment = value;
+                    OnPropertyChanged("DeckTextHorizontalAlignment");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckTextVerticalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextVerticalAlignment; }
+            set
+            {
+                if (InheritDeckTextVerticalAlignment != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextVerticalAlignment = value;
+                    OnPropertyChanged("InheritDeckTextVerticalAlignment");
+                }
+            }
+
+        }
+        [DependsUpon("InheritDeckTextVerticalAlignment")]
+        public bool NotInheritDeckTextVerticalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritTextVerticalAlignment == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public VerticalAlignment DeckTextVerticalAlignment
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextVerticalAlignment; }
+            set
+            {
+                if (DeckTextVerticalAlignment != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextVerticalAlignment = value;
+                    OnPropertyChanged("DeckTextVerticalAlignment");
+                }
+            }
+        }
         
+        [DependsUpon("InheritDeckFontFamily")]
+        [DependsUpon("InheritDeckFontSize")]
+        [DependsUpon("InheritDeckFontStyle")]
+        [DependsUpon("InheritDeckFontWeight")]
+        [DependsUpon("InheritDeckTextHorizontalAlignment")]
+        [DependsUpon("InheritDeckTextVerticalAlignment")]
+        public bool? InheritDeckTextProperties
+        {
+            get
+            {
+                bool? result = true;
+
+                result &= InheritDeckFontFamily;
+                result &= InheritDeckFontSize;
+                result &= InheritDeckFontWeight;
+                result &= InheritDeckTextHorizontalAlignment;
+                result &= InheritDeckTextVerticalAlignment;
+
+                return result;
+            }
+            set
+            {
+                if (InheritTextProperties != value)
+                {
+                    InheritDeckFontFamily = value;
+                    InheritDeckFontSize = value;
+                    InheritDeckFontWeight = value;
+                    InheritDeckTextHorizontalAlignment = value;
+                    InheritDeckTextVerticalAlignment = value;
+                }
+            }
+        }
+        #endregion
+
+        #region Color Properties
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckTextBrush
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontBrush; }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontBrush != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontBrush = value;
+
+                    OnPropertyChanged("InheritDeckTextBrush");
+                }
+            }
+        }
+        [DependsUpon("InheritTextBrush")]
+        public bool NotInheritDeckTextBrush
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritFontBrush == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Color DeckSelectedTextFontBrushColor
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SolidColorTextBrushColor;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SolidColorTextBrushColor != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.SolidColorTextBrushColor = value;
+                    OnPropertyChanged("DeckSelectedTextFontBrushColor");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public double DeckSelectedGradientFontBrushAngle
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushAngle;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushAngle != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushAngle = value;
+                    OnPropertyChanged("DeckSelectedGradientFontBrushAngle");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Color DeckSelectedGradientFontBrush1
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.First().Color;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.First().Color != value)
+                {
+                    GradientStop tmp = new GradientStop(value, 0);
+
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.RemoveAt(0);
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Insert(0, tmp);
+
+                    OnPropertyChanged("DeckSelectedGradientFontBrush1");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public double DeckSelectedGradientFontBrushOffset1
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.First().Offset;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.First().Offset != value)
+                {
+                    GradientStop tmp = new GradientStop(CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.First().Color, value);
+
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.RemoveAt(0);
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Insert(0, tmp);
+
+                    OnPropertyChanged("DeckSelectedGradientFontBrushOffset1");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Color DeckSelectedGradientFontBrush2
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Last().Color;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Last().Color != value)
+                {
+                    GradientStop tmp = new GradientStop(value, 1);
+
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.RemoveAt(1);
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Add(tmp);
+
+                    OnPropertyChanged("DeckSelectedGradientFontBrush2");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public double DeckSelectedGradientFontBrushOffset2
+        {
+            get
+            {
+                return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Last().Offset;
+            }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Last().Offset != value)
+                {
+                    GradientStop tmp = new GradientStop(CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Last().Color, value);
+
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.RemoveAt(1);
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.GradientTextBrushStops.Add(tmp);
+
+                    OnPropertyChanged("DeckSelectedGradientFontBrushOffset2");
+                }
+            }
+        }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public bool? InheritDeckStrokeProperties
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritStrokeProperties; }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritStrokeProperties != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritStrokeProperties = value;
+                    OnPropertyChanged("InheritDeckStrokeProperties");
+                }
+            }
+        }
+        [DependsUpon("InheritDeckStrokeProperties")]
+        public bool NotInheritDeckStrokeProperties
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.InheritStrokeProperties == InheritPriorities.DoNotInherit; }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Color DeckTextStrokeColor
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextStrokeColor; }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextStrokeColor != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.TextStrokeColor = value;
+                    OnPropertyChanged("DeckTextStrokeColor");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public double DeckStrokeThickness
+        {
+            get { return CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.StrokeThickness; }
+            set
+            {
+                if (CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.StrokeThickness != value)
+                {
+                    CurrentlySelectedDeck.DesiredDeckProperties.StringProperties.StrokeThickness = value;
+                    OnPropertyChanged("DeckStrokeThickness");
+                }
+            }
+        }
+        #endregion
+
         #endregion
 
         #endregion
@@ -1776,7 +2206,7 @@ namespace TCG_Creator
                 {
                     if (CurrentDecks[i].Id == CurrentlySelectedDeckId)
                     {
-                        return i;
+                        return i+1;
                     }
                 }
 
@@ -1786,7 +2216,7 @@ namespace TCG_Creator
             {
                 if (SelectedTabIndex != value)
                 {
-                    if (value >= CurrentDecks.Count+1)
+                    if (value >= CurrentDecks.Count + 1)
                     {
                         throw new ArgumentException("Tab index " + value.ToString() + " is larger than the number of decks (" + CurrentDecks.Count.ToString() + ").");
                     }
@@ -1794,14 +2224,29 @@ namespace TCG_Creator
                     {
                         return;
                     }
-
-                    CurrentlySelectedDeckId = CurrentDecks[value-1].Id;
-                    OnPropertyChanged("SelectedTabIndex");
+                    else if (value == 0)
+                    {
+                        CurrentlySelectedDeckId = 0;
+                        OnPropertyChanged("SelectedTabIndex");
+                    }
+                    else
+                    {
+                        CurrentlySelectedDeckId = CurrentDecks[value - 1].Id;
+                        OnPropertyChanged("SelectedTabIndex");
+                    }
                 }
             }
         }
 
         
+        public string CheckBoxToolTipBeg
+        {
+            get { return "Inherit "; }
+        }
+        public string CheckBoxToolTipEnd
+        {
+            get { return "From Deck First."; }
+        }
 
         #region Public GUI Events
         public void RegionListMouseEnter(object sender, MouseEventArgs e)
@@ -1828,6 +2273,33 @@ namespace TCG_Creator
                 }
             }
         }
+
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Visibility VisTemplateSettings
+        {
+            get
+            {
+                if (SelectedTabIndex == 0)
+                {
+                    return Visibility.Visible;
+                }
+
+                return Visibility.Collapsed;
+            }
+        }
+        [DependsUpon("CurrentlySelectedDeck")]
+        public Visibility VisDeckSettings
+        {
+            get
+            {
+                if (SelectedTabIndex > 0)
+                {
+                    return Visibility.Visible;
+                }
+
+                return Visibility.Collapsed;
+            }
+        }
         #endregion
         #endregion
 
@@ -1852,7 +2324,8 @@ namespace TCG_Creator
             {
                 Card parentCard = Find_Selected_Card();
                 newCard = new Card(parentCard);
-                
+                newCard.IsTemplateCard = IsTemplate;
+
                 newCard.ParentCard = parentCard.Id;
             }
             else
@@ -1880,6 +2353,7 @@ namespace TCG_Creator
                     cardIdsToRemove.Add(CurrentlySelectedCard.Id);
                     CurrentCardCollection.SelectedCardId = CurrentlySelectedCard.ParentCard;
                     OnPropertyChanged("CurrentlySelectedCard");
+                    OnPropertyChanged("CurrentCardCollection");
                     bool stop = false;
 
                     while (!stop)

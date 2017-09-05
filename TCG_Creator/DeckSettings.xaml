@@ -1,0 +1,182 @@
+﻿<StackPanel x:Class="TCG_Creator.DeckSettings"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:TCG_Creator"
+            mc:Ignorable="d"
+            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <StackPanel>
+        <Label Style="{StaticResource TitleLabel}" 
+               Content="Deck Settings" />
+        <GroupBox Style="{StaticResource StdGroupBox}">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Text Options" />
+                    <CheckBox Style="{StaticResource SlavedCheckBox2States}"
+                              IsChecked="{Binding InheritDeckTextProperties}"
+                              Tag="Text Properties" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding AllFontFamilies}" 
+                                    SelectedItem="{Binding DeckFontFamily}"
+                                    IsEnabled="{Binding NotInheritDeckFontFamily}"/>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <xctk:DoubleUpDown IsEnabled="{Binding NotInheritDeckFontSize}"
+                                        Value="{Binding DeckFontSize}"
+                                        Minimum="0.1"/>
+                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Content="Text Horizontal Alignment" 
+                                Grid.Column="0"
+                                Grid.Row="0" />
+                    <ComboBox ItemsSource="{Binding AllHorizontalAlignments}"
+                                    SelectedItem="{Binding DeckTextHorizonalAlignment}" 
+                                    Grid.Column="0"
+                                    Grid.Row="1"
+                                  IsEnabled="{Binding NotInheritDeckTextHorizontalAlignment}"/>
+                    <Label Content="Text Vertical Alignment" 
+                                Grid.Column="1"
+                                Grid.Row="0" />
+                    <ComboBox ItemsSource="{Binding AllVerticalAlignments}"
+                                SelectedItem="{Binding DeckTextVerticalAlignment}" 
+                                Grid.Column="1"
+                                Grid.Row="1"
+                              IsEnabled="{Binding NotInheritDeckTextVerticalAlignment}"/>
+                </Grid>
+                <Expander Header="Advanced">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Inherit Font Family" />
+                            <CheckBox Style="{StaticResource SlavedCheckBox2States}"
+                                  IsChecked="{Binding InheritDeckFontFamily}"
+                                  Tag="Font Family"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Inherit Font Size" />
+                            <CheckBox Style="{StaticResource SlavedCheckBox2States}"
+                                  IsChecked="{Binding InheritDeckFontSize}"
+                                  Tag="Font Size"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Style="{StaticResource StdGroupBox}">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Text Color Options" />
+                    <CheckBox Style="{StaticResource SlavedCheckBox2States}"
+                                IsChecked="{Binding DeckInheritTextBrush}"
+                                Tag="Text Color" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <Label Content="Solid Text Color" />
+                <xctk:ColorPicker Style="{StaticResource StdColorPicker}" 
+                                    SelectedColor="{Binding SelectedTextFontBrushColor}" 
+                                    IsEnabled="{Binding NotGradientBrushRequested}"/>
+                <GroupBox Style="{StaticResource StdGroupBox}">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Gradient Options" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <Label Content="Gradient Angle" />
+                        <Slider Style="{StaticResource StdSlider}"
+                                Value="{Binding DeckSelectedGradientFontBrushAngle}"
+                                Maximum="360"
+                                Minimum="0"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions >
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label Content="Gradient Color One" />
+                            <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                                    SelectedColor="{Binding DeckSelectedGradientFontBrush1}" 
+                                                    Grid.Row="1"
+                                                    Grid.Column="0"/>
+                            <Slider Style="{StaticResource StdSlider}" 
+                                        Value="{Binding DeckSelectedGradientFontBrushOffset1}"
+                                        Maximum="{Binding DeckSelectedGradientFontBrushOffset2}"
+                                        Minimum="0" 
+                                        Grid.Column="0"
+                                        Grid.Row="2"/>
+                            <Label Content="Gradient Color Two" 
+                                        Grid.Column="1"
+                                        Grid.Row="0"/>
+                            <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                              SelectedColor="{Binding DeckSelectedGradientFontBrush2}"
+                                              Grid.Column="1"
+                                              Grid.Row="1"/>
+                            <Slider Style="{StaticResource StdSlider}" 
+                                        Value="{Binding DeckSelectedGradientFontBrushOffset2}"
+                                        Minimum="{Binding DeckSelectedGradientFontBrushOffset1}"
+                                        Maximum="1"
+                                        Grid.Column="1"
+                                        Grid.Row="2"/>
+                        </Grid>
+
+
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Style="{StaticResource StdGroupBox}">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Text Stroke Options" />
+                    <CheckBox Style="{StaticResource SlavedCheckBox2States}"
+                                    IsChecked="{Binding InheritDeckStrokeProperties}"
+                                    Tag="Stroke Properties" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel IsEnabled="{Binding NotInheritStrokeProperties}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions >
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Content="Stroke Thickness"
+                                Grid.Column="0"
+                                Grid.Row="0"/>
+                    <Slider Style="{StaticResource StdSlider}" 
+                                Value="{Binding DeckStrokeThickness}"
+                                Minimum="0"
+                                Maximum="10"
+                                Grid.Column="0"
+                                Grid.Row="1"/>
+                    <Label Content="Stroke Color" 
+                                Grid.Column="1"
+                                Grid.Row="0"/>
+                    <xctk:ColorPicker Style="{StaticResource StdColorPicker}"
+                                            SelectedColor="{Binding DeckTextStrokeColor}"
+                                            Grid.Column="1"
+                                            Grid.Row="1"/>
+                </Grid>
+
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</StackPanel>

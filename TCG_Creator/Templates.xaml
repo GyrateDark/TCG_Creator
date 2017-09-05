@@ -31,12 +31,41 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Grid.Column="0"
                       Grid.Row="0">
-            <local:TemplateEdit />
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <StackPanel.Resources>
+                        <HierarchicalDataTemplate x:Key="treeViewDataTemplate"
+                                              ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </HierarchicalDataTemplate>
+                    </StackPanel.Resources>
+                    <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
+                                SelectedItem="{Binding CurrentlySelectedTreeViewCard}"
+                                ItemTemplate="{StaticResource treeViewDataTemplate}"
+                                Height="Auto"/>
+                    <local:PathButton Style="{StaticResource RegionButton}" 
+                                      Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
+                                      Command="{Binding Path=AddTemplateCardCommand}"
+                                      ToolTip="Add New Template"
+                                      Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"
+                                      Visibility="{Binding VisTemplateSettings}"/>
+                    <local:PathButton Style="{StaticResource RegionButton}" 
+                                      Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
+                                      Command="{Binding Path=AddDeckCardCommand}"
+                                      ToolTip="Create new card based on selected template"
+                                      Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"
+                                      Visibility="{Binding VisDeckSettings}"/>
+                </StackPanel>
+                <Label Content="Card Name" />
+                <TextBox Text="{Binding CurrentlySelectedCardName}" />
+                <local:TemplateEdit Visibility="{Binding VisTemplateSettings}" />
+                <local:DeckEdit Visibility="{Binding VisDeckSettings}" />
+            </StackPanel>
         </ScrollViewer>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Grid.Column="1"
                       Grid.Row="0">
-            <local:TemplateSettings Visibility="{Binding VisShowTemplateSettings}"/>
+            <local:DeckSettings Visibility="{Binding VisShowDeckSettings}"/>
         </ScrollViewer>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Grid.Column="2"

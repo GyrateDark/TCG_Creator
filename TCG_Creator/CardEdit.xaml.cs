@@ -35,29 +35,6 @@ namespace TCG_Creator
             model.RegionListMouseLeave(sender, e);
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = (CheckBox)sender;
-
-            checkBox.ToolTip = "";
-
-            if (checkBox.IsChecked == InheritPriorities.DoNotInherit)
-            {
-                checkBox.ToolTip += "Do Not ";
-            }
-
-            checkBox.ToolTip += "Inherit " + (string)checkBox.Tag;
-
-            if (checkBox.IsChecked == InheritPriorities.InheritDeckFirst)
-            {
-                checkBox.ToolTip += " From Deck First";
-            }
-            else if (checkBox.IsChecked == InheritPriorities.InheritRegionFirst)
-            {
-                checkBox.ToolTip += " From Region First";
-            }
-        }
-
         /*
         private bool captureNextMouseEvent = false;
         bool mouseDown = false; // Set to 'true' when mouse is held down.

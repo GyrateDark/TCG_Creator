@@ -6,30 +6,7 @@
             xmlns:local="clr-namespace:TCG_Creator"
             mc:Ignorable="d"
             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
-    <StackPanel Orientation="Horizontal" >
-        <StackPanel.Resources>
-            <HierarchicalDataTemplate x:Key="treeViewDataTemplate"
-                   ItemsSource="{Binding Children}">
-                <TextBlock Text="{Binding DisplayName}" />
-            </HierarchicalDataTemplate>
-        </StackPanel.Resources>
-        <!--
-        <ComboBox ItemsSource="{Binding TreeViewCards}"
-                  SelectedItem="{Binding CurrentlySelectedTreeViewCard, Mode=TwoWay}"
-                  Text="{Binding CurrentlySelectedTreeViewCardDisplayName, Mode=OneTime}"
-                  DisplayMemberPath="DisplayName" 
-                  x:Name="TemplateComboBox"/>-->
-        <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
-                                SelectedItem="{Binding CurrentlySelectedTreeViewCard}"
-                                ItemTemplate="{StaticResource treeViewDataTemplate}"
-                                Height="Auto"/>
-        <local:PathButton Style="{StaticResource RegionButton}" 
-                          Data="{Binding Source={StaticResource New_Card_Icon}, Path=Data}"
-                          Command="{Binding Path=AddTemplateCardCommand}"
-                          ToolTip="Add New Template"
-                          Height="{Binding ElementName=TemplateComboBox, Path=ActualHeight}"/>
-
-    </StackPanel>
+    
     
 
 

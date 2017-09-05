@@ -102,7 +102,7 @@ namespace TCG_Creator
             {
                 if (Id != -2)
                 {
-                    return _cardCollection.Find_Card_In_Collection(Id).Name;
+                    return _cardCollection.Find_Card_In_Collection(Id).DisplayName;
                 }
                 else
                 {
