@@ -62,6 +62,12 @@ namespace TCG_Creator
         {
             return value._val;
         }
+
+        public int Value
+        {
+            get { return _val; }
+            set { _val = value; }
+        }
     }
 
 
