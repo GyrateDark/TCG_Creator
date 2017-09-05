@@ -26,12 +26,13 @@ namespace TCG_Creator
         AddInherittedTextBefore,
         UseOnlyInherittedText,
         UseOnlyLocalText,
+        UseLocalTextIfProvided,
         N_INHERIT_TEXT_OPTIONS
     }
 
     public class String_Container
     {
-        public InheritTextOptions InheritText { get; set; } = InheritTextOptions.UseOnlyInherittedText;
+        public InheritTextOptions InheritText { get; set; } = InheritTextOptions.UseLocalTextIfProvided;
 
         public List<String_Drawing> strings = new List<String_Drawing>();
         public TextAlignment TxtAlign { get; set; } = TextAlignment.Left;
@@ -125,6 +126,18 @@ namespace TCG_Creator
             else if (result.InheritText == InheritTextOptions.UseOnlyLocalText)
             {
 
+            }
+            else if (result.InheritText == InheritTextOptions.UseLocalTextIfProvided)
+            {
+                if (result.GetAllStrings() == "")
+                {
+                    result.strings = inherittedSource.strings;
+                    result.InheritText = inherittedSource.InheritText;
+                }
+                else
+                {
+                    result.InheritText = InheritTextOptions.UseOnlyLocalText;
+                }
             }
 
             return result;

@@ -1377,6 +1377,7 @@ namespace TCG_Creator
                 result[(int)InheritTextOptions.AddInherittedTextBefore] = "Add Inheritted Text Before";
                 result[(int)InheritTextOptions.UseOnlyInherittedText] = "Use Only Inheritted Text";
                 result[(int)InheritTextOptions.UseOnlyLocalText] = "Use Only Local Text";
+                result[(int)InheritTextOptions.UseLocalTextIfProvided] = "Use Local Text if Provided";
 
                 return result;
             }
