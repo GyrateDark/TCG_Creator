@@ -30,6 +30,21 @@
                   IsChecked="{Binding TemplateInheritFontSize}"
                   ToolTip="Inherit Font Size"/>
     </StackPanel>
+    <StackPanel Orientation="Horizontal">
+        <StackPanel.Resources>
+            <HierarchicalDataTemplate x:Key="treeViewDataTemplate2"
+                                      ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding DisplayName}" />
+            </HierarchicalDataTemplate>
+        </StackPanel.Resources>
+        <CheckBox Style="{StaticResource IconCheckBox}"
+                  IsChecked="{Binding CurrentlySelectedCardUsesCustomBack}"
+                  ToolTip="Italic"/>
+        <local:ComboBoxTreeView ItemsSource="{Binding TreeViewCards}"
+                                SelectedItem="{Binding CurrentlySelectedCardCustomCard}"
+                                ItemTemplate="{StaticResource treeViewDataTemplate2}"
+                                Height="Auto"/>
+    </StackPanel>
 
     <GroupBox Style="{StaticResource StdGroupBox}"
               Header="Card Size">

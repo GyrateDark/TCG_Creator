@@ -160,9 +160,9 @@ namespace TCG_Creator
 
                 if (IsBaseTemplate)
                 {
-                    result += "B";
+                    result += "BT ";
                 }
-                if (IsTemplateCard)
+                else if (IsTemplateCard)
                 {
                     result += "T ";
                 }
@@ -207,6 +207,9 @@ namespace TCG_Creator
                 }
             }
         }
+
+        public bool UsesCustomBack { get; set; } = false;
+        public int CustomBackCardId { get; set; } = 0;
 
         public Inherittable_Properties GetRenderInherittableProperties()
         {

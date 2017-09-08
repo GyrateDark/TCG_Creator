@@ -739,6 +739,14 @@ namespace TCG_Creator
                 if (CurrentlySelectedRegion.description != value)
                 {
                     CurrentlySelectedRegion.description = value;
+
+                    List<Card_Region> allRelatedRegions = GetAllRelatedRegions(CurrentlySelectedRegion.id, CurrentlySelectedCard.Id, CurrentlySelectedCard.ParentCard);
+
+                    foreach (Card_Region i in allRelatedRegions)
+                    {
+                        i.description = value;
+                    }
+
                     OnPropertyChanged("CurrentlySelectedRegionDescription");
                 }
             }
@@ -833,6 +841,48 @@ namespace TCG_Creator
                 {
                     CurrentlySelectedCard.Name = value;
                     OnPropertyChanged("CurrentlySelectedCardName");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedCard")]
+        public bool CurrentlySelectedCardUsesCustomBack
+        {
+            get { return CurrentlySelectedCard.UsesCustomBack; }
+            set
+            {
+                if (CurrentlySelectedCardUsesCustomBack != value)
+                {
+                    CurrentlySelectedCard.UsesCustomBack = value;
+                    OnPropertyChanged("CurrentlySelectedCardUsesCustomBack");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedCard")]
+        public int CurrentlySelectedCardCustomCardId
+        {
+            get { return CurrentlySelectedCard.CustomBackCardId; }
+            set
+            {
+                if (CurrentlySelectedCardCustomCardId != value)
+                {
+                    CurrentlySelectedCard.CustomBackCardId = value;
+                    OnPropertyChanged("CurrentlySelectedCardCustomCardId");
+                }
+            }
+        }
+        [DependsUpon("CurrentlySelectedCardCustomCardId")]
+        public Card CurrentlySelectedCardCustomCard
+        {
+            get
+            {
+                return CurrentCardCollection.Find_Card_In_Collection(CurrentlySelectedCardCustomCardId);
+            }
+            set
+            {
+                if (CurrentlySelectedCardCustomCardId != value.Id)
+                {
+                    CurrentlySelectedCardCustomCardId = value.Id;
+                    OnPropertyChanged("CurrentlySelectedCardCustomCard");
                 }
             }
         }
@@ -1966,7 +2016,7 @@ namespace TCG_Creator
             }
             set
             {
-                if (InheritTextProperties != value)
+                if (InheritDeckTextProperties != value)
                 {
                     InheritDeckFontFamily = value;
                     InheritDeckFontSize = value;

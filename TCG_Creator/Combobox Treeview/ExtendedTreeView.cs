@@ -39,6 +39,7 @@ namespace TCG_Creator
         public ExtendedTreeViewItem()
         {
             this.MouseLeftButtonUp += OnMouseLeftButtonUp;
+            this.Tag = true;
         }
 
         void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

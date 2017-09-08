@@ -41,7 +41,7 @@
                                 Grid.Column="0"
                                 Grid.Row="0" />
                     <ComboBox ItemsSource="{Binding AllHorizontalAlignments}"
-                                    SelectedItem="{Binding DeckTextHorizonalAlignment}" 
+                                    SelectedItem="{Binding DeckTextHorizontalAlignment}" 
                                     Grid.Column="0"
                                     Grid.Row="1"
                                   IsEnabled="{Binding NotInheritDeckTextHorizontalAlignment}"/>

@@ -10,6 +10,13 @@ using System.Windows.Media.Imaging;
 
 namespace TCG_Creator
 {
+    public enum TypeOfCard
+    {
+        BaseTemplate,
+        NormalCard,
+        Template,
+    }
+
     public class Tree_View_Card : ITreeViewItemModel
     {
         public Tree_View_Card(ref Card_Collection coll, OnPropertyChangedDelegate propertyChanged)

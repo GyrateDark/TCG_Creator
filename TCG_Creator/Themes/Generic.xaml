@@ -86,6 +86,9 @@
                             <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
                         </Trigger>
+                        <Trigger Property="Tag" Value="true">
+                            <Setter Property="Foreground" Value="{StaticResource TreeViewTemplateBrush}"/>
+                        </Trigger>
                         <!--<MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsSelected" Value="true"/>
